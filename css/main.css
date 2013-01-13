@@ -93,12 +93,6 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-   /* All templates start hidden */
-   *[data-template] {
-        display: none;
-   }
-
-
 
 
 

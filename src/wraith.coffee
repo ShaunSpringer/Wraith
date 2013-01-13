@@ -71,6 +71,11 @@ class @Wraith.Model extends Wraith.Base
     @attributes[key] = val
 
 
+class @Wraith.Collection extends Wraith.Base
+  constructor: (@parent, { as: @field, klass: @klass }) ->
+    @members = []
+
+
 class @Wraith.Model.Ajax extends Wraith.Model
   constructor: (@attributes, @url) ->
     super(@attributes)
