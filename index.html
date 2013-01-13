@@ -12,8 +12,10 @@
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body>
-        <script type="text/template" id="Test" data-model="Test" data-controller="Test">
-            <div>{someData}</div>
+        <div data-controller="SelectList">
+        </div>
+        <script type="text/template" id="Test" data-model="ListItem">
+            <div>#{someData}</div>
         </script>
         <script src="js/zepto.js"></script>
         <script src="lib/wraith.js"></script>

@@ -1,21 +1,32 @@
 root = exports ? @
-@Wraith = {}
+
+@Wraith =
+  Controllers: []
+  Collections: []
+  Models: []
+  Templates: []
+  Views: []
+  isFunction: (obj) ->
+    Object.prototype.toString.call(obj) == '[object Function]'
+
 
 class @Wraith.Bootloader
   constructor: ->
     self = @
-    $('script[type="text/template"]')
-      .forEach (view) ->
-        self.load $(view).attr('id')
+    $('script[type="text/template"]').forEach (item) -> self.loadTemplate $(item)
+    $('[data-controller]').forEach (item) -> self.loadController $(item).data('controller'), $(item)
 
-  load: (id) ->
-    $view = $('#' + id)
-    throw Error('Controller does not exist') unless controller = $view.data('controller')
-    throw Error('Model does not exist') unless model = $view.data('model')
-    Model = root.Models[model]
-    view = new Wraith.View($view.html())
-    Controller = root.Controllers[controller]
-    new Controller(Model, view)
+  loadController: (id, $item) ->
+    throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
+    controller = new Controller($item)
+
+  loadTemplate: ($template) ->
+    throw Error('Template is invalid') unless $template
+    throw Error('Model attribute is invalid') unless model = $template.data('model')
+    throw Error('Model is invalid') unless Model = Wraith.Models[model]
+    id = $template.attr('id')
+    template = $template.html()
+    Wraith.Views[id] = new Wraith.View(template, Model)
 
 
 class @Wraith.Base
@@ -25,6 +36,7 @@ class @Wraith.Base
   bind: (ev, cb) ->
     list = @listeners[ev] ?= []
     list.push(cb)
+    @
 
   unbind: (ev, cb) ->
     list = @listeners?[ev]
@@ -36,13 +48,15 @@ class @Wraith.Base
     @
 
   emit: (event, args ...) ->
-     if @listeners[event] then listener(args ...) for listener in @listeners[event]
+    if @listeners[event] then listener(args ...) for listener in @listeners[event]
 
   @proxy: (func) ->
-    => func.apply(@, arguments)
+    =>
+      func.apply(@, arguments)
 
   proxy: (func) ->
-    => func.apply(@, arguments)
+    =>
+      func.apply(@, arguments)
 
 
 class @Wraith.Validator
@@ -55,39 +69,92 @@ class @Wraith.Validator
   @isString: (obj) ->
     @is(obj, @STRING)
 
+
+class @Wraith.Collection extends Wraith.Base
+  constructor: (@parent, @as, @klass) ->
+    @members = []
+
+  create: (attr) =>
+    @add(new @klass(attr))
+
+  add: (item) =>
+    @members.push(item)
+    @parent.emit('add:#{@as}', item)
+    item
+
+  remove: (item) =>
+    for t, i in @members when t == thing
+      delete @members[i]
+      @parent.emit('remove:#{@as}', thing)
+      break
+
+  all: =>
+    @members
+
+  length: =>
+    @members.length
+
+  at: (index) =>
+    @members[index]
+
+
 class @Wraith.Model extends Wraith.Base
   @field: (name, opt) ->
-    return unless Wraith.Validator.isString(name)
     @fields ?= {}
     @fields[name] = options ? {}
 
-  constructor: (@attributes) ->
+  @hasMany: (klass, options) ->
+    options ?= {}
+    options.klass ?= klass
+    @collections ?= {}
+    @collections[options.as] = options
+
+  constructor: (attributes) ->
+    super()
+
+    @listeners = {}
+    @attributes = {}
+    for name, options of @constructor.fields
+      if attributes?[name]?
+        d = attributes?[name]
+      else
+        d = if (Wraith.isFunction(options.default)) then options.default() else options.default
+      @set name, d
+
+    for name, options of @constructor.collections
+      @[name] = new Wraith.Collection(@, options.as, options.klass)
 
   get: (key) =>
     @attributes?[key]
 
   set: (key, val) =>
-    throw Error('Attribute does not exist on model') if not @attributes[key]
+    console.log key, val
+    field = @constructor.fields[key]
+    throw Error('Trying to set an non-existent property!') if not field
+    # Ignore a re-setting of the same value
+    return if val == @get(key)
     @attributes[key] = val
-
-
-class @Wraith.Collection extends Wraith.Base
-  constructor: (@parent, { as: @field, klass: @klass }) ->
-    @members = []
-
-
-class @Wraith.Model.Ajax extends Wraith.Model
-  constructor: (@attributes, @url) ->
-    super(@attributes)
+    # Emit change events!
+    @emit('change', key, val)
+    @emit("change:#{key}", val)
 
 
 class @Wraith.View extends Wraith.Base
-  constructor: (@template) ->
+  constructor: (@template, @Model) ->
+    throw Error('Template is required') unless @template
+    throw Error('Model is required') unless @Model
+    @Model.bind 'change', @proxy @change
+
+  change: (data) =>
+    console.log data
 
 
 class @Wraith.Controller extends Wraith.Base
-  constructor: (@model, @view) ->
-    throw Error('Model is required') unless @model
-    throw Error('View is required') unless @view
-
+  constructor: (@$el) ->
     super()
+    @init()
+
+  init: ->
+
+  append: ($item) =>
+    @$el.append($item)
