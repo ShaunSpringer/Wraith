@@ -71,8 +71,11 @@
         selected: false
       });
       self = this;
-      return Wraith.delay(1000, function() {
+      Wraith.delay(1000, function() {
         return self.list.items.at(0).set('text', 'Test 4');
+      });
+      return Wraith.delay(2000, function() {
+        return self.list.items.at(1).set('text', 'Test 5');
       });
     };
 
@@ -80,9 +83,9 @@
       var self;
       self = this;
       this.append(this.View.render(model));
-      return model.bind('change', (function() {
+      return model.bind('change', function() {
         return self.update(model);
-      }));
+      });
     };
 
     SelectList.prototype.update = function(model) {
