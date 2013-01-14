@@ -48,6 +48,8 @@
     __extends(SelectList, _super);
 
     function SelectList() {
+      this.update = __bind(this.update, this);
+
       this.add = __bind(this.add, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
@@ -56,6 +58,7 @@
 
     SelectList.prototype.init = function() {
       var items, self;
+      this.View = Wraith.Views[this.view];
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
       items = this.list.items;
@@ -73,10 +76,19 @@
       });
     };
 
-    SelectList.prototype.add = function(item) {
-      var view;
-      view = Wraith.Views[this.view];
-      return this.append(view.render(item));
+    SelectList.prototype.add = function(model) {
+      var self;
+      self = this;
+      this.append(this.View.render(model));
+      return model.bind('change', (function() {
+        return self.update(model);
+      }));
+    };
+
+    SelectList.prototype.update = function(model) {
+      var $view;
+      $view = $('#' + model.get('_id'));
+      return $view.html(this.View.render(model));
     };
 
     return SelectList;

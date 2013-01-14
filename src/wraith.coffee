@@ -9,11 +9,13 @@ root = exports ? @
   isFunction: (obj) ->
     Object.prototype.toString.call(obj) == '[object Function]'
   delay: (ms, func) ->
-    console.log ms, func
     setTimeout func, ms
   compile: (template) ->
     CoffeeTemplates.compile template
-
+  uniqueId: (length = 16) ->
+    id = ""
+    id += Math.random().toString(36).substr(2) while id.length < length
+    id.substr 0, length
 
 class @Wraith.Bootloader
   constructor: ->
@@ -115,6 +117,11 @@ class @Wraith.Model extends Wraith.Base
   constructor: (attributes) ->
     super()
 
+    # Create unique ID if one doesnt exist
+    # Could use a refactor
+    @constructor.fields ?= {}
+    @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
+
     @listeners = {}
     @attributes = {}
     for name, options of @constructor.fields
@@ -146,6 +153,7 @@ class @Wraith.Model extends Wraith.Base
 class @Wraith.View extends Wraith.Base
   constructor: (@template) ->
     throw Error('Template is required') unless @template
+    @template = '<div id="{{_id}}">' + @template + '</div>'
     @template_fn = Wraith.compile(@template)
 
   render: (data) ->
