@@ -11,7 +11,7 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
   view: 'ListItem'
 
   init: ->
-    @View = Wraith.Views[@view]
+    super()
     @list = new Wraith.Models.List
     @list.bind 'add:items', @add
 
@@ -29,12 +29,3 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     Wraith.delay 2000, ->
       self.list.items.at(1).set('text', 'Test 5')
 
-  add: (model) =>
-    self = @
-    @append(@View.render(model))
-    model.bind 'change', ->
-      self.update(model)
-
-  update: (model) =>
-    $view = $('#' + model.get('_id'))
-    $view.html(@View.render(model))

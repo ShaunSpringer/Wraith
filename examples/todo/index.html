@@ -13,12 +13,19 @@
     </head>
     <body>
         <div data-controller="SelectList">
+            <h1>Todo List MVC Example!</h1>
+            <input type="text" width="100" placeholder="Type a task here" />
         </div>
         <script type="text/template" id="ListItem">
-            <div>{{text}}</div>
+            <fieldset>
+                <label>
+                    <input type="checkbox" {{#selected}}selected{{/selected}} />
+                    {{text}}
+                </label>
+            </fieldset>
         </script>
         <script src="js/zepto.js"></script>
-        <script src="js/coffee-templates.js"></script>
+        <script src="http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js"></script>
         <script src="../../lib/wraith.js"></script>
         <script src="lib/test.js"></script>
         <script>

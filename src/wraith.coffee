@@ -11,7 +11,7 @@ root = exports ? @
   delay: (ms, func) ->
     setTimeout func, ms
   compile: (template) ->
-    CoffeeTemplates.compile template
+    Hogan.compile(template)
   uniqueId: (length = 16) ->
     id = ""
     id += Math.random().toString(36).substr(2) while id.length < length
@@ -157,7 +157,7 @@ class @Wraith.View extends Wraith.Base
     @template_fn = Wraith.compile(@template)
 
   render: (data) ->
-    @template_fn(data.toJSON())
+    @template_fn.render(data.toJSON())
 
 class @Wraith.Controller extends Wraith.Base
   constructor: (@$el) ->
@@ -165,6 +165,17 @@ class @Wraith.Controller extends Wraith.Base
     @init()
 
   init: ->
+    @View = Wraith.Views[@view]
+
+  add: (model) =>
+    self = @
+    @append(@View.render(model))
+    model.bind 'change', ->
+      self.update(model)
+
+  update: (model) =>
+    $view = $('#' + model.get('_id'))
+    $view.html(@View.render(model))
 
   append: ($item) =>
     @$el.append($item)

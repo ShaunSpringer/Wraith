@@ -2,8 +2,7 @@
 (function() {
   var root,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -48,9 +47,6 @@
     __extends(SelectList, _super);
 
     function SelectList() {
-      this.update = __bind(this.update, this);
-
-      this.add = __bind(this.add, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
@@ -58,7 +54,7 @@
 
     SelectList.prototype.init = function() {
       var items, self;
-      this.View = Wraith.Views[this.view];
+      SelectList.__super__.init.call(this);
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
       items = this.list.items;
@@ -77,21 +73,6 @@
       return Wraith.delay(2000, function() {
         return self.list.items.at(1).set('text', 'Test 5');
       });
-    };
-
-    SelectList.prototype.add = function(model) {
-      var self;
-      self = this;
-      this.append(this.View.render(model));
-      return model.bind('change', function() {
-        return self.update(model);
-      });
-    };
-
-    SelectList.prototype.update = function(model) {
-      var $view;
-      $view = $('#' + model.get('_id'));
-      return $view.html(this.View.render(model));
     };
 
     return SelectList;
