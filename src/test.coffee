@@ -22,6 +22,10 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
       text: 'Test 2'
       selected: false
 
+    self = @
+    Wraith.delay 1000, ->
+      self.list.items.at(0).set('text', 'Test 4')
+
   add: (item) =>
     view = Wraith.Views[@view]
     @append view.render(item)

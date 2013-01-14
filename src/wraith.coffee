@@ -8,6 +8,11 @@ root = exports ? @
   Views: []
   isFunction: (obj) ->
     Object.prototype.toString.call(obj) == '[object Function]'
+  delay: (ms, func) ->
+    console.log ms, func
+    setTimeout func, ms
+  compile: (template) ->
+    CoffeeTemplates.compile template
 
 
 class @Wraith.Bootloader
@@ -141,7 +146,7 @@ class @Wraith.Model extends Wraith.Base
 class @Wraith.View extends Wraith.Base
   constructor: (@template) ->
     throw Error('Template is required') unless @template
-    @template_fn = CoffeeTemplates.compile(@template)
+    @template_fn = Wraith.compile(@template)
 
   render: (data) ->
     @template_fn(data.toJSON())
