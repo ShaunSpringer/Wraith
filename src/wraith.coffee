@@ -22,23 +22,21 @@ class @Wraith.Bootloader
 
   loadTemplate: ($template) ->
     throw Error('Template is invalid') unless $template
-    throw Error('Model attribute is invalid') unless model = $template.data('model')
-    throw Error('Model is invalid') unless Model = Wraith.Models[model]
     id = $template.attr('id')
     template = $template.html()
-    Wraith.Views[id] = new Wraith.View(template, Model)
+    Wraith.Views[id] = new Wraith.View(template)
 
 
 class @Wraith.Base
   constructor: ->
     @listeners = {}
 
-  bind: (ev, cb) ->
+  bind: (ev, cb) =>
     list = @listeners[ev] ?= []
     list.push(cb)
     @
 
-  unbind: (ev, cb) ->
+  unbind: (ev, cb) =>
     list = @listeners?[ev]
     for callback, i in list when callback is cb
       list.slice()
@@ -47,8 +45,8 @@ class @Wraith.Base
       break
     @
 
-  emit: (event, args ...) ->
-    if @listeners[event] then listener(args ...) for listener in @listeners[event]
+  emit: (event, args ...) =>
+    if @listeners[event]? then listener(args ...) for listener in @listeners[event]
 
   @proxy: (func) ->
     =>
@@ -79,13 +77,13 @@ class @Wraith.Collection extends Wraith.Base
 
   add: (item) =>
     @members.push(item)
-    @parent.emit('add:#{@as}', item)
+    @parent.emit('add:' + @as, item)
     item
 
   remove: (item) =>
     for t, i in @members when t == thing
       delete @members[i]
-      @parent.emit('remove:#{@as}', thing)
+      @parent.emit('remove:' + @as, thing)
       break
 
   all: =>
@@ -128,7 +126,6 @@ class @Wraith.Model extends Wraith.Base
     @attributes?[key]
 
   set: (key, val) =>
-    console.log key, val
     field = @constructor.fields[key]
     throw Error('Trying to set an non-existent property!') if not field
     # Ignore a re-setting of the same value
@@ -138,16 +135,16 @@ class @Wraith.Model extends Wraith.Base
     @emit('change', key, val)
     @emit("change:#{key}", val)
 
+  toJSON: =>
+    @attributes
 
 class @Wraith.View extends Wraith.Base
-  constructor: (@template, @Model) ->
+  constructor: (@template) ->
     throw Error('Template is required') unless @template
-    throw Error('Model is required') unless @Model
-    @Model.bind 'change', @proxy @change
+    @template_fn = CoffeeTemplates.compile(@template)
 
-  change: (data) =>
-    console.log data
-
+  render: (data) ->
+    @template_fn(data.toJSON())
 
 class @Wraith.Controller extends Wraith.Base
   constructor: (@$el) ->

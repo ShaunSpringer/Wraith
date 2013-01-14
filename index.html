@@ -14,10 +14,11 @@
     <body>
         <div data-controller="SelectList">
         </div>
-        <script type="text/template" id="Test" data-model="ListItem">
-            <div>#{someData}</div>
+        <script type="text/template" id="ListItem">
+            <div>{{text}}</div>
         </script>
         <script src="js/zepto.js"></script>
+        <script src="js/coffee-templates.js"></script>
         <script src="lib/wraith.js"></script>
         <script src="lib/test.js"></script>
         <script>
