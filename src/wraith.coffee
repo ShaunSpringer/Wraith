@@ -19,9 +19,8 @@ root = exports ? @
 
 class @Wraith.Bootloader
   constructor: ->
-    self = @
-    $('script[type="text/template"]').forEach (item) -> self.loadTemplate $(item)
-    $('[data-controller]').forEach (item) -> self.loadController $(item).data('controller'), $(item)
+    $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
+    $('[data-controller]').forEach (item) => @loadController $(item).data('controller'), $(item)
 
   loadController: (id, $item) ->
     throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
@@ -168,10 +167,9 @@ class @Wraith.Controller extends Wraith.Base
     @View = Wraith.Views[@view]
 
   add: (model) =>
-    self = @
     @append(@View.render(model))
-    model.bind 'change', ->
-      self.update(model)
+    model.bind 'change', =>
+      @update(model)
 
   update: (model) =>
     $view = $('#' + model.get('_id'))

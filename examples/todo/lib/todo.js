@@ -53,7 +53,7 @@
     SelectList.prototype.view = 'ListItem';
 
     SelectList.prototype.init = function() {
-      var items, self;
+      var items;
       SelectList.__super__.init.call(this);
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
@@ -62,17 +62,18 @@
         text: 'Test 1',
         selected: true
       });
-      items.create({
+      return items.create({
         text: 'Test 2',
         selected: false
       });
-      self = this;
-      Wraith.delay(1000, function() {
-        return self.list.items.at(0).set('text', 'Test 4');
-      });
-      return Wraith.delay(2000, function() {
-        return self.list.items.at(1).set('text', 'Test 5');
-      });
+      /*
+          self = @
+          Wraith.delay 1000, ->
+            self.list.items.at(0).set('text', 'Test 4')
+          Wraith.delay 2000, ->
+            self.list.items.at(1).set('text', 'Test 5')
+      */
+
     };
 
     return SelectList;
