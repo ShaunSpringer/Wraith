@@ -17,6 +17,7 @@ root = exports ? @
     id += Math.random().toString(36).substr(2) while id.length < length
     id.substr 0, length
 
+
 class @Wraith.Bootloader
   constructor: ->
     $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
@@ -38,6 +39,7 @@ class @Wraith.Base
     @listeners = {}
 
   bind: (ev, cb) =>
+    throw Error('Callback is not a function') unless Wraith.isFunction(cb)
     list = @listeners[ev] ?= []
     list.push(cb)
     @
@@ -86,11 +88,11 @@ class @Wraith.Collection extends Wraith.Base
     @parent.emit('add:' + @as, item)
     item
 
-  remove: (item) =>
-    for t, i in @members when t == thing
-      delete @members[i]
-      @parent.emit('remove:' + @as, thing)
-      break
+  remove: (id) =>
+    for t, i in @members when t.get('_id') == id
+      @members.splice(i, 1)
+      @parent.emit('remove:' + @as, t)
+      return t
 
   all: =>
     @members
@@ -138,7 +140,7 @@ class @Wraith.Model extends Wraith.Base
 
   set: (key, val) =>
     field = @constructor.fields[key]
-    throw Error('Trying to set an non-existent property!') if not field
+    throw Error('Trying to set an non-existent property!') unless field
     # Ignore a re-setting of the same value
     return if val == @get(key)
     @attributes[key] = val
@@ -149,6 +151,7 @@ class @Wraith.Model extends Wraith.Base
   toJSON: =>
     @attributes
 
+
 class @Wraith.View extends Wraith.Base
   constructor: (@template) ->
     throw Error('Template is required') unless @template
@@ -157,6 +160,7 @@ class @Wraith.View extends Wraith.Base
 
   render: (data) ->
     @template_fn.render(data.toJSON())
+
 
 class @Wraith.Controller extends Wraith.Base
   constructor: (@$el) ->
@@ -168,8 +172,11 @@ class @Wraith.Controller extends Wraith.Base
 
   add: (model) =>
     @append(@View.render(model))
-    model.bind 'change', =>
-      @update(model)
+    model.bind 'change', => @update(model)
+
+  remove: (model) =>
+    $view = $('#' + model.get('_id'))
+    $view.remove()
 
   update: (model) =>
     $view = $('#' + model.get('_id'))

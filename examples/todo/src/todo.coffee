@@ -14,16 +14,13 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     super()
     @list = new Wraith.Models.List
     @list.bind 'add:items', @add
+    @list.bind 'remove:items', @remove
 
     items = @list.items
-    items.create
-      text: 'Test 1'
-      selected: true
-    items.create
-      text: 'Test 2'
-      selected: false
+    a = items.create { text: 'Test 1', selected: true }
+    items.create { text: 'Test 2', selected: false }
 
-
+    items.remove a.get('_id')
 
     ###
     self = @

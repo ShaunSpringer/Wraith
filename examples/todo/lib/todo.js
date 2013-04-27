@@ -53,19 +53,21 @@
     SelectList.prototype.view = 'ListItem';
 
     SelectList.prototype.init = function() {
-      var items;
+      var a, items;
       SelectList.__super__.init.call(this);
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
+      this.list.bind('remove:items', this.remove);
       items = this.list.items;
-      items.create({
+      a = items.create({
         text: 'Test 1',
         selected: true
       });
-      return items.create({
+      items.create({
         text: 'Test 2',
         selected: false
       });
+      return items.remove(a.get('_id'));
       /*
           self = @
           Wraith.delay 1000, ->
