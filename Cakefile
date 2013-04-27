@@ -2,14 +2,24 @@
 fs            = require 'fs'
 {print}       = require 'util'
 
-task 'build', 'continually build', ->
+task 'build', 'Continually build', ->
   coffee = spawn 'coffee', ['-cw', '-o', 'lib', 'src']
   coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
+  coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
-  examples = ['todo']
+  examples = [
+    { base: 'todo', dest: 'lib', source: 'src' }
+    { base:'todomvc/architecture-examples/wraith', dest: 'js', source: 'src' }
+  ]
   for example in examples
-    coffee = spawn 'coffee', ['-cw', '-o', 'examples/' + example + '/lib', 'examples/' + example + '/src']
+    coffee = spawn 'coffee', [
+      '-cw'
+      '-o'
+      'examples/' + example.base + '/' + example.dest
+      'examples/' + example.base + '/' + example.source
+    ]
     coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
+    coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
 task 'docs', 'Generate annotated source code with Docco', ->
   fs.readdir 'src', (err, contents) ->
