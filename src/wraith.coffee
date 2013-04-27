@@ -6,6 +6,7 @@ root = exports ? @
   Models: []
   Templates: []
   Views: []
+  UIEvents: ['click', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown']
   isFunction: (obj) ->
     Object.prototype.toString.call(obj) == '[object Function]'
   delay: (ms, func) ->
@@ -184,3 +185,12 @@ class @Wraith.Controller extends Wraith.Base
 
   append: ($item) =>
     @$el.append($item)
+
+  bind: (ev, cb) =>
+    super(ev, cb)
+    keys = ev.split ':'
+    # Format is ui:event:selector
+    if keys[0] is 'ui'
+      throw Error('Invalid UI event given') unless (uievent = keys[1]) and uievent in Wraith.UIEvents
+      throw Error('Invalid selector given') unless (selector = keys[2])
+      @$el.on uievent, selector, cb

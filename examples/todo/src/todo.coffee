@@ -17,15 +17,15 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     @list.bind 'remove:items', @remove
 
     items = @list.items
-    a = items.create { text: 'Test 1', selected: true }
-    items.create { text: 'Test 2', selected: false }
+    items.create { text: 'Task 1', selected: true }
+    items.create { text: 'Task 2', selected: false }
+    items.create { text: 'Task 3', selected: false }
 
-    items.remove a.get('_id')
+    @bind 'ui:keypress:input[type=text]', @keypress
 
-    ###
-    self = @
-    Wraith.delay 1000, ->
-      self.list.items.at(0).set('text', 'Test 4')
-    Wraith.delay 2000, ->
-      self.list.items.at(1).set('text', 'Test 5')
-    ###
+  keypress: (e) =>
+    return unless e.keyCode is 13
+    return unless (val = e.currentTarget.value) isnt ''
+
+    @list.items.create { text: val, selected: false }
+    e.currentTarget.value = ''

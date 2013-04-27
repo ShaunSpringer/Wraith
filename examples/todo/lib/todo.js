@@ -2,7 +2,8 @@
 (function() {
   var root,
     __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -47,35 +48,47 @@
     __extends(SelectList, _super);
 
     function SelectList() {
+      this.keypress = __bind(this.keypress, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
     SelectList.prototype.view = 'ListItem';
 
     SelectList.prototype.init = function() {
-      var a, items;
+      var items;
       SelectList.__super__.init.call(this);
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
       this.list.bind('remove:items', this.remove);
       items = this.list.items;
-      a = items.create({
-        text: 'Test 1',
+      items.create({
+        text: 'Task 1',
         selected: true
       });
       items.create({
-        text: 'Test 2',
+        text: 'Task 2',
         selected: false
       });
-      return items.remove(a.get('_id'));
-      /*
-          self = @
-          Wraith.delay 1000, ->
-            self.list.items.at(0).set('text', 'Test 4')
-          Wraith.delay 2000, ->
-            self.list.items.at(1).set('text', 'Test 5')
-      */
+      items.create({
+        text: 'Task 3',
+        selected: false
+      });
+      return this.bind('ui:keypress:input[type=text]', this.keypress);
+    };
 
+    SelectList.prototype.keypress = function(e) {
+      var val;
+      if (e.keyCode !== 13) {
+        return;
+      }
+      if ((val = e.currentTarget.value) === '') {
+        return;
+      }
+      this.list.items.create({
+        text: val,
+        selected: false
+      });
+      return e.currentTarget.value = '';
     };
 
     return SelectList;
