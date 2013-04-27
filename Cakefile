@@ -2,7 +2,7 @@
 fs            = require 'fs'
 {print}       = require 'util'
 
-task 'build', 'continually build with --watch', ->
+task 'build', 'continually build', ->
   coffee = spawn 'coffee', ['-cw', '-o', 'lib', 'src']
   coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
 
@@ -18,3 +18,7 @@ task 'docs', 'Generate annotated source code with Docco', ->
     docco.stdout.on 'data', (data) -> print data.toString()
     docco.stderr.on 'data', (data) -> print data.toString()
     docco.on 'exit', (status) -> callback?() if status is 0
+
+task 'server', 'run a python simple server', ->
+  server = spawn 'python', ['-m', 'SimpleHTTPServer']
+  server.stdout.on 'data', (data) -> console.log data.toString().trim()
