@@ -6,7 +6,7 @@ root = exports ? @
   Models: []
   Templates: []
   Views: []
-  UIEvents: ['click', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown']
+  UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown']
   isFunction: (obj) ->
     Object.prototype.toString.call(obj) == '[object Function]'
   delay: (ms, func) ->
@@ -90,19 +90,16 @@ class @Wraith.Collection extends Wraith.Base
     item
 
   remove: (id) =>
-    for t, i in @members when t.get('_id') == id
-      @members.splice(i, 1)
-      @parent.emit('remove:' + @as, t)
-      return t
+    @members.filter (item) -> item.get('_id') isnt id
 
-  all: =>
-    @members
+  all: => @members
+  length: => @members.length
+  at: (index) => @members[index]
 
-  length: =>
-    @members.length
-
-  at: (index) =>
-    @members[index]
+  findById: (id) =>
+    for item, i in @members when item.get('_id') is id
+      @parent.emit('remove:' + @as, item)
+      return item
 
 
 class @Wraith.Model extends Wraith.Base
@@ -156,7 +153,7 @@ class @Wraith.Model extends Wraith.Base
 class @Wraith.View extends Wraith.Base
   constructor: (@template) ->
     throw Error('Template is required') unless @template
-    @template = '<div id="{{_id}}">' + @template + '</div>'
+    @template = '<div wraith-view id="{{_id}}">' + @template + '</div>'
     @template_fn = Wraith.compile(@template)
 
   render: (data) ->
@@ -185,6 +182,10 @@ class @Wraith.Controller extends Wraith.Base
 
   append: ($item) =>
     @$el.append($item)
+
+  findByEl: (el) =>
+    return unless $parent = $(el).closest('[wraith-view]')
+    return $parent.attr('id')
 
   bind: (ev, cb) =>
     super(ev, cb)

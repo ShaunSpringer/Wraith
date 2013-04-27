@@ -1,0 +1,30 @@
+div.delete,
+div.select,
+div.name {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 16px;
+  vertical-align: top;
+}
+
+div.delete{
+  color: #F00;
+}
+
+input[type=checkbox]:checked ~ div.select {
+  color: #0F0;
+}
+
+input[type=checkbox]:not(:checked) ~ div.select {
+  display: none;
+}
+
+
+label {
+  cursor: pointer;
+}
+
+input[type=checkbox] {
+  position: absolute;
+  left: -9999px;
+}

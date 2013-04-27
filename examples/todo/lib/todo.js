@@ -48,7 +48,9 @@
     __extends(SelectList, _super);
 
     function SelectList() {
-      this.keypress = __bind(this.keypress, this);
+      this.itemDeleteClick = __bind(this.itemDeleteClick, this);
+
+      this.inputKeypress = __bind(this.inputKeypress, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
@@ -73,15 +75,13 @@
         text: 'Task 3',
         selected: false
       });
-      return this.bind('ui:keypress:input[type=text]', this.keypress);
+      this.bind('ui:keypress:input[type=text]', this.inputKeypress);
+      return this.bind('ui:click:div.delete', this.itemDeleteClick);
     };
 
-    SelectList.prototype.keypress = function(e) {
+    SelectList.prototype.inputKeypress = function(e) {
       var val;
-      if (e.keyCode !== 13) {
-        return;
-      }
-      if ((val = e.currentTarget.value) === '') {
+      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
       }
       this.list.items.create({
@@ -89,6 +89,16 @@
         selected: false
       });
       return e.currentTarget.value = '';
+    };
+
+    SelectList.prototype.itemDeleteClick = function(e) {
+      var id, item;
+      if (!(id = this.findByEl(e.currentTarget))) {
+        return;
+      }
+      item = this.list.items.findById(id);
+      $('input[type=text]')[0].value = item.get('text');
+      return this.list.items.remove(item);
     };
 
     return SelectList;

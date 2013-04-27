@@ -21,11 +21,16 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     items.create { text: 'Task 2', selected: false }
     items.create { text: 'Task 3', selected: false }
 
-    @bind 'ui:keypress:input[type=text]', @keypress
+    @bind 'ui:keypress:input[type=text]', @inputKeypress
+    @bind 'ui:click:div.delete', @itemDeleteClick
 
-  keypress: (e) =>
-    return unless e.keyCode is 13
-    return unless (val = e.currentTarget.value) isnt ''
-
+  inputKeypress: (e) =>
+    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
     @list.items.create { text: val, selected: false }
     e.currentTarget.value = ''
+
+  itemDeleteClick: (e) =>
+    return unless id = @findByEl e.currentTarget
+    item = @list.items.findById id
+    $('input[type=text]')[0].value = item.get('text')
+    @list.items.remove item
