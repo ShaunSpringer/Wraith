@@ -6,7 +6,7 @@ root = exports ? @
   Models: []
   Templates: []
   Views: []
-  UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown']
+  UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
   isFunction: (obj) ->
     Object.prototype.toString.call(obj) == '[object Function]'
   delay: (ms, func) ->
@@ -92,6 +92,8 @@ class @Wraith.Collection extends Wraith.Base
   remove: (id) =>
     for item, i in @members when item.get('_id') is id
       @parent.emit('remove:' + @as, item)
+      @members.splice(i, 1)
+      break
 
   all: => @members
   length: => @members.length
@@ -131,7 +133,7 @@ class @Wraith.Model extends Wraith.Base
       @set name, d
 
     for name, options of @constructor.collections
-      @[name] = new Wraith.Collection(@, options.as, options.klass)
+      @attributes[name] = new Wraith.Collection(@, options.as, options.klass)
 
   get: (key) =>
     @attributes?[key]
@@ -157,8 +159,7 @@ class @Wraith.View extends Wraith.Base
     @template = '<' + @element + ' wraith-view id="{{_id}}">' + @template + '</'+ @element + '>'
     @template_fn = Wraith.compile(@template)
 
-  render: (data) ->
-    @template_fn.render(data.toJSON())
+  render: (data) -> @template_fn.render(data.toJSON())
 
 
 class @Wraith.Controller extends Wraith.Base
@@ -179,7 +180,7 @@ class @Wraith.Controller extends Wraith.Base
 
   update: (model) =>
     $view = $('#' + model.get('_id'))
-    $view.html(@View.render(model))
+    $view.replaceWith(@View.render(model))
 
   append: ($item) =>
     @$el.append($item)
