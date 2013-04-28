@@ -90,7 +90,8 @@ class @Wraith.Collection extends Wraith.Base
     item
 
   remove: (id) =>
-    @members.filter (item) -> item.get('_id') isnt id
+    for item, i in @members when item.get('_id') is id
+      @parent.emit('remove:' + @as, item)
 
   all: => @members
   length: => @members.length
@@ -98,7 +99,6 @@ class @Wraith.Collection extends Wraith.Base
 
   findById: (id) =>
     for item, i in @members when item.get('_id') is id
-      @parent.emit('remove:' + @as, item)
       return item
 
 
@@ -151,9 +151,10 @@ class @Wraith.Model extends Wraith.Base
 
 
 class @Wraith.View extends Wraith.Base
-  constructor: (@template) ->
+  constructor: (@template, @element) ->
     throw Error('Template is required') unless @template
-    @template = '<div wraith-view id="{{_id}}">' + @template + '</div>'
+    @element ?= 'div'
+    @template = '<' + @element + ' wraith-view id="{{_id}}">' + @template + '</'+ @element + '>'
     @template_fn = Wraith.compile(@template)
 
   render: (data) ->
