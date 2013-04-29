@@ -82,7 +82,7 @@ class @Wraith.Bootloader
     throw Error('Template is invalid') unless $template
     id = $template.attr('id')
     template = $template.html()
-    Wraith.Views[id] = new Wraith.View(template)
+    Wraith.Views[id] = new Wraith.Template(template)
 
 
 #
@@ -224,7 +224,7 @@ class @Wraith.Model extends Wraith.Base
     @attributes
 
 
-class @Wraith.View extends Wraith.Base
+class @Wraith.Template extends Wraith.Base
   constructor: (@template, @element) ->
     throw Error('Template is required') unless @template
     @element ?= 'div'
@@ -240,10 +240,20 @@ class @Wraith.Controller extends Wraith.Base
     @init()
 
   init: ->
-    @View = Wraith.Views[@view]
-    return unless @events
-    for event, i in @view_events
-      @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
+    #@View = Wraith.Views[@view]
+    @$el.children('[data-template]').forEach (item) =>
+      $item = $(item)
+
+      t = $item.attr('data-template')
+      m = $item.attr('data-model')
+
+      template = Wraith.Templates[t]
+
+
+    if @events
+      for event, i in @view_events
+        @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
+
 
   add: (model) =>
     @append(@View.render(model))
@@ -264,7 +274,6 @@ class @Wraith.Controller extends Wraith.Base
   registerCollection: (key, collection) =>
     @list.bind 'add:items', @add
     @list.bind 'remove:items', @remove
-
 
   findViewOfElement: (el) =>
     return unless $parent = $(el).closest('[wraith-view]')
