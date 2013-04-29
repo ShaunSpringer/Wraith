@@ -43,22 +43,50 @@
 
   })(Wraith.Model);
 
+  Wraith.Controllers.TodoManager = (function(_super) {
+
+    __extends(TodoManager, _super);
+
+    function TodoManager() {
+      this.inputKeypress = __bind(this.inputKeypress, this);
+      return TodoManager.__super__.constructor.apply(this, arguments);
+    }
+
+    TodoManager.prototype.init = function() {
+      return TodoManager.__super__.init.call(this);
+    };
+
+    TodoManager.prototype.inputKeypress = function(e) {
+      var val;
+      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
+
+      }
+    };
+
+    return TodoManager;
+
+  })(Wraith.Controller);
+
   Wraith.Controllers.SelectList = (function(_super) {
 
     __extends(SelectList, _super);
 
     function SelectList() {
-      this.itemDeleteClick = __bind(this.itemDeleteClick, this);
+      this.itemToggle = __bind(this.itemToggle, this);
+
+      this.itemDelete = __bind(this.itemDelete, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
-    SelectList.prototype.view = 'ListItem';
-
-    SelectList.prototype.events = [
+    SelectList.prototype.view_events = [
       {
+        type: 'change',
+        selector: 'input[type=checkbox]',
+        cb: 'itemToggle'
+      }, {
         type: 'click',
         selector: 'div.delete',
-        cb: 'itemDeleteClick'
+        cb: 'itemDelete'
       }
     ];
 
@@ -66,8 +94,6 @@
       var items;
       SelectList.__super__.init.call(this);
       this.list = new Wraith.Models.List;
-      this.list.bind('add:items', this.add);
-      this.list.bind('remove:items', this.remove);
       items = this.list.get('items');
       items.create({
         text: 'Task 1',
@@ -81,41 +107,27 @@
       });
     };
 
-    SelectList.prototype.itemDeleteClick = function(e) {
+    SelectList.prototype.itemDelete = function(e) {
       var id, item, items;
-      if (!(id = this.findByEl(e.currentTarget))) {
+      if (!(id = this.findViewOfElement(e.currentTarget))) {
         return;
       }
       items = this.list.get('items');
       item = items.findById(id);
-      return items.remove(item);
+      return items.remove(id);
+    };
+
+    SelectList.prototype.itemToggle = function(e) {
+      var id, item, items;
+      if (!(id = this.findViewOfElement(e.currentTarget))) {
+        return;
+      }
+      items = this.list.get('items');
+      item = items.findById(id);
+      return item.set('selected', !item.get('selected'));
     };
 
     return SelectList;
-
-  })(Wraith.Controller);
-
-  Wraith.Controllers.TaskManager = (function(_super) {
-
-    __extends(TaskManager, _super);
-
-    function TaskManager() {
-      this.inputKeypress = __bind(this.inputKeypress, this);
-      return TaskManager.__super__.constructor.apply(this, arguments);
-    }
-
-    TaskManager.prototype.init = function() {
-      return TaskManager.__super__.init.call(this);
-    };
-
-    TaskManager.prototype.inputKeypress = function(e) {
-      var val;
-      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
-
-      }
-    };
-
-    return TaskManager;
 
   })(Wraith.Controller);
 

@@ -1,5 +1,11 @@
 root = exports ? @
 
+
+#
+# Global Wraith Object
+# Used to name space
+#
+# @include Wraith
 @Wraith =
   Controllers: []
   Collections: []
@@ -7,29 +13,71 @@ root = exports ? @
   Templates: []
   Views: []
   UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
-  isFunction: (obj) ->
-    Object.prototype.toString.call(obj) == '[object Function]'
-  delay: (ms, func) ->
-    setTimeout func, ms
-  compile: (template) ->
-    Hogan.compile(template)
+
+  #
+  # Checks to see if a given object
+  # is a funciton.
+  # @param [Object] obj The object to test
+  #
+  isFunction: (obj) -> Object.prototype.toString.call(obj) == '[object Function]'
+
+  #
+  # Delays the execution of a function for the
+  # given time in ms
+  # @param [Number] ms The time to delay in ms
+  # @param [Function] func The function to execute after the given time
+  #
+  delay: (ms, func) -> setTimeout func, ms
+
+  #
+  # Compiles a template with Hogan.
+  # Note: Override this if you want to use a different
+  # template system.
+  # @param [String] template The template to compile
+  #
+  compile: (template) -> Hogan.compile(template)
+
+  #
+  # Generates a UID at the desired length
+  # @param [Number] length Desired length of the UID
+  #
   uniqueId: (length = 16) ->
     id = ""
     id += Math.random().toString(36).substr(2) while id.length < length
     id.substr 0, length
 
-
+#
+# Our bootloader object. This should be
+# instantiated after all JS is loaded on the page
+#
+# @example
+#   bootloader = new Wraith.Bootloader
+#
+# @include Wraith.Bootloader
+#
 class @Wraith.Bootloader
+  #
+  # Constructor
+  #
   constructor: ->
     $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
     $('[data-controller]').forEach (item) => @loadController $(item).data('controller'), $(item)
 
+  #
+  # Loads a given controller by id and HTML element
+  # @param [String] id The controllers id
+  # @param [Object] $item The HTML element to bind to
+  #
   loadController: (id, $item) ->
     throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
     $parent = $item.parent('[data-controller]')
-#    if $parent.length
-    controller = new Controller($item)
+    $parent = undefined if $parent.length is 0
+    controller = new Controller($item, $parent)
 
+  #
+  # Loads a given template based on the HTML element
+  # @param [Object] $template The HTML element to grab the template from
+  #
   loadTemplate: ($template) ->
     throw Error('Template is invalid') unless $template
     id = $template.attr('id')
@@ -37,16 +85,37 @@ class @Wraith.Bootloader
     Wraith.Views[id] = new Wraith.View(template)
 
 
+#
+# The base class for all Wraith objects.
+# Includes binding to events, and emitting events.
+#
+# @include Wraith.Base
+#
 class @Wraith.Base
+  #
+  # Constructor
+  #
   constructor: ->
     @listeners = {}
 
+  #
+  # Binds the given function (cb) to the given
+  # event (ev)
+  # @param [String] ev Event to listen for.
+  # @param [Function] cb Callback to be executed on event.
+  #
   bind: (ev, cb) =>
     throw Error('Callback is not a function') unless Wraith.isFunction(cb)
     list = @listeners[ev] ?= []
     list.push(cb)
     @
 
+  #
+  # Unbinds the given function (cb) from the given
+  # event (ev)
+  # @param [String] ev Event to unbind.
+  # @param [Function] cb Callback to unbind.
+  #
   unbind: (ev, cb) =>
     list = @listeners?[ev]
     for callback, i in list when callback is cb
@@ -91,8 +160,9 @@ class @Wraith.Collection extends Wraith.Base
     @parent.emit('add:' + @as, item)
     item
 
-  remove: (id) =>
-    for item, i in @members when item.get('_id') is id
+  remove: (obj) =>
+    for item, i in @members when item.get('_id') is obj
+      @parent.emit('remove', item)
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
@@ -165,19 +235,20 @@ class @Wraith.View extends Wraith.Base
 
 
 class @Wraith.Controller extends Wraith.Base
-  constructor: (@$el) ->
+  constructor: (@$el, @$parent) ->
     super()
     @init()
 
   init: ->
     @View = Wraith.Views[@view]
     return unless @events
-    for event, i in @events
+    for event, i in @view_events
       @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
 
   add: (model) =>
     @append(@View.render(model))
     model.bind 'change', => @update(model)
+    model.bind 'remove', => @remove(model)
 
   remove: (model) =>
     $view = $('#' + model.get('_id'))
@@ -190,7 +261,12 @@ class @Wraith.Controller extends Wraith.Base
   append: ($item) =>
     @$el.append($item)
 
-  findByEl: (el) =>
+  registerCollection: (key, collection) =>
+    @list.bind 'add:items', @add
+    @list.bind 'remove:items', @remove
+
+
+  findViewOfElement: (el) =>
     return unless $parent = $(el).closest('[wraith-view]')
     return $parent.attr('id')
 

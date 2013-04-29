@@ -21,10 +21,10 @@ task 'build', 'Continually build', ->
     coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
     coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
-task 'docs', 'Generate annotated source code with Docco', ->
+task 'docs', 'Generate annotated source code with Codo', ->
   fs.readdir 'src', (err, contents) ->
     files = ("src/#{file}" for file in contents when /\.coffee$/.test file)
-    docco = spawn 'docco', files
+    docco = spawn 'codo', files
     docco.stdout.on 'data', (data) -> print data.toString()
     docco.stderr.on 'data', (data) -> print data.toString()
     docco.on 'exit', (status) -> callback?() if status is 0
