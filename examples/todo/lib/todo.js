@@ -49,12 +49,18 @@
 
     function SelectList() {
       this.itemDeleteClick = __bind(this.itemDeleteClick, this);
-
-      this.inputKeypress = __bind(this.inputKeypress, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
     SelectList.prototype.view = 'ListItem';
+
+    SelectList.prototype.events = [
+      {
+        type: 'click',
+        selector: 'div.delete',
+        cb: 'itemDeleteClick'
+      }
+    ];
 
     SelectList.prototype.init = function() {
       var items;
@@ -62,46 +68,54 @@
       this.list = new Wraith.Models.List;
       this.list.bind('add:items', this.add);
       this.list.bind('remove:items', this.remove);
-      items = this.list.items;
+      items = this.list.get('items');
       items.create({
         text: 'Task 1',
         selected: true
       });
       items.create({
-        text: 'Task 2',
-        selected: false
+        text: 'Task 2'
       });
-      items.create({
-        text: 'Task 3',
-        selected: false
+      return items.create({
+        text: 'Task 3'
       });
-      this.bind('ui:keypress:input[type=text]', this.inputKeypress);
-      return this.bind('ui:click:div.delete', this.itemDeleteClick);
-    };
-
-    SelectList.prototype.inputKeypress = function(e) {
-      var val;
-      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
-        return;
-      }
-      this.list.items.create({
-        text: val,
-        selected: false
-      });
-      return e.currentTarget.value = '';
     };
 
     SelectList.prototype.itemDeleteClick = function(e) {
-      var id, item;
+      var id, item, items;
       if (!(id = this.findByEl(e.currentTarget))) {
         return;
       }
-      item = this.list.items.findById(id);
-      $('input[type=text]')[0].value = item.get('text');
-      return this.list.items.remove(item);
+      items = this.list.get('items');
+      item = items.findById(id);
+      return items.remove(item);
     };
 
     return SelectList;
+
+  })(Wraith.Controller);
+
+  Wraith.Controllers.TaskManager = (function(_super) {
+
+    __extends(TaskManager, _super);
+
+    function TaskManager() {
+      this.inputKeypress = __bind(this.inputKeypress, this);
+      return TaskManager.__super__.constructor.apply(this, arguments);
+    }
+
+    TaskManager.prototype.init = function() {
+      return TaskManager.__super__.init.call(this);
+    };
+
+    TaskManager.prototype.inputKeypress = function(e) {
+      var val;
+      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
+
+      }
+    };
+
+    return TaskManager;
 
   })(Wraith.Controller);
 

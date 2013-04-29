@@ -26,6 +26,8 @@ class @Wraith.Bootloader
 
   loadController: (id, $item) ->
     throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
+    $parent = $item.parent('[data-controller]')
+#    if $parent.length
     controller = new Controller($item)
 
   loadTemplate: ($template) ->
@@ -169,6 +171,9 @@ class @Wraith.Controller extends Wraith.Base
 
   init: ->
     @View = Wraith.Views[@view]
+    return unless @events
+    for event, i in @events
+      @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
 
   add: (model) =>
     @append(@View.render(model))
