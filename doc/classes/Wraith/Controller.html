@@ -146,8 +146,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#add-instance'>
-        - (void) <strong>add</strong>(model)
+      <a href='#registerModel-instance'>
+        - (void) <strong>registerModel</strong>(name, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -157,8 +157,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#remove-instance'>
-        - (void) <strong>remove</strong>(model)
+      <a href='#createView-instance'>
+        - (void) <strong>createView</strong>(model, map)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -168,8 +168,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#update-instance'>
-        - (void) <strong>update</strong>(model)
+      <a href='#updateView-instance'>
+        - (void) <strong>updateView</strong>(model, map)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -179,8 +179,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#append-instance'>
-        - (void) <strong>append</strong>($item)
+      <a href='#removeView-instance'>
+        - (void) <strong>removeView</strong>(model, map)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -190,8 +190,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#registerCollection-instance'>
-        - (void) <strong>registerCollection</strong>(key, collection)
+      <a href='#findViewByElement-instance'>
+        - (void) <strong>findViewByElement</strong>(el)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -201,8 +201,8 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#findViewOfElement-instance'>
-        - (void) <strong>findViewOfElement</strong>(el)
+      <a href='#findIdByView-instance'>
+        - (void) <strong>findIdByView</strong>(el)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -257,48 +257,48 @@
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='add-instance'>
-      - (void) <strong>add</strong>(model)
+    <p class='signature' id='registerModel-instance'>
+      - (void) <strong>registerModel</strong>(name, model)
       (bound)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='remove-instance'>
-      - (void) <strong>remove</strong>(model)
+    <p class='signature' id='createView-instance'>
+      - (void) <strong>createView</strong>(model, map)
       (bound)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='update-instance'>
-      - (void) <strong>update</strong>(model)
+    <p class='signature' id='updateView-instance'>
+      - (void) <strong>updateView</strong>(model, map)
       (bound)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='append-instance'>
-      - (void) <strong>append</strong>($item)
+    <p class='signature' id='removeView-instance'>
+      - (void) <strong>removeView</strong>(model, map)
       (bound)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='registerCollection-instance'>
-      - (void) <strong>registerCollection</strong>(key, collection)
+    <p class='signature' id='findViewByElement-instance'>
+      - (void) <strong>findViewByElement</strong>(el)
       (bound)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='findViewOfElement-instance'>
-      - (void) <strong>findViewOfElement</strong>(el)
+    <p class='signature' id='findIdByView-instance'>
+      - (void) <strong>findIdByView</strong>(el)
       (bound)
     </p>
     <div class='tags'>
@@ -316,7 +316,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 29 2013 00:34:39 GMT-0400 (EDT)
+  Mon Apr 29 2013 23:57:15 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

@@ -52,9 +52,13 @@
       return TodoManager.__super__.constructor.apply(this, arguments);
     }
 
-    TodoManager.prototype.init = function() {
-      return TodoManager.__super__.init.call(this);
-    };
+    TodoManager.prototype.view_events = [
+      {
+        type: 'keypress',
+        selector: 'input[type=text]',
+        cb: 'inputKeypress'
+      }
+    ];
 
     TodoManager.prototype.inputKeypress = function(e) {
       var val;
@@ -109,21 +113,20 @@
     };
 
     SelectList.prototype.itemDelete = function(e) {
-      var id, item, items;
-      if (!(id = this.findViewOfElement(e.currentTarget))) {
-        return;
-      }
-      items = this.list.get('items');
-      item = items.findById(id);
+      var $view, id, items, list;
+      $view = this.findViewByElement(e.currentTarget);
+      id = this.findIdByView($view);
+      list = this.models['list'];
+      items = list.get('items');
       return items.remove(id);
     };
 
     SelectList.prototype.itemToggle = function(e) {
-      var id, item, items;
-      if (!(id = this.findViewOfElement(e.currentTarget))) {
-        return;
-      }
-      items = this.list.get('items');
+      var $view, id, item, items, list;
+      $view = this.findViewByElement(e.currentTarget);
+      id = this.findIdByView($view);
+      list = this.models['list'];
+      items = list.get('items');
       item = items.findById(id);
       return item.set('selected', !item.get('selected'));
     };

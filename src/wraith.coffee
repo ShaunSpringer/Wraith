@@ -160,9 +160,8 @@ class @Wraith.Collection extends Wraith.Base
     @parent.emit('add:' + @as, item)
     item
 
-  remove: (obj) =>
-    for item, i in @members when item.get('_id') is obj
-      @parent.emit('remove', item)
+  remove: (id) =>
+    for item, i in @members when item.get('_id') is id
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
@@ -223,16 +222,44 @@ class @Wraith.Model extends Wraith.Base
   toJSON: =>
     @attributes
 
-
+#
+# The template handles rendering logic. It calles
+# Wraith.compile which depends on Hogan, but if you
+# wish to change that just override Wraith.compile
+# and use any renderer of your choice.
+#
 class @Wraith.Template extends Wraith.Base
+  #
+  # Constructor
+  # @param [String] template The template string to register
+  #
   constructor: (@template) ->
     throw Error('Template is required') unless @template
-    @template = @template
+    @template = '<div wraith-view data-id="{{_id}}">' + @template + '</div>'
     @template_fn = Wraith.compile(@template)
 
+  #
+  # Renders the given data. Expects data to be an object
+  # that has a .toJSON method.
+  # @param [Object] data The data object to be rendered.
+  #
   render: (data) -> @template_fn.render(data.toJSON())
 
-
+#
+# The proverbial 'controller' in the MVC pattern.
+# The Controller handles the logic your applications or
+# components may have. This controller handles automatical registration
+# and mapping of models to views.
+#
+# @example
+#   Example markup in HTML. This will create a SelectList controller
+#   and then create a view using the template with id "ListItem"
+#   mapping to the model list.items (belonging to SelectList)
+#
+#   <ul data-controller="SelectList">
+#     <div data-template="ListItem" data-map="list.items"></div>
+#   </ul>
+#
 class @Wraith.Controller extends Wraith.Base
   constructor: (@$el, @$parent) ->
     super()
@@ -250,7 +277,7 @@ class @Wraith.Controller extends Wraith.Base
       if template and model_map
         @model_maps.push { model_map, template, $view }
 
-    if @events
+    if @view_events
       for event, i in @view_events
         @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
 
@@ -265,40 +292,33 @@ class @Wraith.Controller extends Wraith.Base
     # Each model map needs to be registered if applicable
     for map, i in @model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
       mapping = map.model_map[l+1..]
-      model.bind 'add:' + mapping, (model) => @add(model, map)
-      model.bind 'remove:' + mapping, (model) => @remove(model, map)
+      model.bind 'add:' + mapping, (model) => @createView(model, map)
+      model.bind 'remove:' + mapping, (model) => @removeView(model, map)
 
-  add: (model, map) =>
+  createView: (model, map) =>
     return unless $view = map.$view
     return unless template = map.template
     return unless Template = Wraith.Templates[template]
 
-    console.log model
     $view.append(Template.render(model))
 
-    model.bind 'change', => @update(model, map)
-    model.bind 'remove', => @remove(model, map)
+    model.bind 'change', => @updateView(model, map)
 
-  remove: (model, map) =>
-    $view = map.$view
+  updateView: (model, map) =>
+    return unless $view = map.$view
+    return unless template = map.template
+    return unless Template = Wraith.Templates[template]
+
+    $view = $('#' + model.get('_id'))
+    $view.replaceWith(Template.render(model))
+
+  removeView: (model, map) =>
+    $view = $('[data-id=' + model.get('_id') + ']')
+    console.log $view
     $view.remove()
 
-  ###
-  update: (model) =>
-    $view = $('#' + model.get('_id'))
-    $view.replaceWith(@View.render(model))
-
-  append: ($item) =>
-    @$el.append($item)
-
-  registerCollection: (key, collection) =>
-    @list.bind 'add:items', @add
-    @list.bind 'remove:items', @remove
-  ###
-
-  findViewOfElement: (el) =>
-    return unless $parent = $(el).closest('[wraith-view]')
-    return $parent.attr('data-id')
+  findViewByElement: (el) => return $(el).closest('[wraith-view]')
+  findIdByView: (el) => return $(el).attr('data-id')
 
   bind: (ev, cb) =>
     keys = ev.split ':'
@@ -309,3 +329,12 @@ class @Wraith.Controller extends Wraith.Base
       @$el.on uievent, selector, cb
     else
       super(ev, cb)
+
+  ###
+  append: ($item) =>
+    @$el.append($item)
+
+  registerCollection: (key, collection) =>
+    @list.bind 'add:items', @add
+    @list.bind 'remove:items', @remove
+  ###

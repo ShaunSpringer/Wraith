@@ -28,9 +28,9 @@ class Wraith.Models.List extends Wraith.Model
 # @extend Wraith.Controller
 #
 class Wraith.Controllers.TodoManager extends Wraith.Controller
-  init: ->
-    super()
-    #@bind 'ui:keypress:input[type=text]', @inputKeypress
+  view_events: [
+    { type: 'keypress', selector: 'input[type=text]', cb: 'inputKeypress' }
+  ]
 
   inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
@@ -55,13 +55,16 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     items.create { text: 'Task 3' }
 
   itemDelete: (e) =>
-    return unless id = @findViewOfElement e.currentTarget
-    items = @list.get('items')
-    item = items.findById id
+    $view = @findViewByElement e.currentTarget
+    id = @findIdByView $view
+    list = @models['list']
+    items = list.get('items')
     items.remove id
 
   itemToggle: (e) =>
-    return unless id = @findViewOfElement e.currentTarget
-    items = @list.get('items')
+    $view = @findViewByElement e.currentTarget
+    id = @findIdByView $view
+    list = @models['list']
+    items = list.get('items')
     item = items.findById id
     item.set('selected', !item.get('selected'))
