@@ -17,14 +17,16 @@
             </ul>
         </div>
         <script type="text/template" id="ListItem">
-            <fieldset>
-                <div class="delete">⊗</div>
-                <label>
-                    <input type="checkbox" {{#selected}}checked{{/selected}} />
-                    <div class="name">{{text}}</div>
-                    <div class="select">✓</div>
-                </label>
-            </fieldset>
+            <li>
+                <fieldset>
+                    <div class="delete">⊗</div>
+                    <label>
+                        <input type="checkbox" {{#selected}}checked{{/selected}} />
+                        <div class="name">{{text}}</div>
+                        <div class="select">✓</div>
+                    </label>
+                </fieldset>
+            </li>
         </script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>

@@ -91,10 +91,11 @@
     ];
 
     SelectList.prototype.init = function() {
-      var items;
+      var items, list;
       SelectList.__super__.init.call(this);
-      this.list = new Wraith.Models.List;
-      items = this.list.get('items');
+      this.registerModel('list', new Wraith.Models.List);
+      list = this.models['list'];
+      items = list.get('items');
       items.create({
         text: 'Task 1',
         selected: true

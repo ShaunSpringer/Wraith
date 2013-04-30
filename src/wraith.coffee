@@ -82,7 +82,7 @@ class @Wraith.Bootloader
     throw Error('Template is invalid') unless $template
     id = $template.attr('id')
     template = $template.html()
-    Wraith.Views[id] = new Wraith.Template(template)
+    Wraith.Templates[id] = new Wraith.Template(template)
 
 
 #
@@ -225,10 +225,9 @@ class @Wraith.Model extends Wraith.Base
 
 
 class @Wraith.Template extends Wraith.Base
-  constructor: (@template, @element) ->
+  constructor: (@template) ->
     throw Error('Template is required') unless @template
-    @element ?= 'div'
-    @template = '<' + @element + ' wraith-view id="{{_id}}">' + @template + '</'+ @element + '>'
+    @template = @template
     @template_fn = Wraith.compile(@template)
 
   render: (data) -> @template_fn.render(data.toJSON())
@@ -237,33 +236,54 @@ class @Wraith.Template extends Wraith.Base
 class @Wraith.Controller extends Wraith.Base
   constructor: (@$el, @$parent) ->
     super()
+    @model_maps = []
+    @models = []
     @init()
 
   init: ->
-    #@View = Wraith.Views[@view]
+    # Find all child views and register them
     @$el.children('[data-template]').forEach (item) =>
-      $item = $(item)
+      $view = $(item)
+      template = $view.attr('data-template')
+      model_map = $view.attr('data-map')
 
-      t = $item.attr('data-template')
-      m = $item.attr('data-model')
-
-      template = Wraith.Templates[t]
-
+      if template and model_map
+        @model_maps.push { model_map, template, $view }
 
     if @events
       for event, i in @view_events
         @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
 
+  registerModel: (name, model) =>
+    throw Error('Model name is already in use') if @models[name]
+    @models[name] = model
 
-  add: (model) =>
-    @append(@View.render(model))
-    model.bind 'change', => @update(model)
-    model.bind 'remove', => @remove(model)
+    # Use the length to know how much to slice off the model string to compare
+    l = name.length
+    nl = name.toLowerCase()
 
-  remove: (model) =>
-    $view = $('#' + model.get('_id'))
+    # Each model map needs to be registered if applicable
+    for map, i in @model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
+      mapping = map.model_map[l+1..]
+      model.bind 'add:' + mapping, (model) => @add(model, map)
+      model.bind 'remove:' + mapping, (model) => @remove(model, map)
+
+  add: (model, map) =>
+    return unless $view = map.$view
+    return unless template = map.template
+    return unless Template = Wraith.Templates[template]
+
+    console.log model
+    $view.append(Template.render(model))
+
+    model.bind 'change', => @update(model, map)
+    model.bind 'remove', => @remove(model, map)
+
+  remove: (model, map) =>
+    $view = map.$view
     $view.remove()
 
+  ###
   update: (model) =>
     $view = $('#' + model.get('_id'))
     $view.replaceWith(@View.render(model))
@@ -274,16 +294,18 @@ class @Wraith.Controller extends Wraith.Base
   registerCollection: (key, collection) =>
     @list.bind 'add:items', @add
     @list.bind 'remove:items', @remove
+  ###
 
   findViewOfElement: (el) =>
     return unless $parent = $(el).closest('[wraith-view]')
-    return $parent.attr('id')
+    return $parent.attr('data-id')
 
   bind: (ev, cb) =>
-    super(ev, cb)
     keys = ev.split ':'
     # Format is ui:event:selector
     if keys[0] is 'ui'
       throw Error('Invalid UI event given') unless (uievent = keys[1]) and uievent in Wraith.UIEvents
       throw Error('Invalid selector given') unless (selector = keys[2])
       @$el.on uievent, selector, cb
+    else
+      super(ev, cb)

@@ -46,9 +46,10 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
 
   init: ->
     super()
-    @list = new Wraith.Models.List
+    @registerModel 'list', new Wraith.Models.List
 
-    items = @list.get('items')
+    list = @models['list']
+    items = list.get('items')
     items.create { text: 'Task 1', selected: true }
     items.create { text: 'Task 2' }
     items.create { text: 'Task 3' }
