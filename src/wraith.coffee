@@ -251,8 +251,10 @@ class @Wraith.Template extends Wraith.Base
 # components may have. This controller handles automatical registration
 # and mapping of models to views.
 #
-# @example
-#   Example markup in HTML. This will create a SelectList controller
+# @include Wraith.Controller
+# @extends Wraith.Base
+# @example Example markup in HTML.
+#   This will create a SelectList controller
 #   and then create a view using the template with id "ListItem"
 #   mapping to the model list.items (belonging to SelectList)
 #
