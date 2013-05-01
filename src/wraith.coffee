@@ -287,9 +287,24 @@ class @Wraith.View extends Wraith.Base
       if template and model_map
         @model_maps.push { model_map, template, $view }
 
-  render: ->
-    debugger
+  createView: (model, map) =>
+    return unless $view = map.$view
+    return unless template = map.template
+    return unless Template = Wraith.Templates[template]
 
+    $view.append(Template.render(model))
+    model.bind 'change', => @updateView(model, map)
+
+  updateView: (model, map) =>
+    return unless $view = map.$view
+    return unless template = map.template
+    return unless Template = Wraith.Templates[template]
+    $view = $('#' + model.get('_id'))
+    $view.replaceWith(Template.render(model))
+
+  removeView: (model, map) =>
+    $view = $('[data-id=' + model.get('_id') + ']')
+    $view.remove()
 
 #
 # The proverbial 'controller' in the MVC pattern.
@@ -341,30 +356,9 @@ class @Wraith.Controller extends Wraith.Base
       model_maps = view.model_maps
       for map, j in model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
         mapping = map.model_map[l+1..]
-        model.bind 'add:' + mapping, (model) => @createView(model, map)
-        model.bind 'remove:' + mapping, (model) => @removeView(model, map)
+        model.bind 'add:' + mapping, (model) => view.createView(model, map)
+        model.bind 'remove:' + mapping, (model) => view.removeView(model, map)
 
-  createView: (model, map) =>
-    return unless $view = map.$view
-    return unless template = map.template
-    return unless Template = Wraith.Templates[template]
-
-    $view.append(Template.render(model))
-
-    model.bind 'change', => @updateView(model, map)
-
-  updateView: (model, map) =>
-    return unless $view = map.$view
-    return unless template = map.template
-    return unless Template = Wraith.Templates[template]
-
-    $view = $('#' + model.get('_id'))
-    $view.replaceWith(Template.render(model))
-
-  removeView: (model, map) =>
-    $view = $('[data-id=' + model.get('_id') + ']')
-    console.log $view
-    $view.remove()
 
   findViewByElement: (el) => return $(el).closest('[wraith-view]')
   findIdByView: (el) => return $(el).data('id')

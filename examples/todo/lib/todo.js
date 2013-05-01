@@ -48,6 +48,10 @@
     __extends(TodoManager, _super);
 
     function TodoManager() {
+      this.itemToggle = __bind(this.itemToggle, this);
+
+      this.itemDelete = __bind(this.itemDelete, this);
+
       this.inputKeypress = __bind(this.inputKeypress, this);
       return TodoManager.__super__.constructor.apply(this, arguments);
     }
@@ -57,6 +61,14 @@
         type: 'keypress',
         selector: 'input[type=text]',
         cb: 'inputKeypress'
+      }, {
+        type: 'change',
+        selector: 'input[type=checkbox]',
+        cb: 'itemToggle'
+      }, {
+        type: 'click',
+        selector: 'div.delete',
+        cb: 'itemDelete'
       }
     ];
 
@@ -79,10 +91,35 @@
     };
 
     TodoManager.prototype.inputKeypress = function(e) {
-      var val;
+      var list, val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
-
+        return;
       }
+      list = this.models['list'];
+      list.get('items').create({
+        text: val,
+        selected: false
+      });
+      return e.currentTarget.value = '';
+    };
+
+    TodoManager.prototype.itemDelete = function(e) {
+      var $view, id, items, list;
+      $view = this.findViewByElement(e.currentTarget);
+      id = this.findIdByView($view);
+      list = this.models['list'];
+      items = list.get('items');
+      return items.remove(id);
+    };
+
+    TodoManager.prototype.itemToggle = function(e) {
+      var $view, id, item, items, list;
+      $view = this.findViewByElement(e.currentTarget);
+      id = this.findIdByView($view);
+      list = this.models['list'];
+      items = list.get('items');
+      item = items.findById(id);
+      return item.set('selected', !item.get('selected'));
     };
 
     return TodoManager;
@@ -94,45 +131,11 @@
     __extends(SelectList, _super);
 
     function SelectList() {
-      this.itemToggle = __bind(this.itemToggle, this);
-
-      this.itemDelete = __bind(this.itemDelete, this);
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
-    SelectList.prototype.view_events = [
-      {
-        type: 'change',
-        selector: 'input[type=checkbox]',
-        cb: 'itemToggle'
-      }, {
-        type: 'click',
-        selector: 'div.delete',
-        cb: 'itemDelete'
-      }
-    ];
-
     SelectList.prototype.init = function() {
       return SelectList.__super__.init.call(this);
-    };
-
-    SelectList.prototype.itemDelete = function(e) {
-      var $view, id, items, list;
-      $view = this.findViewByElement(e.currentTarget);
-      id = this.findIdByView($view);
-      list = this.models['list'];
-      items = list.get('items');
-      return items.remove(id);
-    };
-
-    SelectList.prototype.itemToggle = function(e) {
-      var $view, id, item, items, list;
-      $view = this.findViewByElement(e.currentTarget);
-      id = this.findIdByView($view);
-      list = this.models['list'];
-      items = list.get('items');
-      item = items.findById(id);
-      return item.set('selected', !item.get('selected'));
     };
 
     return SelectList;

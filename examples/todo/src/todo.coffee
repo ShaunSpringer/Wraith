@@ -30,13 +30,14 @@ class Wraith.Models.List extends Wraith.Model
 class Wraith.Controllers.TodoManager extends Wraith.Controller
   view_events: [
     { type: 'keypress', selector: 'input[type=text]', cb: 'inputKeypress' }
+    { type: 'change', selector: 'input[type=checkbox]', cb: 'itemToggle' }
+    { type: 'click', selector: 'div.delete', cb: 'itemDelete' }
   ]
 
   init: ->
     super()
 
     @registerModel 'list', new Wraith.Models.List
-
     list = @models['list']
     items = list.get('items')
     items.create { text: 'Task 1', selected: true }
@@ -45,18 +46,9 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   inputKeypress: (e) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    #@list.items.create { text: val, selected: false }
-    #e.currentTarget.value = ''
-
-
-class Wraith.Views.SelectList extends Wraith.View
-  view_events: [
-    { type: 'change', selector: 'input[type=checkbox]', cb: 'itemToggle' }
-    { type: 'click', selector: 'div.delete', cb: 'itemDelete' }
-  ]
-
-  init: ->
-    super()
+    list = @models['list']
+    list.get('items').create { text: val, selected: false }
+    e.currentTarget.value = ''
 
   itemDelete: (e) =>
     $view = @findViewByElement e.currentTarget
@@ -72,3 +64,8 @@ class Wraith.Views.SelectList extends Wraith.View
     items = list.get('items')
     item = items.findById id
     item.set('selected', !item.get('selected'))
+
+
+class Wraith.Views.SelectList extends Wraith.View
+  init: ->
+    super()
