@@ -8,6 +8,7 @@ root = exports ? @
 # @include Wraith
 @Wraith =
   Controllers: []
+  controllers: {}
   Collections: []
   Models: []
   Templates: []
@@ -62,6 +63,11 @@ class @Wraith.Bootloader
   constructor: ->
     $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
     $('[data-controller]').forEach (item) => @loadController $(item).data('controller'), $(item)
+    $('[data-view]').forEach (item) => @loadView $(item).data('view'), $(item)
+
+    # Activate our controllers via .init
+    for id, controller of Wraith.controllers
+      controller.init()
 
   #
   # Loads a given controller by id and HTML element
@@ -70,9 +76,8 @@ class @Wraith.Bootloader
   #
   loadController: (id, $item) ->
     throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
-    $parent = $item.parent('[data-controller]')
-    $parent = undefined if $parent.length is 0
-    controller = new Controller($item, $parent)
+    controller = new Controller($item)
+    Wraith.controllers[controller.id] = controller
 
   #
   # Loads a given template based on the HTML element
@@ -84,6 +89,21 @@ class @Wraith.Bootloader
     template = $template.html()
     Wraith.Templates[id] = new Wraith.Template(template)
 
+  #
+  # Loads a given template based on the HTML element
+  # @param [Object] $template The HTML element to grab the template from
+  #
+  loadView: (id, $view) ->
+    throw Error('View is invalid') unless View = Wraith.Views[id]
+
+    $controller = $view.parent('[data-controller]')
+    throw Error('Views must be defined inside of a controller.') unless $controller.length > 0
+
+    id = $controller.data('id')
+    controller = Wraith.controllers[id]
+    throw Error('Controller instance not found.') unless controller
+
+    controller.registerView(new View($view))
 
 #
 # The base class for all Wraith objects.
@@ -246,6 +266,32 @@ class @Wraith.Template extends Wraith.Base
   render: (data) -> @template_fn.render(data.toJSON())
 
 #
+# Blah
+#
+class @Wraith.View extends Wraith.Base
+  #
+  # Constructor
+  #
+  constructor: (@$el) ->
+    super()
+    @model_maps = []
+    @init()
+
+  init: ->
+    # Find all child views and register them
+    @$el.children('[data-template]').forEach (item) =>
+      $view = $(item)
+      template = $view.data('template')
+      model_map = $view.data('map')
+
+      if template and model_map
+        @model_maps.push { model_map, template, $view }
+
+  render: ->
+    debugger
+
+
+#
 # The proverbial 'controller' in the MVC pattern.
 # The Controller handles the logic your applications or
 # components may have. This controller handles automatical registration
@@ -258,30 +304,28 @@ class @Wraith.Template extends Wraith.Base
 #   and then create a view using the template with id "ListItem"
 #   mapping to the model list.items (belonging to SelectList)
 #
-#   <ul data-controller="SelectList">
+#   <ul data-view="SelectList">
 #     <div data-template="ListItem" data-map="list.items"></div>
 #   </ul>
 #
 class @Wraith.Controller extends Wraith.Base
-  constructor: (@$el, @$parent) ->
+  #
+  # Constructor
+  #
+  constructor: (@$el) ->
     super()
-    @model_maps = []
+    @id = Wraith.uniqueId()
+    @$el.data 'id', @id
     @models = []
-    @init()
+    @views = []
 
   init: ->
-    # Find all child views and register them
-    @$el.children('[data-template]').forEach (item) =>
-      $view = $(item)
-      template = $view.attr('data-template')
-      model_map = $view.attr('data-map')
-
-      if template and model_map
-        @model_maps.push { model_map, template, $view }
-
     if @view_events
       for event, i in @view_events
         @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
+
+  registerView: (view) =>
+    @views.push view
 
   registerModel: (name, model) =>
     throw Error('Model name is already in use') if @models[name]
@@ -291,11 +335,14 @@ class @Wraith.Controller extends Wraith.Base
     l = name.length
     nl = name.toLowerCase()
 
-    # Each model map needs to be registered if applicable
-    for map, i in @model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
-      mapping = map.model_map[l+1..]
-      model.bind 'add:' + mapping, (model) => @createView(model, map)
-      model.bind 'remove:' + mapping, (model) => @removeView(model, map)
+    # Iterate over all our views, and see if the
+    for view, i in @views
+      # Each model map needs to be registered if applicable
+      model_maps = view.model_maps
+      for map, j in model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
+        mapping = map.model_map[l+1..]
+        model.bind 'add:' + mapping, (model) => @createView(model, map)
+        model.bind 'remove:' + mapping, (model) => @removeView(model, map)
 
   createView: (model, map) =>
     return unless $view = map.$view
@@ -320,7 +367,7 @@ class @Wraith.Controller extends Wraith.Base
     $view.remove()
 
   findViewByElement: (el) => return $(el).closest('[wraith-view]')
-  findIdByView: (el) => return $(el).attr('data-id')
+  findIdByView: (el) => return $(el).data('id')
 
   bind: (ev, cb) =>
     keys = ev.split ':'

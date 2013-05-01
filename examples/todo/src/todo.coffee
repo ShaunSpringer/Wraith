@@ -32,20 +32,9 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     { type: 'keypress', selector: 'input[type=text]', cb: 'inputKeypress' }
   ]
 
-  inputKeypress: (e) =>
-    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    #@list.items.create { text: val, selected: false }
-    #e.currentTarget.value = ''
-
-
-class Wraith.Controllers.SelectList extends Wraith.Controller
-  view_events: [
-    { type: 'change', selector: 'input[type=checkbox]', cb: 'itemToggle' }
-    { type: 'click', selector: 'div.delete', cb: 'itemDelete' }
-  ]
-
   init: ->
     super()
+
     @registerModel 'list', new Wraith.Models.List
 
     list = @models['list']
@@ -53,6 +42,21 @@ class Wraith.Controllers.SelectList extends Wraith.Controller
     items.create { text: 'Task 1', selected: true }
     items.create { text: 'Task 2' }
     items.create { text: 'Task 3' }
+
+  inputKeypress: (e) =>
+    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
+    #@list.items.create { text: val, selected: false }
+    #e.currentTarget.value = ''
+
+
+class Wraith.Views.SelectList extends Wraith.View
+  view_events: [
+    { type: 'change', selector: 'input[type=checkbox]', cb: 'itemToggle' }
+    { type: 'click', selector: 'div.delete', cb: 'itemDelete' }
+  ]
+
+  init: ->
+    super()
 
   itemDelete: (e) =>
     $view = @findViewByElement e.currentTarget

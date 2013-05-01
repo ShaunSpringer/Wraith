@@ -60,6 +60,24 @@
       }
     ];
 
+    TodoManager.prototype.init = function() {
+      var items, list;
+      TodoManager.__super__.init.call(this);
+      this.registerModel('list', new Wraith.Models.List);
+      list = this.models['list'];
+      items = list.get('items');
+      items.create({
+        text: 'Task 1',
+        selected: true
+      });
+      items.create({
+        text: 'Task 2'
+      });
+      return items.create({
+        text: 'Task 3'
+      });
+    };
+
     TodoManager.prototype.inputKeypress = function(e) {
       var val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
@@ -71,7 +89,7 @@
 
   })(Wraith.Controller);
 
-  Wraith.Controllers.SelectList = (function(_super) {
+  Wraith.Views.SelectList = (function(_super) {
 
     __extends(SelectList, _super);
 
@@ -95,21 +113,7 @@
     ];
 
     SelectList.prototype.init = function() {
-      var items, list;
-      SelectList.__super__.init.call(this);
-      this.registerModel('list', new Wraith.Models.List);
-      list = this.models['list'];
-      items = list.get('items');
-      items.create({
-        text: 'Task 1',
-        selected: true
-      });
-      items.create({
-        text: 'Task 2'
-      });
-      return items.create({
-        text: 'Task 3'
-      });
+      return SelectList.__super__.init.call(this);
     };
 
     SelectList.prototype.itemDelete = function(e) {
@@ -133,6 +137,6 @@
 
     return SelectList;
 
-  })(Wraith.Controller);
+  })(Wraith.View);
 
 }).call(this);
