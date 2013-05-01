@@ -126,12 +126,12 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>($el, $parent)
+        - (void) <strong>constructor</strong>($el)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Constructor
     </span>
   </li>
   <li>
@@ -146,41 +146,19 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#registerView-instance'>
+        - (void) <strong>registerView</strong>(view)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#registerModel-instance'>
         - (void) <strong>registerModel</strong>(name, model)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#createView-instance'>
-        - (void) <strong>createView</strong>(model, map)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#updateView-instance'>
-        - (void) <strong>updateView</strong>(model, map)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#removeView-instance'>
-        - (void) <strong>removeView</strong>(model, map)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -241,9 +219,12 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>($el, $parent)
+      - (void) <strong>constructor</strong>($el)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Constructor</p>
+</div>
+<div class='tags'>
 </div>
   </div>
 </div>
@@ -257,32 +238,16 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='registerView-instance'>
+      - (void) <strong>registerView</strong>(view)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='registerModel-instance'>
       - (void) <strong>registerModel</strong>(name, model)
-      (bound)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='createView-instance'>
-      - (void) <strong>createView</strong>(model, map)
-      (bound)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='updateView-instance'>
-      - (void) <strong>updateView</strong>(model, map)
-      (bound)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='removeView-instance'>
-      - (void) <strong>removeView</strong>(model, map)
       (bound)
     </p>
     <div class='tags'>
@@ -316,7 +281,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Tue Apr 30 2013 00:06:58 GMT-0400 (EDT)
+  Tue Apr 30 2013 23:11:38 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1
