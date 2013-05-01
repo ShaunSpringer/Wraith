@@ -279,7 +279,7 @@ class @Wraith.View extends Wraith.Base
 
   init: ->
     # Find all child views and register them
-    @$el.children('[data-template]').forEach (item) =>
+    @$el.find('[data-template]').forEach (item) =>
       $view = $(item)
       template = $view.data('template')
       model_map = $view.data('map')

@@ -67,5 +67,3 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
 
 class Wraith.Views.SelectList extends Wraith.View
-  init: ->
-    super()

@@ -134,10 +134,6 @@
       return SelectList.__super__.constructor.apply(this, arguments);
     }
 
-    SelectList.prototype.init = function() {
-      return SelectList.__super__.init.call(this);
-    };
-
     return SelectList;
 
   })(Wraith.View);
