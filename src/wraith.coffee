@@ -299,7 +299,7 @@ class @Wraith.View extends Wraith.Base
     return unless $view = map.$view
     return unless template = map.template
     return unless Template = Wraith.Templates[template]
-    $view = $('#' + model.get('_id'))
+    $view = $('[data-id=' + model.get('_id') + ']')
     $view.replaceWith(Template.render(model))
 
   removeView: (model, map) =>
