@@ -41,12 +41,15 @@ root = exports ? @
   #
   # Generates a UID at the desired length
   # @param [Number] length Desired length of the UID
+  # @param [String] prefix A prefix to append to the UID
+  # Unfortunately this is here because zepto doesn't like id's
+  # in selectors to start with numbers.
   #
-  uniqueId: (length = 16) ->
+  uniqueId: (length = 16, prefix = "wraith-") ->
     id = ""
     id += Math.random().toString(36).substr(2) while id.length < length
     id.substr 0, length
-
+    id = prefix + id
 #
 # Our bootloader object. This should be
 # instantiated after all JS is loaded on the page
@@ -333,11 +336,23 @@ class @Wraith.Controller extends Wraith.Base
     @$el.data 'id', @id
     @models = []
     @views = []
+    @$els = []
 
   init: ->
+    @loadViewEvents()
+    @loadElements()
+
+  loadViewEvents: ->
     if @view_events
       for event, i in @view_events
         @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
+    @
+
+  loadElements: ->
+    els = @$el.find('[data-element]')
+    for el, i in els when el.id
+      @$els[el.id] = $(el)
+    @
 
   registerView: (view) =>
     @views.push view

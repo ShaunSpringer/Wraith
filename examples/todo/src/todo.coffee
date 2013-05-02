@@ -30,7 +30,7 @@ class Wraith.Models.List extends Wraith.Model
 class Wraith.Controllers.TodoManager extends Wraith.Controller
   view_events: [
     { type: 'keypress', selector: 'input[type=text]', cb: 'inputKeypress' }
-    { type: 'change', selector: 'input[type=checkbox]', cb: 'itemToggle' }
+    { type: 'change', selector: '.input[type=checkbox]', cb: 'itemToggle' }
     { type: 'click', selector: 'div.delete', cb: 'itemDelete' }
   ]
 

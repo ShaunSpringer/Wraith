@@ -63,7 +63,7 @@
         cb: 'inputKeypress'
       }, {
         type: 'change',
-        selector: 'input[type=checkbox]',
+        selector: '.input[type=checkbox]',
         cb: 'itemToggle'
       }, {
         type: 'click',
