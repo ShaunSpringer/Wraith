@@ -71,7 +71,7 @@ class @Wraith.Bootloader
     # Activate our controllers via .init
     for id, controller of Wraith.controllers
       controller.init()
-
+    @
   #
   # Loads a given controller by id and HTML element
   # @param [String] id The controllers id
@@ -118,8 +118,7 @@ class @Wraith.Base
   #
   # Constructor
   #
-  constructor: ->
-    @listeners = {}
+  constructor: -> @listeners = {}
 
   #
   # Binds the given function (cb) to the given
@@ -148,35 +147,20 @@ class @Wraith.Base
       break
     @
 
-  emit: (event, args ...) =>
-    if @listeners[event]? then listener(args ...) for listener in @listeners[event]
-
-  @proxy: (func) ->
-    =>
-      func.apply(@, arguments)
-
-  proxy: (func) ->
-    =>
-      func.apply(@, arguments)
-
+  emit: (event, args ...) => if @listeners[event]? then listener(args ...) for listener in @listeners[event]
+  @proxy: (func) -> => func.apply(@, arguments)
+  proxy: (func) -> => func.apply(@, arguments)
 
 class @Wraith.Validator
   @STRING: 'string'
-
-  @is: (obj, type) ->
-    return true if typeof obj is type or obj instanceof type
-    false
-
-  @isString: (obj) ->
-    @is(obj, @STRING)
+  @is: (obj, type) -> return if typeof obj is type or obj instanceof type
+  @isString: (obj) -> @is(obj, @STRING)
 
 
 class @Wraith.Collection extends Wraith.Base
-  constructor: (@parent, @as, @klass) ->
-    @members = []
+  constructor: (@parent, @as, @klass) -> @members = []
 
-  create: (attr) =>
-    @add(new @klass(attr))
+  create: (attr) => @add(new @klass(attr))
 
   add: (item) =>
     @members.push(item)
@@ -188,15 +172,12 @@ class @Wraith.Collection extends Wraith.Base
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
+    @
 
   all: => @members
   length: => @members.length
   at: (index) => @members[index]
-
-  findById: (id) =>
-    for item, i in @members when item.get('_id') is id
-      return item
-
+  findById: (id) => return item for item, i in @members when item.get('_id') is id
 
 class @Wraith.Model extends Wraith.Base
   @field: (name, opt) ->
@@ -228,13 +209,13 @@ class @Wraith.Model extends Wraith.Base
 
     for name, options of @constructor.collections
       @attributes[name] = new Wraith.Collection(@, options.as, options.klass)
+    @
 
   get: (key) =>
     @attributes?[key]
 
   set: (key, val) =>
-    field = @constructor.fields[key]
-    throw Error('Trying to set an non-existent property!') unless field
+    throw Error('Trying to set an non-existent property!') unless field = @constructor.fields[key]
     # Ignore a re-setting of the same value
     return if val == @get(key)
     @attributes[key] = val
@@ -280,6 +261,10 @@ class @Wraith.View extends Wraith.Base
     @model_maps = []
     @init()
 
+  #
+  # Initialize the view. This includes crawling the dom
+  # for template elements
+  #
   init: ->
     # Find all child views and register them
     @$el.find('[data-template]').forEach (item) =>
@@ -302,6 +287,7 @@ class @Wraith.View extends Wraith.Base
     return unless $view = map.$view
     return unless template = map.template
     return unless Template = Wraith.Templates[template]
+
     $view = $('[data-id=' + model.get('_id') + ']')
     $view.replaceWith(Template.render(model))
 
@@ -351,11 +337,8 @@ class @Wraith.Controller extends Wraith.Base
   loadElements: ->
     els = @$el.find('[data-element]')
     for el, i in els when el.id
-      @$els[el.id] = $(el)
+      @$els[el.id] = $(el)?[0]
     @
-
-  registerView: (view) =>
-    @views.push view
 
   registerModel: (name, model) =>
     throw Error('Model name is already in use') if @models[name]
@@ -373,8 +356,9 @@ class @Wraith.Controller extends Wraith.Base
         mapping = map.model_map[l+1..]
         model.bind 'add:' + mapping, (model) => view.createView(model, map)
         model.bind 'remove:' + mapping, (model) => view.removeView(model, map)
+    @
 
-
+  registerView: (view) => @views.push view
   findViewByElement: (el) => return $(el).closest('[wraith-view]')
   findIdByView: (el) => return $(el).data('id')
 
@@ -387,12 +371,3 @@ class @Wraith.Controller extends Wraith.Base
       @$el.on uievent, selector, cb
     else
       super(ev, cb)
-
-  ###
-  append: ($item) =>
-    @$el.append($item)
-
-  registerCollection: (key, collection) =>
-    @list.bind 'add:items', @add
-    @list.bind 'remove:items', @remove
-  ###
