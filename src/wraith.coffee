@@ -11,6 +11,7 @@ root = exports ? @
   controllers: {}
   Collections: []
   Models: []
+  models: []
   Templates: []
   Views: []
   UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
@@ -209,6 +210,9 @@ class @Wraith.Model extends Wraith.Base
 
     for name, options of @constructor.collections
       @attributes[name] = new Wraith.Collection(@, options.as, options.klass)
+
+    Wraith.models[@attributes['_id']] = @
+
     @
 
   get: (key) =>
@@ -364,6 +368,7 @@ class @Wraith.Controller extends Wraith.Base
   registerView: (view) => @views.push view
   findViewByElement: (el) => return $(el).closest('[wraith-view]')
   findIdByView: (el) => return $(el).data('id')
+  findModelById: (id) => Wraith.models[id]
 
   bind: (ev, cb) =>
     keys = ev.split ':'
@@ -374,6 +379,7 @@ class @Wraith.Controller extends Wraith.Base
       @$el.on uievent, selector, (e) =>
         $view = @findViewByElement e.currentTarget
         id = @findIdByView $view
-        cb.apply(@, [e, $view, id])
+        model = @findModelById id
+        cb.apply(@, [e, $view, model])
     else
       super(ev, cb)
