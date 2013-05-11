@@ -354,8 +354,11 @@ class @Wraith.Controller extends Wraith.Base
       model_maps = view.model_maps
       for map, j in model_maps when map.model_map[0..l].toLowerCase() is nl + '.'
         mapping = map.model_map[l+1..]
-        model.bind 'add:' + mapping, (model) => view.createView(model, map)
-        model.bind 'remove:' + mapping, (model) => view.removeView(model, map)
+        if model.get(mapping) instanceof Wraith.Collection
+          model.bind 'add:' + mapping, (model) => view.createView(model, map)
+          model.bind 'remove:' + mapping, (model) => view.removeView(model, map)
+        else
+          model.bind 'change', (model) => view.updateView(model, map)
     @
 
   registerView: (view) => @views.push view
@@ -368,6 +371,9 @@ class @Wraith.Controller extends Wraith.Base
     if keys[0] is 'ui'
       throw Error('Invalid UI event given') unless (uievent = keys[1]) and uievent in Wraith.UIEvents
       throw Error('Invalid selector given') unless (selector = keys[2])
-      @$el.on uievent, selector, cb
+      @$el.on uievent, selector, (e) =>
+        $view = @findViewByElement e.currentTarget
+        id = @findIdByView $view
+        cb.apply(@, [e, $view, id])
     else
       super(ev, cb)
