@@ -326,7 +326,7 @@ class @Wraith.View extends Wraith.Base
       $view.append(Template.render(model))
 
     ((model, map) =>
-      model.bind 'change', (model_) => @updateView(model_, map)
+      model.bind 'change', (model_) => @updateView(model, map)
     )(model, map)
 
     @updateView(model, map)
@@ -384,6 +384,7 @@ class @Wraith.Controller extends Wraith.Base
 
     @loadViews()
     @loadViewEvents()
+    @loadElements()
 
   loadViews: ->
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'loadViews'
@@ -399,13 +400,17 @@ class @Wraith.Controller extends Wraith.Base
       @maps[view.id] = map
       @views[view.id] = view
 
-
   loadViewEvents: ->
     if @view_events
       for event, i in @view_events
         @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
     @
 
+  loadElements: ->
+    els = @$el.find('[data-element]')
+    for el, i in els when el.id
+      @$els[el.id] = $(el)?[0]
+    @
 
   registerModel: (name, model) =>
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'registerModel'
@@ -432,7 +437,7 @@ class @Wraith.Controller extends Wraith.Base
           model.bind 'add:' + mapping, (model_) -> view.createView(model_, map)
           model.bind 'remove:' + mapping, (model_) -> view.removeView(model_, map)
         else
-          model.bind 'change', (model_) -> view.updateView(model_, map)
+          model.bind 'change', (model_) => debugger; view.updateView(model_, map)
       )(model, map, view)
     @
 
