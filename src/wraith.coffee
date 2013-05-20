@@ -10,11 +10,10 @@ root = exports ? @
   DEBUG: true
   Controllers: []
   controllers: {}
-  Collections: []
-  Models: []
-  models: []
-  Templates: []
-  Views: []
+  Collections: {}
+  Models: {}
+  models: {}
+  Templates: {}
   UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
 
   #
@@ -61,7 +60,7 @@ root = exports ? @
       template.replace(/\r/g, '\\r')
       .replace(/\n/g, '\\n')
       .replace(/\t/g, '\\t')
-      .replace(endMatch,"✄")
+      .replace(endMatch, "✄")
       .split("'").join("\\'")
       .split("✄").join("'")
       .replace(c.interpolate, "',$1,'")
@@ -78,7 +77,6 @@ root = exports ? @
         return htmlNode.innerText
      return htmlNode.textContent
 
-
   #
   # Generates a UID at the desired length
   # @param [Number] length Desired length of the UID
@@ -91,6 +89,7 @@ root = exports ? @
     id += Math.random().toString(36).substr(2) while id.length < length
     id.substr 0, length
     id = prefix + id
+
 #
 # Our bootloader object. This should be
 # instantiated after all JS is loaded on the page
@@ -132,23 +131,6 @@ class @Wraith.Bootloader
     id = $template.attr('id')
     template = $template.html()
     Wraith.Templates[id] = new Wraith.Template(template)
-
-  #
-  # Loads a given template based on the HTML element
-  # @param [Object] $template The HTML element to grab the template from
-  #
-  ###
-  loadView: (id, $view) ->
-    $controller = $view.closest('[data-controller]')
-    throw Error('Views must be defined inside of a controller.') unless $controller.length > 0
-
-    id = $controller.data('id')
-    controller = Wraith.controllers[id]
-    throw Error('Controller instance not found.') unless controller
-
-    View = Wraith.Views[id] ? Wraith.View
-    controller.registerView(new View($view))
-  ###
 
 #
 # The base class for all Wraith objects.
@@ -205,11 +187,13 @@ class @Wraith.Collection extends Wraith.Base
 
   add: (item) =>
     @members.push(item)
+    @parent.emit('change', item)
     @parent.emit('add:' + @as, item)
     item
 
   remove: (id) =>
     for item, i in @members when item.get('_id') is id
+      @parent.emit('change', item)
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
@@ -305,25 +289,19 @@ class @Wraith.View extends Wraith.Base
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
     super()
     @id = Wraith.uniqueId()
-    @init()
-
-  #
-  # Initialize the view. This includes crawling the dom
-  # for template elements
-  #
-  init: ->
-    if Wraith.DEBUG then console.log '@Wraith.View', 'init', @
 
   createView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'createView', @
+    if Wraith.DEBUG then console.log '@Wraith.View', 'createView'
 
     return unless $view = map.$view
     return unless template = map.template
     if not Template = Wraith.Templates[template]
       Template = Wraith.Templates[template] = new Wraith.Template(template, false)
-      $view.replaceWith(Template.render(model))
-    else
-      $view.append(Template.render(model))
+      debugger
+      $view.innerHTML = Template.render(model)
+      $view.attr('data-id', model.get('_id'))
+
+    $view.append(Template.render(model))
 
     ((model, map) =>
       model.bind 'change', (model_) => @updateView(model, map)
@@ -332,7 +310,7 @@ class @Wraith.View extends Wraith.Base
     @updateView(model, map)
 
   updateView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'updateView', @
+    if Wraith.DEBUG then console.log '@Wraith.View', 'updateView', model, map
 
     return unless $view = map.$view
     return unless template = map.template
@@ -342,7 +320,7 @@ class @Wraith.View extends Wraith.Base
     $view.replaceWith(Template.render(model))
 
   removeView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'removeView', @
+    if Wraith.DEBUG then console.log '@Wraith.View', 'removeView'
 
     $view = $('[data-id=' + model.get('_id') + ']')
     $view.remove()
@@ -391,8 +369,8 @@ class @Wraith.Controller extends Wraith.Base
 
     @$el.find('[data-map]').forEach (item) =>
       $view = $(item)
-      template = $view.data('template')
-      template = (item.innerHTML) if not template
+      debugger
+      template = $view.data('template') || Wraith.unescapeHTML($view[0])
       model_map = $view.data('map')
       return unless model_map
       map = { model_map, template, $view }
@@ -433,11 +411,13 @@ class @Wraith.Controller extends Wraith.Base
 
       # Wrap in a closure to keep context for model view and map
       ((model, map, view) ->
-        if model.get(mapping) instanceof Wraith.Collection
+        isCollection = model.get(mapping) instanceof Wraith.Collection
+        if isCollection and map.$view[0].hasAttribute('data-repeat')
           model.bind 'add:' + mapping, (model_) -> view.createView(model_, map)
           model.bind 'remove:' + mapping, (model_) -> view.removeView(model_, map)
-        else
-          model.bind 'change', (model_) => debugger; view.updateView(model_, map)
+        else if isCollection
+          view.createView(model, map)
+          model.bind 'change', (model_) -> view.updateView(model_, map)
       )(model, map, view)
     @
 
@@ -447,11 +427,11 @@ class @Wraith.Controller extends Wraith.Base
 
   findViewByElement: (el) =>
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'findViewByElement'
-    return $(el).closest('[wraith-view]')
+    $(el).closest('[wraith-view]')
 
   findIdByView: (el) =>
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'findIdByView'
-    return $(el).data('id')
+    $(el).data('id')
 
   findModelById: (id) =>
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'findModelById'
