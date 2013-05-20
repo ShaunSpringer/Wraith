@@ -36,34 +36,21 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   init: ->
     super()
-
     @registerModel 'list', new Wraith.Models.List
-    list = @models['list']
-    items = list.get('items')
-    items.create { text: 'Task 1', selected: true }
-    items.create { text: 'Task 2' }
-    items.create { text: 'Task 3' }
+    @list = @models['list']
+    @items = @list.get('items')
+    @items.create { text: 'Task 1', selected: true }
+    @items.create { text: 'Task 2' }
+    @items.create { text: 'Task 3' }
 
-  inputKeypress: (e) =>
+  inputKeypress: (e, $view, model) =>
     return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    list = @models['list']
-    list.get('items').create { text: val, selected: false }
+    @items.create { text: val, selected: false }
     e.currentTarget.value = ''
 
-  itemDelete: (e) =>
-    $view = @findViewByElement e.currentTarget
-    id = @findIdByView $view
-    list = @models['list']
-    items = list.get('items')
-    items.remove id
+  itemDelete: (e, $view, model) =>
+    @items.remove model.get('_id')
 
-  itemToggle: (e) =>
-    $view = @findViewByElement e.currentTarget
-    id = @findIdByView $view
-    list = @models['list']
-    items = list.get('items')
-    item = items.findById id
-    item.set('selected', !item.get('selected'))
+  itemToggle: (e, $view, model) =>
+    model.set('selected', !model.get('selected'))
 
-
-class Wraith.Views.SelectList extends Wraith.View
