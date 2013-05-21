@@ -70,12 +70,6 @@ root = exports ? @
 
     return fn
 
-  unescapeHTML: (html) ->
-     htmlNode = document.createElement("DIV")
-     htmlNode.innerHTML = html
-     if htmlNode.innerText isnt undefined
-        return htmlNode.innerText
-     return htmlNode.textContent
 
   #
   # Generates a UID at the desired length
@@ -106,7 +100,6 @@ class @Wraith.Bootloader
   constructor: ->
     $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
     $('[data-controller]').forEach (item) => @loadController $(item).data('controller'), $(item)
-    #$('[data-view]').forEach (item) => @loadView $(item).data('view'), $(item)
 
     # Activate our controllers via .init
     for id, controller of Wraith.controllers
@@ -187,13 +180,13 @@ class @Wraith.Collection extends Wraith.Base
 
   add: (item) =>
     @members.push(item)
-    @parent.emit('change', item)
+    @parent.emit('change')
     @parent.emit('add:' + @as, item)
     item
 
   remove: (id) =>
     for item, i in @members when item.get('_id') is id
-      @parent.emit('change', item)
+      @parent.emit('change')
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
@@ -264,11 +257,11 @@ class @Wraith.Template extends Wraith.Base
   # Constructor
   # @param [String] template The template string to register
   #
-  constructor: (@template, wrap = true) ->
+  constructor: (@template, wrap = false) ->
     if Wraith.DEBUG then console.log '@Wraith.Template', 'constructor'
 
     throw Error('Template is required') unless @template
-    if wrap then @template = '<div wraith-view data-id="<%=_id%>">' + @template + '</div>'
+    if wrap then @template = '<div wraith-view data-id="<%=get("_id")%>">' + @template + '</div>'
     @template_fn = Wraith.compile(@template)
 
   #
@@ -276,7 +269,7 @@ class @Wraith.Template extends Wraith.Base
   # that has a .toJSON method.
   # @param [Object] data The data object to be rendered.
   #
-  render: (data) -> @template_fn(data.toJSON())
+  render: (data) -> @template_fn(data)
 
 #
 # Blah
@@ -297,26 +290,26 @@ class @Wraith.View extends Wraith.Base
     return unless template = map.template
     if not Template = Wraith.Templates[template]
       Template = Wraith.Templates[template] = new Wraith.Template(template, false)
-      debugger
-      $view.innerHTML = Template.render(model)
-      $view.attr('data-id', model.get('_id'))
-
-    $view.append(Template.render(model))
+      $view.replaceWith(Template.render(model))
+      replace = true
+    else
+      $view.append(Template.render(model))
 
     ((model, map) =>
-      model.bind 'change', (model_) => @updateView(model, map)
+      model.bind 'change', (model_) => @updateView(model, map, replace)
     )(model, map)
 
-    @updateView(model, map)
+    @updateView(model, map, replace)
 
-  updateView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'updateView', model, map
+  updateView: (model, map, replace = false) =>
+    if Wraith.DEBUG then console.log '@Wraith.View', 'updateView'
 
     return unless $view = map.$view
     return unless template = map.template
     return unless Template = Wraith.Templates[template]
 
-    $view = $('[data-id=' + model.get('_id') + ']')
+    $view_ = $('[data-id=' + model.get('_id') + ']')
+
     $view.replaceWith(Template.render(model))
 
   removeView: (model, map) =>
@@ -369,8 +362,12 @@ class @Wraith.Controller extends Wraith.Base
 
     @$el.find('[data-map]').forEach (item) =>
       $view = $(item)
-      debugger
-      template = $view.data('template') || Wraith.unescapeHTML($view[0])
+      template = $view.data('template')
+      if not template
+        u = document.createElement("textarea")
+        u.innerHTML = $view[0].outerHTML
+        template = u.value
+
       model_map = $view.data('map')
       return unless model_map
       map = { model_map, template, $view }
@@ -401,22 +398,22 @@ class @Wraith.Controller extends Wraith.Base
     nl = name.toLowerCase()
 
     # Iterate over all our views, and see if the
-    for view_id, map of @maps when map.model_map[0..l].toLowerCase() is nl + '.'
+    for view_id, map of @maps when map.model_map[0..l-1].toLowerCase() is nl
       view = @views[view_id]
-
-      if map.model_map.indexOf('.') <= 0
-        mapping = map.model_map[0..l-1].toLowerCase()
-      else
-        mapping = map.model_map[l+1..]
+      mapping = map.model_map[l+1..]
 
       # Wrap in a closure to keep context for model view and map
       ((model, map, view) ->
-        isCollection = model.get(mapping) instanceof Wraith.Collection
-        if isCollection and map.$view[0].hasAttribute('data-repeat')
+        isCollection = (mapping != '' and model.get(mapping) instanceof Wraith.Collection)
+
+        if mapping != '' and isCollection and map.$view[0].hasAttribute('data-repeat')
           model.bind 'add:' + mapping, (model_) -> view.createView(model_, map)
           model.bind 'remove:' + mapping, (model_) -> view.removeView(model_, map)
-        else if isCollection
+        else if mapping == ''
           view.createView(model, map)
+          model.bind 'change', (model_) -> view.updateView(model, map)
+        else
+          view.createView(model.get(mapping), map)
           model.bind 'change', (model_) -> view.updateView(model_, map)
       )(model, map, view)
     @
