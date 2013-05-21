@@ -40,6 +40,7 @@ root = exports ? @
     start:        '<%'
     end:          '%>'
     interpolate:  /<%=(.+?)%>/g
+    interpolate_get:  /<%-(.+?)%>/g
 
   #
   # Compiles a template with a coffee-script compiler.
@@ -64,6 +65,7 @@ root = exports ? @
       .split("'").join("\\'")
       .split("✄").join("'")
       .replace(c.interpolate, "',$1,'")
+      .replace(c.interpolate_get, "',get(\"$1\"),'")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "');}return p.join('');"
@@ -98,8 +100,10 @@ class @Wraith.Bootloader
   # Constructor
   #
   constructor: ->
-    $('script[type="text/template"]').forEach (item) => @loadTemplate $(item)
-    $('[data-controller]').forEach (item) => @loadController $(item).data('controller'), $(item)
+    controllers = document.querySelectorAll('[data-controller]')
+    for $controller in controllers
+      @loadController $controller.attributes['data-controller'].value, $controller
+
 
     # Activate our controllers via .init
     for id, controller of Wraith.controllers
@@ -114,16 +118,6 @@ class @Wraith.Bootloader
     throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
     controller = new Controller($item)
     Wraith.controllers[controller.id] = controller
-
-  #
-  # Loads a given template based on the HTML element
-  # @param [Object] $template The HTML element to grab the template from
-  #
-  loadTemplate: ($template) ->
-    throw Error('Template is invalid') unless $template
-    id = $template.attr('id')
-    template = $template.html()
-    Wraith.Templates[id] = new Wraith.Template(template)
 
 #
 # The base class for all Wraith objects.
@@ -173,7 +167,7 @@ class @Wraith.Validator
   @isString: (obj) -> @is(obj, @STRING)
 
 
-class @Wraith.Collection extends Wraith.Base
+class @Wraith.Collection extends @Wraith.Base
   constructor: (@parent, @as, @klass) -> @members = []
 
   create: (attr) => @add(new @klass(attr))
@@ -198,7 +192,7 @@ class @Wraith.Collection extends Wraith.Base
   findById: (id) => return item for item, i in @members when item.get('_id') is id
 
 
-class @Wraith.Model extends Wraith.Base
+class @Wraith.Model extends @Wraith.Base
   @field: (name, opt) ->
     @fields ?= {}
     @fields[name] = opt ? {}
@@ -252,7 +246,7 @@ class @Wraith.Model extends Wraith.Base
 # wish to change that just override Wraith.compile
 # and use any renderer of your choice.
 #
-class @Wraith.Template extends Wraith.Base
+class @Wraith.Template extends @Wraith.Base
   #
   # Constructor
   # @param [String] template The template string to register
@@ -272,51 +266,42 @@ class @Wraith.Template extends Wraith.Base
   render: (data) -> @template_fn(data)
 
 #
-# Blah
+# The core Wraith View responsible for rendering a single
+# instance of a view. It will bind to a models update event
+# and re-render each time it changes
 #
-class @Wraith.View extends Wraith.Base
+class @Wraith.View extends @Wraith.Base
   #
   # Constructor
+  # @param [HTMLElement] $el The HTML Element to attach the view to
+  # @param [String] template The template string to use when rendering
   #
-  constructor: (@$el) ->
+  constructor: (@$el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
     super()
     @id = Wraith.uniqueId()
 
-  createView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'createView'
 
-    return unless $view = map.$view
-    return unless template = map.template
-    if not Template = Wraith.Templates[template]
-      Template = Wraith.Templates[template] = new Wraith.Template(template, false)
-      $view.replaceWith(Template.render(model))
-      replace = true
-    else
-      $view.append(Template.render(model))
+class @Wraith.RepeatingView extends @Wraith.Base
+  #
+  # Constructor
+  #
+  constructor: (@$parent, @template) ->
+    if Wraith.DEBUG then console.log '@Wraith.RepeatingView', 'constructor'
+    throw new Error('Parent is required by RepeatingView') unless @$parent
+    throw new Error('Template is required by RepeatingView') unless @template
 
-    ((model, map) =>
-      model.bind 'change', (model_) => @updateView(model, map, replace)
-    )(model, map)
+    super()
+    @id = Wraith.uniqueId()
+    @$parent.innerHTML = ''
 
-    @updateView(model, map, replace)
+    Wraith.Templates[@template] ?= new Wraith.Template(template)
+    @Template = Wraith.Templates[@template]
 
-  updateView: (model, map, replace = false) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'updateView'
 
-    return unless $view = map.$view
-    return unless template = map.template
-    return unless Template = Wraith.Templates[template]
-
-    $view_ = $('[data-id=' + model.get('_id') + ']')
-
-    $view.replaceWith(Template.render(model))
-
-  removeView: (model, map) =>
-    if Wraith.DEBUG then console.log '@Wraith.View', 'removeView'
-
-    $view = $('[data-id=' + model.get('_id') + ']')
-    $view.remove()
+  createView: (model) ->
+    return unless model instanceof Wraith.Model
+    @$parent.append @Template.render(model)
 
 #
 # The proverbial 'controller' in the MVC pattern.
@@ -335,7 +320,7 @@ class @Wraith.View extends Wraith.Base
 #     <div data-template="ListItem" data-map="list.items"></div>
 #   </ul>
 #
-class @Wraith.Controller extends Wraith.Base
+class @Wraith.Controller extends @Wraith.Base
   #
   # Constructor
   #
@@ -344,108 +329,99 @@ class @Wraith.Controller extends Wraith.Base
 
     super()
     @id = Wraith.uniqueId()
-    @$el.data 'id', @id
+    @$el.setAttribute('id', @id)
     @models = []
     @views = []
-    @$els = []
-    @maps = []
+    @bindings = []
 
+  #
+  # Initialize our controller
+  #
   init: ->
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'init'
+    @findViews()
 
-    @loadViews()
-    @loadViewEvents()
-    @loadElements()
-
-  loadViews: ->
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'loadViews'
-
-    @$el.find('[data-map]').forEach (item) =>
-      $view = $(item)
-      template = $view.data('template')
-      if not template
-        u = document.createElement("textarea")
-        u.innerHTML = $view[0].outerHTML
-        template = u.value
-
-      model_map = $view.data('map')
-      return unless model_map
-      map = { model_map, template, $view }
-      view = new Wraith.View($view)
-      @maps[view.id] = map
-      @views[view.id] = view
-
-  loadViewEvents: ->
-    if @view_events
-      for event, i in @view_events
-        @bind 'ui:' + event.type + ':' + event.selector, @[event.cb]
+  #
+  # Find all the views embedded inside the controller and
+  # register them with the controller
+  #
+  findViews: ->
+    # Anything with a bind attribute is considered a view
+    views = document.querySelectorAll('[data-bind]')
+    @registerView $view for $view in views
     @
 
-  loadElements: ->
-    els = @$el.find('[data-element]')
-    for el, i in els when el.id
-      @$els[el.id] = $(el)?[0]
-    @
+  #
+  # Register the view to this controller
+  # @param [HTMLElement] $view The view to be registered
+  #
+  registerView: ($view) ->
+    # Unless we have a binding attribute we cant be a view!
+    return unless binding = $view.attributes['data-bind']?.value
 
-  registerModel: (name, model) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'registerModel'
+    # Split our map on a period for dotnotation
+    maps = binding.split('.')
 
-    throw Error('Model name is already in use') if @models[name]
-    @models[name] = model
+    # If no map is present, return early
+    return unless target_model = maps[0]
 
-    # Use the length to know how much to slice off the model string to compare
-    l = name.length
-    nl = name.toLowerCase()
+    # If we have a repeat tag we will need to treat this view differently
+    repeating = $view.attributes['data-repeat'] isnt undefined
 
-    # Iterate over all our views, and see if the
-    for view_id, map of @maps when map.model_map[0..l-1].toLowerCase() is nl
-      view = @views[view_id]
-      mapping = map.model_map[l+1..]
+    # Yank our template out of the dom
+    template = $view.outerHTML
 
-      # Wrap in a closure to keep context for model view and map
-      ((model, map, view) ->
-        isCollection = (mapping != '' and model.get(mapping) instanceof Wraith.Collection)
+    # Unescape our template via textarea hack
+    textbox = document.createElement('textarea')
+    textbox.innerHTML = template
+    template = textbox.value
 
-        if mapping != '' and isCollection and map.$view[0].hasAttribute('data-repeat')
-          model.bind 'add:' + mapping, (model_) -> view.createView(model_, map)
-          model.bind 'remove:' + mapping, (model_) -> view.removeView(model_, map)
-        else if mapping == ''
-          view.createView(model, map)
-          model.bind 'change', (model_) -> view.updateView(model, map)
-        else
-          view.createView(model.get(mapping), map)
-          model.bind 'change', (model_) -> view.updateView(model_, map)
-      )(model, map, view)
-    @
-
-  registerView: (view) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'registerView'
-    @views.push view
-
-  findViewByElement: (el) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'findViewByElement'
-    $(el).closest('[wraith-view]')
-
-  findIdByView: (el) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'findIdByView'
-    $(el).data('id')
-
-  findModelById: (id) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'findModelById'
-    Wraith.models[id]
-
-  bind: (ev, cb) =>
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'bind'
-
-    keys = ev.split ':'
-    # Format is ui:event:selector
-    if keys[0] is 'ui'
-      throw Error('Invalid UI event given') unless (uievent = keys[1]) and uievent in Wraith.UIEvents
-      throw Error('Invalid selector given') unless (selector = keys[2])
-      @$el.on uievent, selector, (e) =>
-        $view = @findViewByElement e.currentTarget
-        id = @findIdByView $view
-        model = @findModelById id
-        cb.apply(@, [e, $view, model])
+    if repeating
+      view = new Wraith.RepeatingView($view.parentNode, template, binding)
     else
-      super(ev, cb)
+      view = new Wraith.View($view, template)
+
+    @views.push view
+    @bindings[target_model] ?= []
+    @bindings[target_model].push {binding, view}
+    @
+
+  #
+  # Register the model to this controller
+  # @param [String] as The name of the model to register
+  # @param [Wraith.Model] model The model to register to this controller
+  #
+  registerModel: (as, model) ->
+    throw new Error('Model name already registered') if @models[as]
+    throw new Error('Model is not valid') if not model instanceof Wraith.Model
+    @models[as] = model
+    @bindViews(as, model)
+
+  #
+  # Binds any view that is loaded into the controller
+  # to the given model.
+  #
+  bindViews: (name, model) ->
+    return unless bindings = @bindings[name]
+
+    for map in bindings
+      binding = map.binding
+      view = map.view
+      mapping = binding.split('.')
+      if view instanceof Wraith.RepeatingView
+        if mapping
+          ((model, view) ->
+            model.bind 'add:' + mapping[1], (model_) -> view.createView(model_)
+            model.bind 'remove:' + mapping[1], (model_) -> view.removeView(model_)
+          )(model, view)
+      else
+        if mapping
+          ((model, view) ->
+            model.bind 'change:' + mapping[1], (model_) -> view.createView(model_)
+          )(model, view)
+        else
+          ((model, view) ->
+            model.bind 'change' , -> view.createView(model)
+          )(model, view)
+
+    @
