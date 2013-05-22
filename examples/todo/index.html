@@ -13,22 +13,23 @@
         <div data-controller="TodoManager">
             <input type="text" width="100" placeholder="Type a task here" />
             <ul>
-                <li data-bind="list.items" data-repeat>
-                    <fieldset>
-                        <div class="delete">⊗</div>
-                        <label>
-                            <input type="checkbox" <% if (get('selected')) { %>checked<% } %> />
-                            <div class="name"><%-text%></div>
-                            <div class="select">✓</div>
-                        </label>
-                    </fieldset>
-                </li>
+                <li data-bind="list.items" data-repeat data-template="ListItem" />
             </ul>
         </div>
         <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>
         <script src="../../lib/wraith.js"></script>
         <script src="lib/todo.js"></script>
+        <script id="ListItem" type="text/template">
+            <fieldset>
+                <div class="delete">⊗</div>
+                <label>
+                    <input type="checkbox" <% if (get('selected')) { %>checked<% } %> />
+                    <div class="name"><%-text%></div>
+                    <div class="select">✓</div>
+                </label>
+            </fieldset>
+        </script>
         <script>
             new Wraith.Bootloader()
         </script>

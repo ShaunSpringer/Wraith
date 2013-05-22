@@ -278,6 +278,8 @@ class @Wraith.View extends @Wraith.Base
   #
   constructor: (@$el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
+    throw new Error('Element is required by RepeatingView') unless @$el
+    throw new Error('Template is required by RepeatingView') unless @template
     super()
     @id = Wraith.uniqueId()
 
@@ -286,9 +288,10 @@ class @Wraith.RepeatingView extends @Wraith.Base
   #
   # Constructor
   #
-  constructor: (@$parent, @template) ->
+  constructor: (@$parent, @el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.RepeatingView', 'constructor'
     throw new Error('Parent is required by RepeatingView') unless @$parent
+    throw new Error('Element type is required by RepeatingView') unless @el
     throw new Error('Template is required by RepeatingView') unless @template
 
     super()
@@ -298,10 +301,13 @@ class @Wraith.RepeatingView extends @Wraith.Base
     Wraith.Templates[@template] ?= new Wraith.Template(template)
     @Template = Wraith.Templates[@template]
 
-
   createView: (model) ->
     return unless model instanceof Wraith.Model
-    @$parent.append @Template.render(model)
+    rendered = @Template.render(model)
+    $el = document.createElement(@el)
+    $el.setAttribute('id', Wraith.uniqueId())
+    $el.innerHTML = rendered
+    @$parent.appendChild $el
 
 #
 # The proverbial 'controller' in the MVC pattern.
@@ -367,9 +373,13 @@ class @Wraith.Controller extends @Wraith.Base
 
     # If we have a repeat tag we will need to treat this view differently
     repeating = $view.attributes['data-repeat'] isnt undefined
+    template_id = $view.attributes['data-template']?.value
 
     # Yank our template out of the dom
-    template = $view.outerHTML
+    if template_id isnt undefined
+      return unless template = document.getElementById(template_id)?.innerHTML
+    else
+      template = $view.outerHTML
 
     # Unescape our template via textarea hack
     textbox = document.createElement('textarea')
@@ -377,7 +387,7 @@ class @Wraith.Controller extends @Wraith.Base
     template = textbox.value
 
     if repeating
-      view = new Wraith.RepeatingView($view.parentNode, template, binding)
+      view = new Wraith.RepeatingView($view.parentNode, $view.nodeName, template, binding)
     else
       view = new Wraith.View($view, template)
 
@@ -408,20 +418,16 @@ class @Wraith.Controller extends @Wraith.Base
       binding = map.binding
       view = map.view
       mapping = binding.split('.')
-      if view instanceof Wraith.RepeatingView
-        if mapping
-          ((model, view) ->
+
+      ((model, view, mapping) ->
+        if view instanceof Wraith.RepeatingView
+          if mapping
             model.bind 'add:' + mapping[1], (model_) -> view.createView(model_)
             model.bind 'remove:' + mapping[1], (model_) -> view.removeView(model_)
-          )(model, view)
-      else
-        if mapping
-          ((model, view) ->
-            model.bind 'change:' + mapping[1], (model_) -> view.createView(model_)
-          )(model, view)
         else
-          ((model, view) ->
+          if mapping
+            model.bind 'change:' + mapping[1], (model_) -> view.createView(model_)
+          else
             model.bind 'change' , -> view.createView(model)
-          )(model, view)
-
+        )(model, view, mapping)
     @
