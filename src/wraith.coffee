@@ -37,10 +37,10 @@ root = exports ? @
   # By default, Underscore uses **ERB**-style template delimiters, change the
   # following template settings to use alternative delimiters.
   templateSettings:
-    start:        '<%'
-    end:          '%>'
-    interpolate:  /<%=(.+?)%>/g
-    interpolate_get:  /<%-(.+?)%>/g
+    start:        '{{'
+    end:          '}}'
+    interpolate:  /{{(.+?)}}/g
+    checked:  /data-checked=['"](.+?)['"]/g
 
   #
   # Compiles a template with a coffee-script compiler.
@@ -64,8 +64,8 @@ root = exports ? @
       .replace(endMatch, "✄")
       .split("'").join("\\'")
       .split("✄").join("'")
-      .replace(c.interpolate, "',$1,'")
-      .replace(c.interpolate_get, "',get(\"$1\"),'")
+      .replace(c.interpolate, "',get(\'$1\'),'")
+      .replace(c.checked, "' + (get(\'$1\') === true ? 'checked' : \'\') + '")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "');}return p.join('');"
@@ -305,7 +305,8 @@ class @Wraith.RepeatingView extends @Wraith.Base
     return unless model instanceof Wraith.Model
     rendered = @Template.render(model)
     $el = document.createElement(@el)
-    $el.setAttribute('id', Wraith.uniqueId())
+    $el.setAttribute('data-id', Wraith.uniqueId())
+    $el.setAttribute('data-model', model.get('_id'))
     $el.innerHTML = rendered
     @$parent.appendChild $el
 
@@ -369,15 +370,15 @@ class @Wraith.Controller extends @Wraith.Base
     maps = binding.split('.')
 
     # If no map is present, return early
-    return unless target_model = maps[0]
+    return unless targetModel = maps[0]
 
     # If we have a repeat tag we will need to treat this view differently
     repeating = $view.attributes['data-repeat'] isnt undefined
-    template_id = $view.attributes['data-template']?.value
+    templateId = $view.attributes['data-template']?.value
 
     # Yank our template out of the dom
-    if template_id isnt undefined
-      return unless template = document.getElementById(template_id)?.innerHTML
+    if templateId isnt undefined
+      return unless template = document.getElementById(templateId)?.innerHTML
     else
       template = $view.outerHTML
 
@@ -392,8 +393,8 @@ class @Wraith.Controller extends @Wraith.Base
       view = new Wraith.View($view, template)
 
     @views.push view
-    @bindings[target_model] ?= []
-    @bindings[target_model].push {binding, view}
+    @bindings[targetModel] ?= []
+    @bindings[targetModel].push {binding, view}
     @
 
   #
