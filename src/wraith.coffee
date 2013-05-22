@@ -64,8 +64,8 @@ root = exports ? @
       .replace(endMatch, "✄")
       .split("'").join("\\'")
       .split("✄").join("'")
-      .replace(c.interpolate, "',get(\'$1\'),'")
-      .replace(c.checked, "' + (get(\'$1\') === true ? 'checked' : \'\') + '")
+      .replace(c.interpolate, "' + ((hasOwnProperty('get') && get(\'$1\')) || $1) + '")
+      .replace(c.checked, "' + ((hasOwnProperty('get') && get(\'$1\') === true) ? 'checked' : \'\') + '")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "');}return p.join('');"
@@ -158,7 +158,10 @@ class @Wraith.Base
       break
     @
 
-  emit: (event, args ...) => if @listeners[event]? then listener(args ...) for listener in @listeners[event]
+  emit: (event, args ...) =>
+    if @listeners[event]?
+      listener(args ...) for listener in @listeners[event]
+    @
 
 
 class @Wraith.Validator
@@ -174,13 +177,13 @@ class @Wraith.Collection extends @Wraith.Base
 
   add: (item) =>
     @members.push(item)
-    @parent.emit('change')
+    @parent.emit('change:' + @as, @)
     @parent.emit('add:' + @as, item)
     item
 
   remove: (id) =>
     for item, i in @members when item.get('_id') is id
-      @parent.emit('change')
+      @parent.emit('change:' + @as, @)
       @parent.emit('remove:' + @as, item)
       @members.splice(i, 1)
       break
@@ -278,38 +281,60 @@ class @Wraith.View extends @Wraith.Base
   #
   constructor: (@$el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
-    throw new Error('Element is required by RepeatingView') unless @$el
-    throw new Error('Template is required by RepeatingView') unless @template
+    throw new Error('Element is required by View') unless @$el
+    throw new Error('Template is required by View') unless @template
     super()
     @id = Wraith.uniqueId()
+    @$parent = @$el.parentNode
+
+    Wraith.Templates[@template] ?= new Wraith.Template(template)
+    @Template = Wraith.Templates[@template]
+
+  render: (model) ->
+    rendered = @Template.render(model)
+    $el = document.createElement('div')
+    $el.innerHTML = rendered
+    return $el.firstChild
+
+  updateView: (model) ->
+    $el = @render(model)
+    @$parent.replaceChild($el, @$el)
+    @$el = $el
 
 
 class @Wraith.RepeatingView extends @Wraith.Base
   #
   # Constructor
   #
-  constructor: (@$parent, @el, @template) ->
+  constructor: (@$parent, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.RepeatingView', 'constructor'
     throw new Error('Parent is required by RepeatingView') unless @$parent
-    throw new Error('Element type is required by RepeatingView') unless @el
     throw new Error('Template is required by RepeatingView') unless @template
 
-    super()
     @id = Wraith.uniqueId()
     @$parent.innerHTML = ''
 
     Wraith.Templates[@template] ?= new Wraith.Template(template)
     @Template = Wraith.Templates[@template]
 
+  render: (model) ->
+    rendered = @Template.render(model)
+    $el = document.createElement('div')
+    $el.innerHTML = rendered
+    return $el
+
   createView: (model) ->
     return unless model instanceof Wraith.Model
-    rendered = @Template.render(model)
-    $el = document.createElement(@el)
-    $el.setAttribute('data-id', Wraith.uniqueId())
-    $el.setAttribute('data-model', model.get('_id'))
-    $el.innerHTML = rendered
-    @$parent.appendChild $el
+    $el = @render(model)
+    if $node = $el.firstChild
+      $node.setAttribute('data-id', Wraith.uniqueId())
+      $node.setAttribute('data-model', model.get('_id'))
+      @$parent.appendChild $el.firstChild
 
+  updateView: (model) ->
+    return unless $view = @$parent.querySelector('[data-id=' + model.get('_id') + ']');
+    $el = @render(model)
+    @$parent.replaceChild($el, $view)
 #
 # The proverbial 'controller' in the MVC pattern.
 # The Controller handles the logic your applications or
@@ -388,7 +413,7 @@ class @Wraith.Controller extends @Wraith.Base
     template = textbox.value
 
     if repeating
-      view = new Wraith.RepeatingView($view.parentNode, $view.nodeName, template, binding)
+      view = new Wraith.RepeatingView($view.parentNode, template, binding)
     else
       view = new Wraith.View($view, template)
 
@@ -415,20 +440,19 @@ class @Wraith.Controller extends @Wraith.Base
   bindViews: (name, model) ->
     return unless bindings = @bindings[name]
 
-    for map in bindings
-      binding = map.binding
-      view = map.view
-      mapping = binding.split('.')
-
-      ((model, view, mapping) ->
-        if view instanceof Wraith.RepeatingView
-          if mapping
-            model.bind 'add:' + mapping[1], (model_) -> view.createView(model_)
-            model.bind 'remove:' + mapping[1], (model_) -> view.removeView(model_)
-        else
-          if mapping
-            model.bind 'change:' + mapping[1], (model_) -> view.createView(model_)
-          else
-            model.bind 'change' , -> view.createView(model)
-        )(model, view, mapping)
+    @bindView(model, map) for map in bindings
     @
+
+  bindView: (model, map) ->
+    binding = map.binding
+    view = map.view
+    mapping = binding.split('.')
+
+    if view instanceof Wraith.RepeatingView
+      if mapping[1]
+        model.bind 'add:' + mapping[1], (model_) -> view.createView(model_)
+        model.bind 'remove:' + mapping[1], (model_) -> view.removeView(model_)
+        #model.bind 'change:' + mapping[1], (model_) -> view.updateView(model_)
+    else
+      if mapping[1]
+          model.bind 'change:' + mapping[1], (model_) -> view.updateView(model_)
