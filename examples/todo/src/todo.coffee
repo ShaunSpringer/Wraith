@@ -19,6 +19,10 @@ class Wraith.Models.ListItem extends Wraith.Model
 #
 class Wraith.Models.List extends Wraith.Model
   @hasMany Wraith.Models.ListItem, as: 'items'
+  completed: =>
+    items = @get('items').all()
+    items = items.filter (item) -> item.get('selected') is true
+    items.length
 
 #
 # TodoManager handles all the interaction between the
@@ -31,8 +35,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   init: ->
     super()
-    @registerModel 'list', new Wraith.Models.List
-    @list = @models['list']
+    @list = @registerModel(new Wraith.Models.List, 'list')
     @items = @list.get('items')
     @items.create { text: 'Task 1', selected: true }
     @items.create { text: 'Task 2' }
@@ -43,9 +46,5 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
     @items.create { text: val, selected: false }
     e.currentTarget.value = ''
 
-  itemDelete: (e) =>
-    @items.remove e.model.get('_id')
-
-  itemToggle: (e) =>
-    e.model.set('selected', !e.model.get('selected'))
-
+  itemDelete: (e) => @items.remove e.model.get('_id')
+  itemToggle: (e) => e.model.set('selected', !e.model.get('selected'))

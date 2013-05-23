@@ -31,13 +31,23 @@
     __extends(List, _super);
 
     function List() {
-      _ref1 = List.__super__.constructor.apply(this, arguments);
+      this.completed = __bind(this.completed, this);      _ref1 = List.__super__.constructor.apply(this, arguments);
       return _ref1;
     }
 
     List.hasMany(Wraith.Models.ListItem, {
       as: 'items'
     });
+
+    List.prototype.completed = function() {
+      var items;
+
+      items = this.get('items').all();
+      items = items.filter(function(item) {
+        return item.get('selected') === true;
+      });
+      return items.length;
+    };
 
     return List;
 
@@ -55,8 +65,7 @@
 
     TodoManager.prototype.init = function() {
       TodoManager.__super__.init.call(this);
-      this.registerModel('list', new Wraith.Models.List);
-      this.list = this.models['list'];
+      this.list = this.registerModel(new Wraith.Models.List, 'list');
       this.items = this.list.get('items');
       this.items.create({
         text: 'Task 1',

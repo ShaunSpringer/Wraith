@@ -178,6 +178,12 @@ class @Wraith.Base
       listener(args ...) for listener in @listeners[event]
     @
 
+  @proxy: (func) ->
+    => func.apply(this, arguments)
+
+  proxy: (func) ->
+    => func.apply(this, arguments)
+
 
 class @Wraith.Validator
   @STRING: 'string'
@@ -244,6 +250,8 @@ class @Wraith.Collection extends @Wraith.Model
     @members.push(item)
     @parent.emit('add:' + @as, item)
     @parent.emit('change:' + @as, @)
+    @parent.emit('change', @)
+    item.bind('change', item.proxy(@handleChange))
     item
 
   remove: (id) =>
@@ -251,6 +259,8 @@ class @Wraith.Collection extends @Wraith.Model
       @members.splice(i, 1)
       @parent.emit('remove:' + @as, item)
       @parent.emit('change:' + @as, @)
+      @parent.emit('change', @)
+      item.unbind('change', item.proxy(@handleChange))
       break
     @
 
@@ -258,7 +268,7 @@ class @Wraith.Collection extends @Wraith.Model
   length: => @members.length
   at: (index) => @members[index]
   findById: (id) => return item for item, i in @members when item.get('_id') is id
-
+  handleChange: (key, value) => @parent.emit 'change', key, value
 #
 # The template handles rendering logic. It calles
 # Wraith.compile which depends on Hogan, but if you
@@ -335,7 +345,7 @@ class @Wraith.View extends @Wraith.Base
     @
 
   bindTo: ($view, event, model) =>
-    events = event.split(/[,\s?]/)
+    events = event.split(/[,?\s?]/)
     for event in events
       eventArr = event.split(':')
       continue if eventArr.length isnt 2
@@ -481,14 +491,16 @@ class @Wraith.Controller extends @Wraith.Base
 
   #
   # Register the model to this controller
-  # @param [String] as The name of the model to register
   # @param [Wraith.Model] model The model to register to this controller
+  # @param [String] as The name of the model to register
+  # @return [Wraith.Model] The model that was registered
   #
-  registerModel: (as, model) ->
+  registerModel: (model, as) ->
     throw new Error('Model name already registered') if @models[as]
     throw new Error('Model is not valid') if not model instanceof Wraith.Model
     @models[as] = model
     @bindViews(as, model)
+    model
 
   #
   # Binds any view that is loaded into the controller
@@ -520,6 +532,8 @@ class @Wraith.Controller extends @Wraith.Base
       model.bind 'remove:' + map, (model_) -> view.removeView(model_)
     else if map
       model.bind 'change:' + map, (model_) -> view.updateView(model_)
+    else
+      model.bind 'change', -> view.updateView(model)
 
   #
   # This is a wrapper for any UI event happening on views in this
@@ -532,7 +546,6 @@ class @Wraith.Controller extends @Wraith.Base
     e.model = @getModelFromEl e.target
     @[cb]?(e)
 
-
   #
   # Traverses the dom upwards to find the first model it encounters
   # If no model is found, it will return null
@@ -540,7 +553,6 @@ class @Wraith.Controller extends @Wraith.Base
   #
   getModelFromEl: ($el) =>
     while $el
-      console.log $el
       break if modelId = $el.attributes['data-model']?.value
       $el = $el.parentNode
 

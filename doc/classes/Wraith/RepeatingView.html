@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Wraith</span>
     &raquo;
-    <span class='title'>Validator</span>
+    <span class='title'>RepeatingView</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -107,32 +107,37 @@
     <div id='content'>
       <h1>
         Class:
-        Wraith.Validator
+        Wraith.RepeatingView
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
           <td>src&#47;wraith.coffee</td>
         </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes//Wraith/View.html'>.Wraith.View</a>
+          </td>
+        </tr>
       </table>
-      <h2>Constant Summary</h2>
-      <dl class='constants'>
-        <dt id='STRING-constant'>
-          STRING
-          =
-          <div class='tags'>
-</div>
-        </dt>
-        <dd>
-          <pre><code class='coffee'>'string'</code></pre>
-        </dd>
-      </dl>
-      <h2>Class Method Summary</h2>
+      <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#is-class'>
-        + (void) <strong>is</strong>(obj, type)
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($el, template)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#render-instance'>
+        - (void) <strong>render</strong>(model)
       </a>
     </span>
     <span class='desc'>
@@ -141,8 +146,28 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#isString-class'>
-        + (void) <strong>isString</strong>(obj)
+      <a href='#createView-instance'>
+        - (void) <strong>createView</strong>(model)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#removeView-instance'>
+        - (void) <strong>removeView</strong>(model)
+      </a>
+    </span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#updateView-instance'>
+        - (void) <strong>updateView</strong>(model)
       </a>
     </span>
     <span class='desc'>
@@ -150,18 +175,45 @@
     </span>
   </li>
 </ul>
-      <h2>Class Method Details</h2>
+      <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='is-class'>
-      + (void) <strong>is</strong>(obj, type)
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($el, template)
+    </p>
+    <div class='docstring'>
+  <p>Constructor</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='render-instance'>
+      - (void) <strong>render</strong>(model)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='isString-class'>
-      + (void) <strong>isString</strong>(obj)
+    <p class='signature' id='createView-instance'>
+      - (void) <strong>createView</strong>(model)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='removeView-instance'>
+      - (void) <strong>removeView</strong>(model)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='updateView-instance'>
+      - (void) <strong>updateView</strong>(model)
     </p>
     <div class='tags'>
 </div>
