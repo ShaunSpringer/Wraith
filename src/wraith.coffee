@@ -113,7 +113,6 @@ class @Wraith.Bootloader
     for $controller in controllers
       @loadController $controller.attributes['data-controller'].value, $controller
 
-
     # Activate our controllers via .init
     for id, controller of Wraith.controllers
       controller.init()
@@ -125,7 +124,7 @@ class @Wraith.Bootloader
   # @param [Object] $item The HTML element to bind to
   #
   loadController: (id, $item) ->
-    throw Error('Controller does not exist') unless Controller = Wraith.Controllers[id]
+    throw 'Controller does not exist' unless Controller = Wraith.Controllers[id]
     controller = new Controller($item)
     Wraith.controllers[controller.id] = controller
 
@@ -148,7 +147,7 @@ class @Wraith.Base
   # @param [Function] cb Callback to be executed on event.
   #
   bind: (ev, cb) =>
-    throw Error('Callback is not a function') unless Wraith.isFunction(cb)
+    throw 'Callback is not a function' unless Wraith.isFunction(cb)
     list = @listeners[ev] ?= []
     list.push(cb)
     @
@@ -229,7 +228,7 @@ class @Wraith.Model extends @Wraith.Base
   get: (key) => @attributes?[key]
 
   set: (key, val) =>
-    throw Error('Trying to set an non-existent property!') unless field = @constructor.fields[key]
+    throw 'Trying to set an non-existent property!' unless field = @constructor.fields[key]
     # Ignore a re-setting of the same value
     return if val == @get(key)
     @attributes[key] = val
@@ -283,7 +282,7 @@ class @Wraith.Template extends @Wraith.Base
   constructor: (@template) ->
     if Wraith.DEBUG then console.log '@Wraith.Template', 'constructor'
 
-    throw Error('Template is required') unless @template
+    throw 'Template is required' unless @template
     @template_fn = Wraith.compile(@template)
 
   #
@@ -307,8 +306,8 @@ class @Wraith.View extends @Wraith.Base
   #
   constructor: (@$el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
-    throw new Error('Element is required by View') unless @$el
-    throw new Error('Template is required by View') unless @template
+    throw 'Element is required by View' unless @$el
+    throw 'Template is required by View' unless @template
 
     super()
 
@@ -496,8 +495,8 @@ class @Wraith.Controller extends @Wraith.Base
   # @return [Wraith.Model] The model that was registered
   #
   registerModel: (model, as) ->
-    throw new Error('Model name already registered') if @models[as]
-    throw new Error('Model is not valid') if not model instanceof Wraith.Model
+    throw 'Model name already registered' if @models[as]
+    throw 'Model is not valid' if not model instanceof Wraith.Model
     @models[as] = model
     @bindViews(as, model)
     model
