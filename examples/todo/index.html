@@ -11,20 +11,20 @@
     </head>
     <body>
         <div data-controller="TodoManager">
-            <input type="text" width="100" placeholder="Type a task here" />
+            <input type="text" width="100" placeholder="Type a task here" class="listitem" />
             <ul>
                 <li data-bind="list.items" data-repeat>
                     <fieldset>
-                        <div class="delete">⊗</div>
+                        <div class="delete" data-events="click:itemDelete">⊗</div>
                         <label>
-                            <input type="checkbox" data-checked="selected" />
+                            <input type="checkbox" data-checked="selected" data-events="click:itemToggle" />
                             <div class="name">{{text}}</div>
                             <div class="select">✓</div>
                         </label>
                     </fieldset>
                 </li>
             </ul>
-            <div data-bind="list.items">{{length()}}</div>
+            <div data-bind="list.items">Count: <strong>{{length()}}</strong></div>
         </div>
         <script src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/2.0.0/hogan.js"></script>

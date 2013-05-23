@@ -56,22 +56,6 @@
       return TodoManager.__super__.constructor.apply(this, arguments);
     }
 
-    TodoManager.prototype.view_events = [
-      {
-        type: 'keypress',
-        selector: 'input[type=text]',
-        cb: 'inputKeypress'
-      }, {
-        type: 'change',
-        selector: '.input[type=checkbox]',
-        cb: 'itemToggle'
-      }, {
-        type: 'click',
-        selector: 'div.delete',
-        cb: 'itemDelete'
-      }
-    ];
-
     TodoManager.prototype.init = function() {
       TodoManager.__super__.init.call(this);
       this.registerModel('list', new Wraith.Models.List);
@@ -89,7 +73,7 @@
       });
     };
 
-    TodoManager.prototype.inputKeypress = function(e, $view, model) {
+    TodoManager.prototype.inputKeypress = function(e) {
       var val;
       if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
         return;
@@ -101,12 +85,12 @@
       return e.currentTarget.value = '';
     };
 
-    TodoManager.prototype.itemDelete = function(e, $view, model) {
-      return this.items.remove(model.get('_id'));
+    TodoManager.prototype.itemDelete = function(e) {
+      return this.items.remove(e.model.get('_id'));
     };
 
-    TodoManager.prototype.itemToggle = function(e, $view, model) {
-      return model.set('selected', !model.get('selected'));
+    TodoManager.prototype.itemToggle = function(e) {
+      return e.model.set('selected', !e.model.get('selected'));
     };
 
     return TodoManager;

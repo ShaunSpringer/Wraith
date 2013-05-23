@@ -170,31 +170,6 @@ class @Wraith.Validator
   @isString: (obj) -> @is(obj, @STRING)
 
 
-class @Wraith.Collection extends @Wraith.Base
-  constructor: (@parent, @as, @klass) -> @members = []
-
-  create: (attr) => @add(new @klass(attr))
-
-  add: (item) =>
-    @members.push(item)
-    @parent.emit('change:' + @as, @)
-    @parent.emit('add:' + @as, item)
-    item
-
-  remove: (id) =>
-    for item, i in @members when item.get('_id') is id
-      @parent.emit('change:' + @as, @)
-      @parent.emit('remove:' + @as, item)
-      @members.splice(i, 1)
-      break
-    @
-
-  all: => @members
-  length: => @members.length
-  at: (index) => @members[index]
-  findById: (id) => return item for item, i in @members when item.get('_id') is id
-
-
 class @Wraith.Model extends @Wraith.Base
   @field: (name, opt) ->
     @fields ?= {}
@@ -243,6 +218,32 @@ class @Wraith.Model extends @Wraith.Base
 
   toJSON: => @attributes
 
+class @Wraith.Collection extends @Wraith.Model
+  constructor: (@parent, @as, @klass) ->
+    super()
+    @members = []
+
+  create: (attr) => @add(new @klass(attr))
+
+  add: (item) =>
+    @members.push(item)
+    @parent.emit('add:' + @as, item)
+    @parent.emit('change:' + @as, @)
+    item
+
+  remove: (id) =>
+    for item, i in @members when item.get('_id') is id
+      @members.splice(i, 1)
+      @parent.emit('remove:' + @as, item)
+      @parent.emit('change:' + @as, @)
+      break
+    @
+
+  all: => @members
+  length: => @members.length
+  at: (index) => @members[index]
+  findById: (id) => return item for item, i in @members when item.get('_id') is id
+
 #
 # The template handles rendering logic. It calles
 # Wraith.compile which depends on Hogan, but if you
@@ -254,11 +255,10 @@ class @Wraith.Template extends @Wraith.Base
   # Constructor
   # @param [String] template The template string to register
   #
-  constructor: (@template, wrap = false) ->
+  constructor: (@template) ->
     if Wraith.DEBUG then console.log '@Wraith.Template', 'constructor'
 
     throw Error('Template is required') unless @template
-    if wrap then @template = '<div wraith-view data-id="<%=get("_id")%>">' + @template + '</div>'
     @template_fn = Wraith.compile(@template)
 
   #
@@ -283,7 +283,9 @@ class @Wraith.View extends @Wraith.Base
     if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
     throw new Error('Element is required by View') unless @$el
     throw new Error('Template is required by View') unless @template
+
     super()
+
     @id = Wraith.uniqueId()
     @$parent = @$el.parentNode
 
@@ -294,24 +296,44 @@ class @Wraith.View extends @Wraith.Base
     rendered = @Template.render(model)
     $el = document.createElement('div')
     $el.innerHTML = rendered
-    return $el.firstChild
+    $el = $el.firstChild
+    return $el
 
   updateView: (model) ->
-    $el = @render(model)
-    @$parent.replaceChild($el, @$el)
-    @$el = $el
+    console.log 'here'
+    $view = @render(model)
+    @$parent.replaceChild($view, @$el)
+    @$el = $view
+    @$el.setAttribute('data-model', model.get('_id'))
+    @bindEvents $view, model
 
+  bindEvents: ($view, model) =>
+    @bindTo $view, $view.attributes['data-events'].value, model if $view.attributes['data-events']
 
-class @Wraith.RepeatingView extends @Wraith.Base
+    els = $view.querySelectorAll('[data-events]')
+    @bindTo $el, $el.attributes['data-events'].value, model for $el in els
+    @
+
+  bindTo: ($view, event, model) =>
+    events = event.split(/[,\s?]/)
+    for event in events
+      eventArr = event.split(':')
+      continue if eventArr.length isnt 2
+      name = eventArr[0]
+      cb = eventArr[1]
+      continue if not name in Wraith.UIEvents
+      $view.addEventListener name, (e) => @emit 'uievent', e, cb
+    @
+
+class @Wraith.RepeatingView extends @Wraith.View
   #
   # Constructor
   #
-  constructor: (@$parent, @template) ->
+  constructor: (@$el, @template) ->
     if Wraith.DEBUG then console.log '@Wraith.RepeatingView', 'constructor'
-    throw new Error('Parent is required by RepeatingView') unless @$parent
-    throw new Error('Template is required by RepeatingView') unless @template
 
-    @id = Wraith.uniqueId()
+    super(@$el, @template)
+
     @$parent.innerHTML = ''
 
     Wraith.Templates[@template] ?= new Wraith.Template(template)
@@ -329,12 +351,21 @@ class @Wraith.RepeatingView extends @Wraith.Base
     if $node = $el.firstChild
       $node.setAttribute('data-id', Wraith.uniqueId())
       $node.setAttribute('data-model', model.get('_id'))
-      @$parent.appendChild $el.firstChild
+      $view = $el.firstChild
+      @$parent.appendChild $view
+      @bindEvents $view
+
+  removeView: (model) ->
+    return unless model instanceof Wraith.Model
+    $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
+    @$parent.removeChild $el
 
   updateView: (model) ->
-    return unless $view = @$parent.querySelector('[data-id=' + model.get('_id') + ']');
-    $el = @render(model)
-    @$parent.replaceChild($el, $view)
+    return unless $node = @$parent.querySelector('[data-id=' + model.get('_id') + ']');
+    $view = @render(model)
+    @$parent.replaceChild($view, $node)
+    @bindEvents $view
+
 #
 # The proverbial 'controller' in the MVC pattern.
 # The Controller handles the logic your applications or
@@ -413,9 +444,12 @@ class @Wraith.Controller extends @Wraith.Base
     template = textbox.value
 
     if repeating
-      view = new Wraith.RepeatingView($view.parentNode, template, binding)
+      view = new Wraith.RepeatingView($view, template)
     else
       view = new Wraith.View($view, template)
+
+    # Listen for uievents from the view
+    view.bind 'uievent', @handleUIEvent
 
     @views.push view
     @bindings[targetModel] ?= []
@@ -436,23 +470,41 @@ class @Wraith.Controller extends @Wraith.Base
   #
   # Binds any view that is loaded into the controller
   # to the given model.
+  # @param [String] name The name of the model to bind to
+  # @param [Wraith.Model] model The model to map the namespace to
   #
   bindViews: (name, model) ->
     return unless bindings = @bindings[name]
-
-    @bindView(model, map) for map in bindings
+    @bindView(model, map.binding, map.view) for map in bindings
     @
 
-  bindView: (model, map) ->
-    binding = map.binding
-    view = map.view
+  #
+  # Binds a single instance of a view to a model.
+  # Usings binding as the dot notation map
+  # @TODO Make this work for more than 1 level
+  # @param [Wraith.Model] model The model to bind to
+  # @param [String] binding The dot notation binding (first item should be the model name)
+  # @param [Wraith.View|Wraith.RepeatingView] view The view object to bind to.
+  #
+  bindView: (model, binding, view) ->
     mapping = binding.split('.')
+    map = mapping[1]
 
-    if view instanceof Wraith.RepeatingView
-      if mapping[1]
-        model.bind 'add:' + mapping[1], (model_) -> view.createView(model_)
-        model.bind 'remove:' + mapping[1], (model_) -> view.removeView(model_)
-        #model.bind 'change:' + mapping[1], (model_) -> view.updateView(model_)
-    else
-      if mapping[1]
-          model.bind 'change:' + mapping[1], (model_) -> view.updateView(model_)
+    if map and view instanceof Wraith.RepeatingView
+      model.bind 'add:' + map, (model_) -> view.createView(model_)
+      model.bind 'remove:' + map, (model_) -> view.removeView(model_)
+    else if map
+      model.bind 'change:' + map, (model_) -> view.updateView(model_)
+
+  handleUIEvent: (e, cb) =>
+    e.model = @getModelFromEl e.target
+    @[cb]?(e)
+
+  getModelFromEl: ($el) =>
+    while $el
+      if modelId = $el.parentNode.attributes['data-model']?.value
+        break
+
+      $el = $el.parentNode
+
+    Wraith.models[modelId]
