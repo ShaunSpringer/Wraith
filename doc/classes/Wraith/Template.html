@@ -137,7 +137,7 @@
   <li>
     <span class='signature'>
       <a href='#render-instance'>
-        - (void) <strong>render</strong>(data)
+        - (String) <strong>render</strong>(data)
       </a>
     </span>
     <span class='desc'>
@@ -173,7 +173,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='render-instance'>
-      - (void) <strong>render</strong>(data)
+      - (String) <strong>render</strong>(data)
     </p>
     <div class='docstring'>
   <p>Renders the given data. Expects data to be an object
@@ -191,13 +191,22 @@ that has a .toJSON method.</p>
       <span class='desc'>The data object to be rendered.</span>
     </li>
   </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>String</tt>)
+      &mdash;
+      <span class='desc'>The result of the execution of the template function</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Thu May 23 2013 10:48:24 GMT-0400 (EDT)
+  Thu May 23 2013 11:06:24 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0

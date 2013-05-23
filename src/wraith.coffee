@@ -6,6 +6,7 @@ root = exports ? @
 # Used to name space
 #
 # @include Wraith
+#
 @Wraith =
   DEBUG: true
   Controllers: []
@@ -31,17 +32,22 @@ root = exports ? @
   #
   delay: (ms, func) -> setTimeout func, ms
 
-  # Helper function to escape **RegExp** contents, because JS doesn't have one.
+  #
+  # Borrowed from Underscores ERB-style templates
+  # @param [String] string The string to escape
+  #
   escapeRegExp: (string) -> string.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1')
 
-  # By default, Underscore uses **ERB**-style template delimiters, change the
-  # following template settings to use alternative delimiters.
-  templateSettings: {
+  #
+  # This is partly borrowed from underscores ERB-style template
+  # settings.
+  #
+  templateSettings:
     start:        '{{'
     end:          '}}'
     interpolate:  /{{(.+?)}}/g
     checked:  /data-checked=['"](.+?)['"]/g
-  }
+
 
   #
   # Compiles a template with a ERB style markup.
@@ -112,6 +118,7 @@ class @Wraith.Bootloader
     for id, controller of Wraith.controllers
       controller.init()
     @
+
   #
   # Loads a given controller by id and HTML element
   # @param [String] id The controllers id
@@ -161,6 +168,11 @@ class @Wraith.Base
       break
     @
 
+  #
+  # Emits the given event to listneers
+  # @param [String] event The name of the event to emit
+  # @param [Object] args The data object to emit
+  #
   emit: (event, args ...) =>
     if @listeners[event]?
       listener(args ...) for listener in @listeners[event]
@@ -268,6 +280,7 @@ class @Wraith.Template extends @Wraith.Base
   # Renders the given data. Expects data to be an object
   # that has a .toJSON method.
   # @param [Object] data The data object to be rendered.
+  # @return [String] The result of the execution of the template function
   #
   render: (data) -> @template_fn(data)
 
@@ -295,6 +308,11 @@ class @Wraith.View extends @Wraith.Base
     Wraith.Templates[@template] ?= new Wraith.Template(template)
     @Template = Wraith.Templates[@template]
 
+  #
+  # Renders the view given a Wraith.Model object
+  # @param [Wraith.Model] model The model to render
+  # @returns [HTMLElement] A HTMLElement from the resulting render
+  #
   render: (model) ->
     rendered = @Template.render(model)
     $el = document.createElement('div')
@@ -350,12 +368,12 @@ class @Wraith.RepeatingView extends @Wraith.View
   createView: (model) ->
     return unless model instanceof Wraith.Model
     $el = @render(model)
-    if $node = $el.firstChild
-      $node.setAttribute('data-id', Wraith.uniqueId())
-      $node.setAttribute('data-model', model.get('_id'))
-      $view = $el.firstChild
-      @$parent.appendChild $view
-      @bindEvents $view
+    return unless $node = $el.firstChild
+    $node.setAttribute('data-id', Wraith.uniqueId())
+    $node.setAttribute('data-model', model.get('_id'))
+    $view = $el.firstChild
+    @$parent.appendChild $view
+    @bindEvents $view
 
   removeView: (model) ->
     return unless model instanceof Wraith.Model
@@ -363,10 +381,13 @@ class @Wraith.RepeatingView extends @Wraith.View
     @$parent.removeChild $el
 
   updateView: (model) ->
-    return unless $node = @$parent.querySelector('[data-id=' + model.get('_id') + ']');
-    $view = @render(model)
-    @$parent.replaceChild($view, $node)
-    @bindEvents $view
+    return unless $oldView = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
+    $el = @render(model)
+    return unless $node = $el.firstChild
+    $node.setAttribute('data-id', Wraith.uniqueId())
+    $node.setAttribute('data-model', model.get('_id'))
+    @$parent.replaceChild($node, $oldView)
+    @bindEvents $node
 
 #
 # The proverbial 'controller' in the MVC pattern.
@@ -493,7 +514,9 @@ class @Wraith.Controller extends @Wraith.Base
     map = mapping[1]
 
     if map and view instanceof Wraith.RepeatingView
-      model.bind 'add:' + map, (model_) -> view.createView(model_)
+      model.bind 'add:' + map, (model_) ->
+        view.createView(model_)
+        model_.bind 'change', -> view.updateView(model_)
       model.bind 'remove:' + map, (model_) -> view.removeView(model_)
     else if map
       model.bind 'change:' + map, (model_) -> view.updateView(model_)
@@ -517,7 +540,8 @@ class @Wraith.Controller extends @Wraith.Base
   #
   getModelFromEl: ($el) =>
     while $el
-      break if modelId = $el.parentNode.attributes['data-model']?.value
+      console.log $el
+      break if modelId = $el.attributes['data-model']?.value
       $el = $el.parentNode
 
     Wraith.models[modelId]
