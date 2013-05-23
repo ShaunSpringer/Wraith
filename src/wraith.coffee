@@ -36,23 +36,27 @@ root = exports ? @
 
   # By default, Underscore uses **ERB**-style template delimiters, change the
   # following template settings to use alternative delimiters.
-  templateSettings:
+  templateSettings: {
     start:        '{{'
     end:          '}}'
     interpolate:  /{{(.+?)}}/g
     checked:  /data-checked=['"](.+?)['"]/g
+  }
 
   #
-  # Compiles a template with a coffee-script compiler.
+  # Compiles a template with a ERB style markup.
   # Note: Override this if you want to use a different
   # template system.
-  # @param [String] template The template to compile
   #
-  compile: (template) ->
+  # NOTE:
   # JavaScript templating a-la **ERB**, pilfered from John Resig's
   # *Secrets of the JavaScript Ninja*, page 83.
   # Single-quote fix from Rick Strahl.
   # With alterations for arbitrary delimiters, and to preserve whitespace.
+  #
+  # @param [String] template The template to compile
+  #
+  compile: (template) ->
     c = Wraith.templateSettings
     endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + Wraith.escapeRegExp(c.end) + ")", "g")
     fn = new Function 'obj',
@@ -71,7 +75,6 @@ root = exports ? @
       "');}return p.join('');"
 
     return fn
-
 
   #
   # Generates a UID at the desired length
@@ -300,7 +303,6 @@ class @Wraith.View extends @Wraith.Base
     return $el
 
   updateView: (model) ->
-    console.log 'here'
     $view = @render(model)
     @$parent.replaceChild($view, @$el)
     @$el = $view
@@ -392,7 +394,7 @@ class @Wraith.Controller extends @Wraith.Base
 
     super()
     @id = Wraith.uniqueId()
-    @$el.setAttribute('id', @id)
+    @$el.setAttribute('data-id', @id)
     @models = []
     @views = []
     @bindings = []
@@ -496,15 +498,26 @@ class @Wraith.Controller extends @Wraith.Base
     else if map
       model.bind 'change:' + map, (model_) -> view.updateView(model_)
 
+  #
+  # This is a wrapper for any UI event happening on views in this
+  # controller. We do this so we can do a lookup of the model and pass
+  # it through with the event
+  # @param [Event] e The native event object
+  # @param [String] cb The name of the callback function to call
+  #
   handleUIEvent: (e, cb) =>
     e.model = @getModelFromEl e.target
     @[cb]?(e)
 
+
+  #
+  # Traverses the dom upwards to find the first model it encounters
+  # If no model is found, it will return null
+  # @param [HTMLElement] $el The element from which to start the traversal
+  #
   getModelFromEl: ($el) =>
     while $el
-      if modelId = $el.parentNode.attributes['data-model']?.value
-        break
-
+      break if modelId = $el.parentNode.attributes['data-model']?.value
       $el = $el.parentNode
 
     Wraith.models[modelId]
