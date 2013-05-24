@@ -45,7 +45,7 @@ class @Wraith.Controller extends @Wraith.View
   findViews: ->
     # Anything with a bind attribute is considered a view
     views = document.querySelectorAll('[data-bind]')
-    @registerView $view for $view in views
+    @registerView($view) for $view in views
     @
 
   #
@@ -136,8 +136,7 @@ class @Wraith.Controller extends @Wraith.View
     else
       model.bind 'change', -> view.updateView(model)
 
-  handleUIEvent: (e, cb) =>
-    @[cb]?(e)
+  handleUIEvent: (e, cb) => @[cb]?(e)
 
   #
   # This is a wrapper for any UI event happening on views in this

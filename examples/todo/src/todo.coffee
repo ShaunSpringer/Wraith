@@ -32,7 +32,6 @@ class Wraith.Models.List extends Wraith.Model
 # @extend Wraith.Controller
 #
 class Wraith.Controllers.TodoManager extends Wraith.Controller
-
   init: ->
     super()
     @list = @registerModel(new Wraith.Models.List, 'list')
