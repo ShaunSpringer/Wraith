@@ -12,7 +12,8 @@ task 'build', 'Continually build', ->
     'src/model.coffee'
     'src/collection.coffee'
     'src/view.coffee'
-    'src/repeatingview.coffee'
+    'src/viewmodel.coffee'
+    'src/collectionview.coffee'
     'src/controller.coffee'
   ]
 

@@ -9,7 +9,9 @@ class @Wraith.Base
   #
   # Constructor
   #
-  constructor: -> @listeners = {}
+  constructor: ->
+    @id = Wraith.uniqueId()
+    @listeners = {}
 
   #
   # Binds the given function (cb) to the given

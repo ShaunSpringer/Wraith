@@ -16,15 +16,15 @@
 #     <div data-template="ListItem" data-map="list.items"></div>
 #   </ul>
 #
-class @Wraith.Controller extends @Wraith.Base
+class @Wraith.Controller extends @Wraith.View
   #
   # Constructor
   #
   constructor: (@$el) ->
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'constructor'
 
-    super()
-    @id = Wraith.uniqueId()
+    super(@$el)
+
     @$el.setAttribute('data-id', @id)
     @models = []
     @views = []
@@ -36,6 +36,7 @@ class @Wraith.Controller extends @Wraith.Base
   init: ->
     if Wraith.DEBUG then console.log '@Wraith.Controller', 'init'
     @findViews()
+    @bindEvents(@$el)
 
   #
   # Find all the views embedded inside the controller and
@@ -77,12 +78,12 @@ class @Wraith.Controller extends @Wraith.Base
     template = textbox.value
 
     if repeating
-      view = new Wraith.RepeatingView($view, template)
+      view = new Wraith.CollectionView($view, template)
     else
-      view = new Wraith.View($view, template)
+      view = new Wraith.ViewModel($view, template)
 
     # Listen for uievents from the view
-    view.bind 'uievent', @handleUIEvent
+    view.bind 'uievent', @handleViewUIEvent
 
     @views.push view
     @bindings[targetModel] ?= []
@@ -119,13 +120,13 @@ class @Wraith.Controller extends @Wraith.Base
   # @TODO Make this work for more than 1 level
   # @param [Wraith.Model] model The model to bind to
   # @param [String] binding The dot notation binding (first item should be the model name)
-  # @param [Wraith.View|Wraith.RepeatingView] view The view object to bind to.
+  # @param [Wraith.View|Wraith.CollectionView] view The view object to bind to.
   #
   bindView: (model, binding, view) ->
     mapping = binding.split('.')
     map = mapping[1]
 
-    if map and view instanceof Wraith.RepeatingView
+    if map and view instanceof Wraith.CollectionView
       model.bind 'add:' + map, (model_) ->
         view.createView(model_)
         model_.bind 'change', -> view.updateView(model_)
@@ -135,6 +136,9 @@ class @Wraith.Controller extends @Wraith.Base
     else
       model.bind 'change', -> view.updateView(model)
 
+  handleUIEvent: (e, cb) =>
+    @[cb]?(e)
+
   #
   # This is a wrapper for any UI event happening on views in this
   # controller. We do this so we can do a lookup of the model and pass
@@ -142,7 +146,7 @@ class @Wraith.Controller extends @Wraith.Base
   # @param [Event] e The native event object
   # @param [String] cb The name of the callback function to call
   #
-  handleUIEvent: (e, cb) =>
+  handleViewUIEvent: (e, cb) =>
     e.model = @getModelFromEl e.target
     @[cb]?(e)
 

@@ -112,12 +112,12 @@
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;wraith.coffee</td>
+          <td>src&#47;controller.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes//Wraith/Base.html'>.Wraith.Base</a>
+            <a href='../../classes//Wraith/View.html'>.Wraith.View</a>
           </td>
         </tr>
       </table>
@@ -167,7 +167,7 @@
   <li>
     <span class='signature'>
       <a href='#registerModel-instance'>
-        - (void) <strong>registerModel</strong>(as, model)
+        - (Wraith.Model) <strong>registerModel</strong>(model, as)
       </a>
     </span>
     <span class='desc'>
@@ -198,6 +198,17 @@
     <span class='signature'>
       <a href='#handleUIEvent-instance'>
         - (void) <strong>handleUIEvent</strong>(e, cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleViewUIEvent-instance'>
+        - (void) <strong>handleViewUIEvent</strong>(e, cb)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -276,7 +287,7 @@ register them with the controller</p>
   </div>
   <div class='method_details'>
     <p class='signature' id='registerModel-instance'>
-      - (void) <strong>registerModel</strong>(as, model)
+      - (Wraith.Model) <strong>registerModel</strong>(model, as)
     </p>
     <div class='docstring'>
   <p>Register the model to this controller</p>
@@ -285,6 +296,14 @@ register them with the controller</p>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to register to this controller</span>
+    </li>
+    <li>
       <span class='name'>as</span>
       <span class='type'>
         (<tt>String</tt>)
@@ -292,13 +311,14 @@ register them with the controller</p>
       &mdash;
       <span class='desc'>The name of the model to register</span>
     </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
     <li>
-      <span class='name'>model</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
-      </span>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
       &mdash;
-      <span class='desc'>The model to register to this controller</span>
+      <span class='desc'>The model that was registered</span>
     </li>
   </ul>
 </div>
@@ -367,7 +387,7 @@ Usings binding as the dot notation map</p>
     <li>
       <span class='name'>view</span>
       <span class='type'>
-        (<tt>Wraith.View|Wraith.RepeatingView</tt>)
+        (<tt>Wraith.View|Wraith.CollectionView</tt>)
       </span>
       &mdash;
       <span class='desc'>The view object to bind to.</span>
@@ -378,6 +398,14 @@ Usings binding as the dot notation map</p>
   <div class='method_details'>
     <p class='signature' id='handleUIEvent-instance'>
       - (void) <strong>handleUIEvent</strong>(e, cb)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleViewUIEvent-instance'>
+      - (void) <strong>handleViewUIEvent</strong>(e, cb)
       (bound)
     </p>
     <div class='docstring'>
@@ -434,7 +462,7 @@ If no model is found, it will return null</p>
     </div>
     <div id='footer'>
   Generated on
-  Thu May 23 2013 17:14:07 GMT-0400 (EDT)
+  Fri May 24 2013 16:43:54 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0
