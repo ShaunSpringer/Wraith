@@ -3,14 +3,14 @@
 # instance of a view. It will bind to a models update event
 # and re-render each time it changes
 #
-class @Wraith.ViewModel extends @Wraith.View
+class @Wraith.ViewModel extends @Wraith.BaseView
   #
   # Constructor
   # @param [HTMLElement] $el The HTML Element to attach the view to
   # @param [String] template The template string to use when rendering
   #
   constructor: (@$el, @template) ->
-    if Wraith.DEBUG then console.log '@Wraith.View', 'constructor'
+    Wraith.log '@Wraith.View', 'constructor'
     throw 'Element is required by View' unless @$el
     throw 'Template is required by View' unless @template
 
@@ -37,4 +37,4 @@ class @Wraith.ViewModel extends @Wraith.View
     @$parent.replaceChild($view, @$el)
     @$el = $view
     @$el.setAttribute('data-model', model.get('_id'))
-    @bindEvents $view
+    @bindUIEvents $view

@@ -4,7 +4,7 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
   # Constructor
   #
   constructor: (@$el, @template) ->
-    if Wraith.DEBUG then console.log '@Wraith.CollectionView', 'constructor'
+    Wraith.log '@Wraith.CollectionView', 'constructor'
     super(@$el, @template)
     @$parent.innerHTML = ''
 
@@ -15,12 +15,13 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
     $node.setAttribute('data-id', Wraith.uniqueId())
     $node.setAttribute('data-model', model.get('_id'))
     @$parent.appendChild $el
-    @bindEvents $el
+    @bindUIEvents $el
 
   removeView: (model) ->
     return unless model instanceof Wraith.Model
     $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
     @$parent.removeChild $el
+    @unbindUIEvents $el
 
   updateView: (model) ->
     return unless $oldView = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
@@ -29,4 +30,4 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
     $node.setAttribute('data-id', Wraith.uniqueId())
     $node.setAttribute('data-model', model.get('_id'))
     @$parent.replaceChild($node, $oldView)
-    @bindEvents $node
+    @bindUIEvents $node

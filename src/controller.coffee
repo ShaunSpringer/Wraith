@@ -16,12 +16,12 @@
 #     <div data-template="ListItem" data-map="list.items"></div>
 #   </ul>
 #
-class @Wraith.Controller extends @Wraith.View
+class @Wraith.Controller extends @Wraith.BaseView
   #
   # Constructor
   #
   constructor: (@$el) ->
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'constructor'
+    Wraith.log '@Wraith.Controller', 'constructor'
 
     super(@$el)
 
@@ -29,14 +29,24 @@ class @Wraith.Controller extends @Wraith.View
     @models = []
     @views = []
     @bindings = []
+    @$els = {}
 
   #
-  # Initialize our controller
+  # Initialize the controller by loading the
   #
   init: ->
-    if Wraith.DEBUG then console.log '@Wraith.Controller', 'init'
+    Wraith.log '@Wraith.Controller', 'init'
     @findViews()
-    @bindEvents(@$el)
+    @bindUIEvents(@$el)
+    @loadElements()
+
+  #
+  #
+  #
+  loadElements: ->
+    els = @$el.querySelectorAll('[id]')
+    @$els[$el.id] = $el for $el in els
+    @
 
   #
   # Find all the views embedded inside the controller and

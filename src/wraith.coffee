@@ -1,6 +1,3 @@
-root = exports ? @
-
-
 #
 # Global Wraith Object
 # Used to name space
@@ -16,7 +13,7 @@ root = exports ? @
   models: {}
   Templates: {}
   UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
-
+  log: (args ...) -> if Wraith.DEBUG then console.log args ...
   #
   # Checks to see if a given object
   # is a funciton.
@@ -47,7 +44,6 @@ root = exports ? @
     end:          '}}'
     interpolate:  /{{(.+?)}}/g
     checked:  /data-checked=['"](.+?)['"]/g
-
 
   #
   # Compiles a template with a ERB style markup.

@@ -10,7 +10,7 @@ class @Wraith.Template extends @Wraith.Base
   # @param [String] template The template string to register
   #
   constructor: (@template) ->
-    if Wraith.DEBUG then console.log '@Wraith.Template', 'constructor'
+    Wraith.log '@Wraith.Template', 'constructor'
 
     throw 'Template is required' unless @template
     @template_fn = Wraith.compile(@template)
