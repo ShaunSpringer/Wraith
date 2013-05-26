@@ -136,7 +136,9 @@ class @Wraith.Controller extends @Wraith.View
     else
       model.bind 'change', -> view.updateView(model)
 
-  handleUIEvent: (e, cb) => @[cb]?(e)
+  handleUIEvent: (e, cb) =>
+    throw "Callback #{cb} not found on controller" unless @[cb]
+    @[cb](e)
 
   #
   # This is a wrapper for any UI event happening on views in this
@@ -146,8 +148,9 @@ class @Wraith.Controller extends @Wraith.View
   # @param [String] cb The name of the callback function to call
   #
   handleViewUIEvent: (e, cb) =>
+    throw "Callback #{cb} not found on controller" unless @[cb]
     e.model = @getModelFromEl e.target
-    @[cb]?(e)
+    @[cb](e)
 
   #
   # Traverses the dom upwards to find the first model it encounters
