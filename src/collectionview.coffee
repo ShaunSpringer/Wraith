@@ -15,6 +15,7 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
     $node.setAttribute('data-id', Wraith.uniqueId())
     $node.setAttribute('data-model', model.get('_id'))
     @$parent.appendChild $el
+    @bindClasses $el, model
     @bindUIEvents $el
 
   removeView: (model) ->
@@ -31,4 +32,5 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
     $node.setAttribute('data-id', id)
     $node.setAttribute('data-model', model.get('_id'))
     @$parent.replaceChild($node, $oldView)
+    @bindClasses $node, model
     @bindUIEvents $node

@@ -32,9 +32,18 @@ class @Wraith.ViewModel extends @Wraith.BaseView
     $el = $el.firstChild
     return $el
 
+  #
+  # Updates the view for a given model. Calls the
+  # render function and then does a replaceChild to
+  # swap the current view (@$el) for the new view.
+  # This also implicitly rebinds events after the view is
+  # rendered and inserted into the DOM.
+  # @param [Wraith.Model] model The model used when rendering
+  #
   updateView: (model) ->
     $view = @render(model)
     @$parent.replaceChild($view, @$el)
     @$el = $view
     @$el.setAttribute('data-model', model.get('_id'))
+    @bindClasses $view, model
     @bindUIEvents $view

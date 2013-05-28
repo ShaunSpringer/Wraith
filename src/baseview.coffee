@@ -14,9 +14,38 @@ class @Wraith.BaseView extends @Wraith.Base
     throw 'Element is required by View' unless @$el
     super()
 
+  bindClasses: ($view, model) =>
+    els = $view.parentNode.querySelectorAll('[data-class]')
+
+    for $el in els
+      klasses = $el.attributes['data-class'].value
+      $el.removeAttribute('data-class') # Clean up the DOM
+      for klassMap in klasses.split(' ')
+        breakdown = klassMap.split(':')
+        continue if breakdown.length isnt 2
+        @bindClass $view, model, breakdown[0], breakdown[1]
+    @
+
+  bindClass: ($view, model, klass, binding) =>
+    results = false
+    invert = binding[0] is '!'
+    binding = binding.slice(1) if invert
+
+    # See if this is a method
+    if binding.slice(-2) is '()'
+      binding = binding.slice(0, -2)
+      if Wraith.isFunction(model[binding])
+        results = !!model[binding]()
+    else
+      results = !!model.get(binding)
+
+    results = !results if invert
+    if results
+      klasses = $view.attributes['class']?.value
+      $view.setAttribute('class', klasses + ' ' + klass)
+
   bindUIEvents: ($view) =>
-    @bindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
-    els = $view.querySelectorAll('[data-events]')
+    els = $view.parentNode.querySelectorAll('[data-events]')
     @bindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 
@@ -34,8 +63,7 @@ class @Wraith.BaseView extends @Wraith.Base
   handleUIEvent: (e, cb) -> @emit 'uievent', e, cb
 
   unbindUIEvents: ($view) =>
-    @unbindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
-    els = $view.querySelectorAll('[data-events]')
+    els = $view.parentNode.querySelectorAll('[data-events]')
     @unbindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 
