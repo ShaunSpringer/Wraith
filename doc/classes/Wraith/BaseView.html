@@ -17,7 +17,7 @@
     &raquo;
     <span class='title'>Wraith</span>
     &raquo;
-    <span class='title'>ViewModel</span>
+    <span class='title'>BaseView</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -107,17 +107,17 @@
     <div id='content'>
       <h1>
         Class:
-        Wraith.ViewModel
+        Wraith.BaseView
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;viewmodel.coffee</td>
+          <td>src&#47;baseview.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes//Wraith/BaseView.html'>.Wraith.BaseView</a>
+            <a href='../../classes//Wraith/Base.html'>.Wraith.Base</a>
           </td>
         </tr>
       </table>
@@ -126,7 +126,7 @@
   <li>
     <span class='signature'>
       <a href='#constructor-instance'>
-        - (void) <strong>constructor</strong>($el, template)
+        - (void) <strong>constructor</strong>($el)
       </a>
     </span>
     <span class='constructor note title'>Constructor</span>
@@ -136,22 +136,78 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#render-instance'>
-        - (void) <strong>render</strong>(model)
+      <a href='#bindClasses-instance'>
+        - (void) <strong>bindClasses</strong>($view, model)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Renders the view given a Wraith.Model object @returns [HTMLElement] A HTMLElement from the resulting render
+      
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#updateView-instance'>
-        - (void) <strong>updateView</strong>(model)
+      <a href='#bindClass-instance'>
+        - (void) <strong>bindClass</strong>($view, model, klass, binding)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindUIEvents-instance'>
+        - (void) <strong>bindUIEvents</strong>($view)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindUIEvent-instance'>
+        - (void) <strong>bindUIEvent</strong>($view, event)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleUIEvent-instance'>
+        - (void) <strong>handleUIEvent</strong>(e, cb)
       </a>
     </span>
     <span class='desc'>
-      Updates the view for a given model.
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindUIEvents-instance'>
+        - (void) <strong>unbindUIEvents</strong>($view)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindUIEvent-instance'>
+        - (void) <strong>unbindUIEvent</strong>($view, event)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
     </span>
   </li>
 </ul>
@@ -159,7 +215,7 @@
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
-      - (void) <strong>constructor</strong>($el, template)
+      - (void) <strong>constructor</strong>($el)
     </p>
     <div class='docstring'>
   <p>Constructor</p>
@@ -190,50 +246,58 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='render-instance'>
-      - (void) <strong>render</strong>(model)
+    <p class='signature' id='bindClasses-instance'>
+      - (void) <strong>bindClasses</strong>($view, model)
+      (bound)
     </p>
-    <div class='docstring'>
-  <p>Renders the view given a Wraith.Model object
-@returns [HTMLElement] A HTMLElement from the resulting render</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>model</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The model to render</span>
-    </li>
-  </ul>
+    <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='updateView-instance'>
-      - (void) <strong>updateView</strong>(model)
+    <p class='signature' id='bindClass-instance'>
+      - (void) <strong>bindClass</strong>($view, model, klass, binding)
+      (bound)
     </p>
-    <div class='docstring'>
-  <p>Updates the view for a given model. Calls the
-render function and then does a replaceChild to
-swap the current view (@$el) for the new view.
-This also implicitly rebinds events after the view is
-rendered and inserted into the DOM.</p>
+    <div class='tags'>
 </div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>model</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The model used when rendering</span>
-    </li>
-  </ul>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindUIEvents-instance'>
+      - (void) <strong>bindUIEvents</strong>($view)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindUIEvent-instance'>
+      - (void) <strong>bindUIEvent</strong>($view, event)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleUIEvent-instance'>
+      - (void) <strong>handleUIEvent</strong>(e, cb)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindUIEvents-instance'>
+      - (void) <strong>unbindUIEvents</strong>($view)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindUIEvent-instance'>
+      - (void) <strong>unbindUIEvent</strong>($view, event)
+      (bound)
+    </p>
+    <div class='tags'>
 </div>
   </div>
 </div>

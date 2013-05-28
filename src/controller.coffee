@@ -41,7 +41,10 @@ class @Wraith.Controller extends @Wraith.BaseView
     @loadElements()
 
   #
-  #
+  # Load our elements with id attributes into
+  # an object that is accesible at the controller level.
+  # This makes it easier to access discrete DOM objects
+  # within the controller via @els['el-id']
   #
   loadElements: ->
     els = @$el.querySelectorAll('[id]')

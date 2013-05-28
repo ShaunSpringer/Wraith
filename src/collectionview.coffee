@@ -21,8 +21,8 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
   removeView: (model) ->
     return unless model instanceof Wraith.Model
     $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
-    @$parent.removeChild $el
     @unbindUIEvents $el
+    @$parent.removeChild $el
 
   updateView: (model) ->
     return unless $oldView = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
