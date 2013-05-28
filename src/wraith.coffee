@@ -43,7 +43,8 @@
     start:        '{{'
     end:          '}}'
     interpolate:  /{{(.+?)}}/g
-    checked:  /data-checked=['"](.+?)['"]/g
+    checked: /data-checked=['"](.+?)['"]/g
+    class: /class="(?:(\w+?):([^:]+?)\s?)+"/ #/class="(\w+?)\:(\w+?)"/
 
   #
   # Compiles a template with a ERB style markup.
@@ -72,6 +73,7 @@
       .split("✄").join("'")
       .replace(c.interpolate, "' + ((hasOwnProperty('get') && get(\'$1\')) || $1) + '")
       .replace(c.checked, "' + ((hasOwnProperty('get') && get(\'$1\') === true) ? 'checked' : \'\') + '")
+      .replace(c.class, "class=\"' + ((hasOwnProperty('get') && get(\'$2\') === true) ? '$1' : \'\') + '\"")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "');}return p.join('');"
