@@ -1,5 +1,10 @@
-
-class @Wraith.CollectionView extends @Wraith.ViewModel
+#
+# The CollectionView provides Collection -> View binding.
+# It handles repeated view instances, adding and removing views
+# when models are added or removed, and updating the corresponding
+# view when a model changes.
+#
+class Wraith.CollectionView extends Wraith.ViewModel
   #
   # Constructor
   #

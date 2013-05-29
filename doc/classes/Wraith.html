@@ -25,6 +25,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../file_list.html'>Files</a>
       <a id='method_list_link' href='../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../extra_list.html'>Extras</a>
     </div>
@@ -113,12 +114,31 @@
           <td>src&#47;wraith.coffee</td>
         </tr>
       </table>
-      <h2>Instance Method Summary</h2>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Global Wraith Object
+Contains a list of Collections, Models, and Controllers</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Constant Summary</h2>
+      <dl class='constants'>
+        <dt id='DEBUG-constant'>
+          DEBUG
+          =
+          <div class='tags'>
+</div>
+        </dt>
+        <dd>
+          <pre><code class='coffee'>true</code></pre>
+        </dd>
+      </dl>
+      <h2>Class Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#isFunction-instance'>
-        - (void) <strong>isFunction</strong>(obj)
+      <a href='#log-class'>
+        + (void) <strong>log</strong>(args...)
       </a>
     </span>
     <span class='desc'>
@@ -127,74 +147,136 @@
   </li>
   <li>
     <span class='signature'>
-      <a href='#delay-instance'>
-        - (void) <strong>delay</strong>(ms, func)
+      <a href='#isFunction-class'>
+        + (void) <strong>isFunction</strong>(obj)
       </a>
     </span>
     <span class='desc'>
-      
+      Checks to see if a given object is a funciton.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#compile-instance'>
-        - (void) <strong>compile</strong>(template)
+      <a href='#delay-class'>
+        + (void) <strong>delay</strong>(ms, func)
       </a>
     </span>
     <span class='desc'>
-      
+      Delays the execution of a function for the given time in ms
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#uniqueId-instance'>
-        - (void) <strong>uniqueId</strong>(length = 16)
+      <a href='#uniqueId-class'>
+        + (void) <strong>uniqueId</strong>(length = 16, prefix = "wraith-")
       </a>
     </span>
     <span class='desc'>
-      
+      Generates a UID at the desired length Unfortunately this is here because zepto doesn&#39;t like id&#39;s in selectors to start with numbers.
     </span>
   </li>
 </ul>
-      <h2>Instance Method Details</h2>
+      <h2>Class Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='isFunction-instance'>
-      - (void) <strong>isFunction</strong>(obj)
+    <p class='signature' id='log-class'>
+      + (void) <strong>log</strong>(args...)
     </p>
     <div class='tags'>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='delay-instance'>
-      - (void) <strong>delay</strong>(ms, func)
+    <p class='signature' id='isFunction-class'>
+      + (void) <strong>isFunction</strong>(obj)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Checks to see if a given object
+is a funciton.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>obj</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The object to test</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='compile-instance'>
-      - (void) <strong>compile</strong>(template)
+    <p class='signature' id='delay-class'>
+      + (void) <strong>delay</strong>(ms, func)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Delays the execution of a function for the
+given time in ms</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>ms</span>
+      <span class='type'>
+        (<tt>Number</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The time to delay in ms</span>
+    </li>
+    <li>
+      <span class='name'>func</span>
+      <span class='type'>
+        (<tt>Function</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The function to execute after the given time</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='uniqueId-instance'>
-      - (void) <strong>uniqueId</strong>(length = 16)
+    <p class='signature' id='uniqueId-class'>
+      + (void) <strong>uniqueId</strong>(length = 16, prefix = "wraith-")
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Generates a UID at the desired length
+Unfortunately this is here because zepto doesn&#39;t like id&#39;s
+in selectors to start with numbers.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>length</span>
+      <span class='type'>
+        (<tt>Number</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Desired length of the UID</span>
+    </li>
+    <li>
+      <span class='name'>prefix</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>A prefix to append to the UID</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Mon Apr 29 2013 00:14:03 GMT-0400 (EDT)
+  Wed May 29 2013 17:57:37 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.6.1
-  (Node.js v0.8.19).
+  v1.7.0
+  (Node.js v0.8.18).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;

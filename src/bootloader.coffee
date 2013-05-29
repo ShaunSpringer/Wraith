@@ -1,4 +1,3 @@
-
 #
 # Our bootloader object. This should be
 # instantiated after all JS is loaded on the page
@@ -6,9 +5,7 @@
 # @example
 #   bootloader = new Wraith.Bootloader
 #
-# @include Wraith.Bootloader
-#
-class @Wraith.Bootloader
+class Wraith.Bootloader
   #
   # Constructor
   #
@@ -24,6 +21,7 @@ class @Wraith.Bootloader
 
   #
   # Loads a given controller by id and HTML element
+  #
   # @param [String] id The controllers id
   # @param [Object] $item The HTML element to bind to
   #

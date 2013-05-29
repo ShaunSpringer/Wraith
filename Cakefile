@@ -34,6 +34,11 @@ task 'build', 'Continually build', ->
     coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
     coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
+task 'minify', 'Builds and then minifies Wraith', ->
+  uglify = exec 'uglifyjs -nc lib/wraith.js -o lib/wraith.min.js'
+  uglify.stdout.on 'data', (data) -> console.log data.toString().trim()
+  uglify.stderr.on 'data', (data) -> console.log data.toString().trim()
+
 task 'docs', 'Generate annotated source code with Codo', ->
   fs.readdir 'src', (err, contents) ->
     files = ("src/#{file}" for file in contents when /\.coffee$/.test file)

@@ -15,7 +15,7 @@
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>Wraith</span>
+    <a href='../../classes/Wraith.html' title='Wraith'>Wraith</a>
     &raquo;
     <span class='title'>BaseView</span>
     <nav>
@@ -27,6 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -117,10 +118,25 @@
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../classes//Wraith/Base.html'>.Wraith.Base</a>
+            <a href='../../classes/Wraith/Base.html'>Wraith.Base</a>
           </td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The core Wraith View responsible for rendering a single
+instance of a view. It will bind to a models update event
+and re-render each time it changes. Additionally it will handle
+setting classes up based on the data-class directive, and other
+bindings that might be required in the future.</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+                <a href='../../classes/Wraith/Controller.html'>Wraith.Controller</a>,
+        <a href='../../classes/Wraith/ViewModel.html'>Wraith.ViewModel</a>
+      </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -136,24 +152,35 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#resolveToken-instance'>
+        - (void) <strong>resolveToken</strong>(tokens, model)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Takes a given token array and seeks out its value in the given model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#bindClasses-instance'>
         - (void) <strong>bindClasses</strong>($view, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Iterates over each of $view&#39;s children as well as $view itself and calls <a href='../../classes/Wraith/BaseView.html#bindClasses-instance'>Wraith.BaseView#bindClasses</a> to apply the class(es) accordingly.
     </span>
   </li>
   <li>
     <span class='signature'>
       <a href='#bindClass-instance'>
-        - (void) <strong>bindClass</strong>($view, model, klass, binding)
+        - (void) <strong>bindClass</strong>($view, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Binds a views data-class attribute -- which is represented as a set of colon delimited key-value pairs which are in turn separated by spaces, e.g.
     </span>
   </li>
   <li>
@@ -180,10 +207,22 @@
   </li>
   <li>
     <span class='signature'>
+      <a href='#wrapUIEvent-instance'>
+        - (void) <strong>wrapUIEvent</strong>(cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#handleUIEvent-instance'>
         - (void) <strong>handleUIEvent</strong>(e, cb)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
       
     </span>
@@ -211,6 +250,20 @@
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Wraith/Base.html'>Wraith.Base</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Wraith/Base.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Wraith/Base.html#bind-instance'>#bind</a>,
+                <a href='../../classes/Wraith/Base.html#unbind-instance'>#unbind</a>,
+                <a href='../../classes/Wraith/Base.html#emit-instance'>#emit</a>,
+        <a href='../../classes/Wraith/Base.html#proxy-instance'>#proxy</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -246,19 +299,102 @@
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='resolveToken-instance'>
+      - (void) <strong>resolveToken</strong>(tokens, model)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Takes a given token array
+and seeks out its value in the given model. It currently
+assumes that a model is a Wraith.Model object.</p><p>@returns [Object|String|Boolean] The results of the token search</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>tokens</span>
+      <span class='type'>
+        (<tt>Array</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The array of tokens to be used when searching the model</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to search for the given token array</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='bindClasses-instance'>
       - (void) <strong>bindClasses</strong>($view, model)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Iterates over each of $view&#39;s children as well as $view itself and calls
+<a href='../../classes/Wraith/BaseView.html#bindClasses-instance'>Wraith.BaseView#bindClasses</a> to apply the class(es) accordingly. This requires
+the $view and its children to be marked up with data-class attributes.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to be binding the classes to/from</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to use when applying the classes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='bindClass-instance'>
-      - (void) <strong>bindClass</strong>($view, model, klass, binding)
+      - (void) <strong>bindClass</strong>($view, model)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Binds a views data-class attribute -- which is represented
+as a set of colon delimited key-value pairs which are in turn separated
+by spaces, e.g. class1:value1 class2:value2
+It takes the current value of the model given by dot notation (e.g. value1, value2 above)
+and casts the value as a boolean. If it is true the class (e.g. class1, class2) are applied
+during the rendering process.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to be binding the classes to/from</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to use when applying the classes</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -278,8 +414,17 @@
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='wrapUIEvent-instance'>
+      - (void) <strong>wrapUIEvent</strong>(cb)
+      (bound)
+    </p>
+    <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='handleUIEvent-instance'>
       - (void) <strong>handleUIEvent</strong>(e, cb)
+      (bound)
     </p>
     <div class='tags'>
 </div>
@@ -304,7 +449,7 @@
     </div>
     <div id='footer'>
   Generated on
-  Tue May 28 2013 15:18:04 GMT-0400 (EDT)
+  Wed May 29 2013 17:57:37 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0

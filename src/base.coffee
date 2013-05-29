@@ -1,11 +1,8 @@
-
 #
 # The base class for all Wraith objects.
 # Includes binding to events, and emitting events.
 #
-# @include Wraith.Base
-#
-class @Wraith.Base
+class Wraith.Base
   #
   # Constructor
   #
@@ -16,6 +13,7 @@ class @Wraith.Base
   #
   # Binds the given function (cb) to the given
   # event (ev)
+  #
   # @param [String] ev Event to listen for.
   # @param [Function] cb Callback to be executed on event.
   #
@@ -28,6 +26,7 @@ class @Wraith.Base
   #
   # Unbinds the given function (cb) from the given
   # event (ev)
+  #
   # @param [String] ev Event to unbind.
   # @param [Function] cb Callback to unbind.
   #
@@ -42,6 +41,7 @@ class @Wraith.Base
 
   #
   # Emits the given event to listneers
+  #
   # @param [String] event The name of the event to emit
   # @param [Object] args The data object to emit
   #
@@ -50,9 +50,13 @@ class @Wraith.Base
       listener(args ...) for listener in @listeners[event]
     @
 
-  @proxy: (func) ->
-    => func.apply(this, arguments)
-
-  proxy: (func) ->
-    => func.apply(this, arguments)
+  #
+  # Used to proxy a function call through this object.
+  #
+  # Borrowed from Spine
+  # @author Paul Miller
+  #
+  # @param [Function] fn The function to proxy
+  #
+  proxy: (fn) -> => fn.apply(this, arguments)
 

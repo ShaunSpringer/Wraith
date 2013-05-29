@@ -1,12 +1,9 @@
-
 #
 # The proverbial 'controller' in the MVC pattern.
 # The Controller handles the logic your applications or
 # components may have. This controller handles automatical registration
 # and mapping of models to views.
 #
-# @include Wraith.Controller
-# @extends Wraith.Base
 # @example Example markup in HTML.
 #   This will create a SelectList controller
 #   and then create a view using the template with id "ListItem"
@@ -16,7 +13,7 @@
 #     <div data-template="ListItem" data-map="list.items"></div>
 #   </ul>
 #
-class @Wraith.Controller extends @Wraith.BaseView
+class Wraith.Controller extends Wraith.BaseView
   #
   # Constructor
   #
@@ -63,6 +60,7 @@ class @Wraith.Controller extends @Wraith.BaseView
 
   #
   # Register the view to this controller
+  #
   # @param [HTMLElement] $view The view to be registered
   #
   registerView: ($view) ->
@@ -105,8 +103,10 @@ class @Wraith.Controller extends @Wraith.BaseView
 
   #
   # Register the model to this controller
+  #
   # @param [Wraith.Model] model The model to register to this controller
   # @param [String] as The name of the model to register
+  #
   # @return [Wraith.Model] The model that was registered
   #
   registerModel: (model, as) ->
@@ -119,6 +119,7 @@ class @Wraith.Controller extends @Wraith.BaseView
   #
   # Binds any view that is loaded into the controller
   # to the given model.
+  #
   # @param [String] name The name of the model to bind to
   # @param [Wraith.Model] model The model to map the namespace to
   #
@@ -129,8 +130,8 @@ class @Wraith.Controller extends @Wraith.BaseView
 
   #
   # Binds a single instance of a view to a model.
-  # Usings binding as the dot notation map
-  # @TODO Make this work for more than 1 level
+  # Usings binding as the dot notation map.
+  #
   # @param [Wraith.Model] model The model to bind to
   # @param [String] binding The dot notation binding (first item should be the model name)
   # @param [Wraith.View|Wraith.CollectionView] view The view object to bind to.
@@ -149,6 +150,12 @@ class @Wraith.Controller extends @Wraith.BaseView
     else
       model.bind 'change', -> view.updateView(model)
 
+  #
+  # Handles the UI event which is mapped from the DOM to the controller.
+  #
+  # @param [Event] e The event data object from the UI Event
+  # @param [String] cb The name of the callback function to call on the controller
+  #
   handleUIEvent: (e, cb) =>
     throw "Callback #{cb} not found on controller" unless @[cb]
     @[cb](e)
@@ -172,8 +179,8 @@ class @Wraith.Controller extends @Wraith.BaseView
   #
   getModelFromEl: ($el) =>
     while $el
+      break if not $el.attributes
       break if modelId = $el.attributes['data-model']?.value
       $el = $el.parentNode
-      break if not $el.attributes
 
     Wraith.models[modelId]

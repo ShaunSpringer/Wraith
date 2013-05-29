@@ -3,7 +3,11 @@
 # instance of a view. It will bind to a models update event
 # and re-render each time it changes
 #
-class @Wraith.ViewModel extends @Wraith.BaseView
+class Wraith.ViewModel extends Wraith.BaseView
+  #
+  # The template REGEX object as a static property.
+  # Used when parsing the template to bind to a model.
+  #
   @TEMPLATE_REGEX = new RegExp(
     Wraith.templateSettings.start +
     '\\s*(' +
@@ -18,7 +22,7 @@ class @Wraith.ViewModel extends @Wraith.BaseView
   # @param [String] template The template string to use when rendering
   #
   constructor: (@$el, @template) ->
-    Wraith.log '@Wraith.View', 'constructor'
+    Wraith.log '@Wraith.ViewModel', 'constructor'
     throw 'Element is required by View' unless @$el
     throw 'Template is required by View' unless @template
 
@@ -26,9 +30,13 @@ class @Wraith.ViewModel extends @Wraith.BaseView
     @$parent = @$el.parentNode
 
   #
-  # Renders the view given a Wraith.Model object
+  # Renders the view given a {Wraith.Model} object.
+  # By injecting the compiled template into a div
+  # and then pull it back out we are able to create a HTMLElement
+  # which is the desired returned result.
+  #
   # @param [Wraith.Model] model The model to render
-  # @returns [HTMLElement] A HTMLElement from the resulting render
+  # @return [HTMLElement] A HTMLElement from the resulting render
   #
   render: (model) ->
     $el = document.createElement('div')
@@ -36,6 +44,18 @@ class @Wraith.ViewModel extends @Wraith.BaseView
     $el = $el.firstChild
     $el
 
+  #
+  # Compiles a given template using the data from the model provided.
+  # It will take into account dot notation and methods used in said notation.
+  # If the type of a given token is mapped to a function on the model it will
+  # attempt to execute it and use the resulting value/object with the next token
+  # or will return it if it is the last token.
+  #
+  # @param [Wraith.Model] model The model to be applied to the template.
+  # @param [String] template The string template to be rendered.
+  #
+  # @return [String] The resulting template after the model is applied to it.
+  #
   compileTemplate: (model, template) ->
     template.replace Wraith.ViewModel.TEMPLATE_REGEX, (tag, results) ->
       tokens = results.split('.')
@@ -57,6 +77,7 @@ class @Wraith.ViewModel extends @Wraith.BaseView
   # swap the current view (@$el) for the new view.
   # This also implicitly rebinds events after the view is
   # rendered and inserted into the DOM.
+  #
   # @param [Wraith.Model] model The model used when rendering
   #
   updateView: (model) ->
@@ -68,3 +89,6 @@ class @Wraith.ViewModel extends @Wraith.BaseView
     @$el.setAttribute('data-model', model.get('_id'))
     @bindClasses $view, model
     @bindUIEvents $view
+
+    @
+

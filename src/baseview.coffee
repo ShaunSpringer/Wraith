@@ -1,27 +1,29 @@
 #
 # The core Wraith View responsible for rendering a single
 # instance of a view. It will bind to a models update event
-# and re-render each time it changes
+# and re-render each time it changes. Additionally it will handle
+# setting classes up based on the data-class directive, and other
+# bindings that might be required in the future.
 #
-class @Wraith.BaseView extends @Wraith.Base
+class Wraith.BaseView extends Wraith.Base
   #
   # Constructor
   # @param [HTMLElement] $el The HTML Element to attach the view to
   # @param [String] template The template string to use when rendering
   #
   constructor: (@$el) ->
-    Wraith.log '@Wraith.View', 'constructor'
     throw 'Element is required by View' unless @$el
     super()
 
-  bindClasses: ($view, model) =>
-    @bindClass $view, model if $view.attributes['data-class']
-
-    els = $view.querySelectorAll('[data-class]')
-    @bindClass $el, model for $el in els
-
-    @
-
+  #
+  # Takes a given token array
+  # and seeks out its value in the given model. It currently
+  # assumes that a model is a Wraith.Model object.
+  #
+  # @param [Array] tokens The array of tokens to be used when searching the model
+  # @param [Wraith.Model] model The model to search for the given token array
+  # @returns [Object|String|Boolean] The results of the token search
+  #
   resolveToken: (tokens, model) =>
     count = 0
     results = false
@@ -36,6 +38,33 @@ class @Wraith.BaseView extends @Wraith.Base
       count++
     results
 
+  #
+  # Iterates over each of $view's children as well as $view itself and calls
+  # {Wraith.BaseView#bindClasses} to apply the class(es) accordingly. This requires
+  # the $view and its children to be marked up with data-class attributes.
+  #
+  # @param [HTMLElement] $view The view to be binding the classes to/from
+  # @param [Wraith.Model] model The model to use when applying the classes
+  #
+  bindClasses: ($view, model) =>
+    @bindClass $view, model if $view.attributes['data-class']
+
+    els = $view.querySelectorAll('[data-class]')
+    @bindClass $el, model for $el in els
+
+    @
+
+  #
+  # Binds a views data-class attribute -- which is represented
+  # as a set of colon delimited key-value pairs which are in turn separated
+  # by spaces, e.g. class1:value1 class2:value2
+  # It takes the current value of the model given by dot notation (e.g. value1, value2 above)
+  # and casts the value as a boolean. If it is true the class (e.g. class1, class2) are applied
+  # during the rendering process.
+  #
+  # @param [HTMLElement] $view The view to be binding the classes to/from
+  # @param [Wraith.Model] model The model to use when applying the classes
+  #
   bindClass: ($view, model) =>
     klasses = $view.attributes['data-class'].value
     for klassMap in klasses.split(' ')
@@ -80,8 +109,7 @@ class @Wraith.BaseView extends @Wraith.Base
       $view.addEventListener name, @wrapUIEvent(cb)
     @
 
-  wrapUIEvent: (cb) =>
-    return (e) => @handleUIEvent e, cb
+  wrapUIEvent: (cb) => (e) => @handleUIEvent e, cb
 
   handleUIEvent: (e, cb) =>
     e.stopPropagation()
