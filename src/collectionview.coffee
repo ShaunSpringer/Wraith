@@ -26,6 +26,8 @@ class @Wraith.CollectionView extends @Wraith.ViewModel
 
   updateView: (model) ->
     return unless $oldView = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
+    @unbindUIEvents $oldView
+
     $el = @render(model)
     return unless $node = $el
     id = $oldView.attributes['data-id'].value or Wraith.uniqueId()

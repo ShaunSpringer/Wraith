@@ -15,37 +15,57 @@ class @Wraith.BaseView extends @Wraith.Base
     super()
 
   bindClasses: ($view, model) =>
-    els = $view.parentNode.querySelectorAll('[data-class]')
+    @bindClass $view, model if $view.attributes['data-class']
 
-    for $el in els
-      klasses = $el.attributes['data-class'].value
-      $el.removeAttribute('data-class') # Clean up the DOM
-      for klassMap in klasses.split(' ')
-        breakdown = klassMap.split(':')
-        continue if breakdown.length isnt 2
-        @bindClass $view, model, breakdown[0], breakdown[1]
+    els = $view.querySelectorAll('[data-class]')
+    @bindClass $el, model for $el in els
+
     @
 
-  bindClass: ($view, model, klass, binding) =>
+  resolveToken: (tokens, model) =>
+    count = 0
     results = false
-    invert = binding[0] is '!'
-    binding = binding.slice(1) if invert
+    for token in tokens
+      # @TODO This depends on a get function.. is this necessary?
+      target = if count is 0 then model else results
+      if target.hasOwnProperty(token)
+        results = target[token]
+      else
+        results = target.get(token)
+      results = results() if Wraith.isFunction(results)
+      count++
+    results
 
-    # See if this is a method
-    if binding.slice(-2) is '()'
-      binding = binding.slice(0, -2)
-      if Wraith.isFunction(model[binding])
-        results = !!model[binding]()
-    else
-      results = !!model.get(binding)
+  bindClass: ($view, model) =>
+    klasses = $view.attributes['data-class'].value
+    for klassMap in klasses.split(' ')
+      binding = klassMap.split(':')
+      continue if binding.length isnt 2
 
-    results = !results if invert
-    if results
-      klasses = $view.attributes['class']?.value
-      $view.setAttribute('class', klasses + ' ' + klass)
+      klass = binding[0]
+      tokens = binding[1]
+
+      invert = tokens[0] is '!'
+      tokens = tokens.slice(1) if invert
+
+      # @TODO: Refactor this and ViewModel.render
+      results = @resolveToken(tokens.split('.'), model)
+
+      results = !results if invert
+      if results
+        klasses = $view.attributes['class']?.value
+        if klasses
+          if klasses.split(' ').indexOf(klass) is -1
+            klasses = klasses + ' ' + klass
+        else
+          klasses = klass
+
+        $view.setAttribute('class', klasses)
+      @
 
   bindUIEvents: ($view) =>
-    els = $view.parentNode.querySelectorAll('[data-events]')
+    els = $view.querySelectorAll('[data-events]')
+    @bindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
     @bindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 
@@ -57,13 +77,19 @@ class @Wraith.BaseView extends @Wraith.Base
       name = eventArr[0]
       cb = eventArr[1]
       continue if not name in Wraith.UIEvents
-      $view.addEventListener name, (e) => @handleUIEvent e, cb
+      $view.addEventListener name, @wrapUIEvent(cb)
     @
 
-  handleUIEvent: (e, cb) -> @emit 'uievent', e, cb
+  wrapUIEvent: (cb) =>
+    return (e) => @handleUIEvent e, cb
+
+  handleUIEvent: (e, cb) =>
+    e.stopPropagation()
+    @emit 'uievent', e, cb
 
   unbindUIEvents: ($view) =>
-    els = $view.parentNode.querySelectorAll('[data-events]')
+    els = $view.querySelectorAll('[data-events]')
+    @unbindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
     @unbindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 

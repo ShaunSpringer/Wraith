@@ -4,6 +4,14 @@
 # and re-render each time it changes
 #
 class @Wraith.ViewModel extends @Wraith.BaseView
+  @TEMPLATE_REGEX = new RegExp(
+    Wraith.templateSettings.start +
+    '\\s*(' +
+    Wraith.templateSettings.dotNotation +
+    ')\\s*' +
+    Wraith.templateSettings.end,
+    'gi')
+
   #
   # Constructor
   # @param [HTMLElement] $el The HTML Element to attach the view to
@@ -17,20 +25,31 @@ class @Wraith.ViewModel extends @Wraith.BaseView
     super(@$el)
     @$parent = @$el.parentNode
 
-    Wraith.Templates[@template] ?= new Wraith.Template(template)
-    @Template = Wraith.Templates[@template]
-
   #
   # Renders the view given a Wraith.Model object
   # @param [Wraith.Model] model The model to render
   # @returns [HTMLElement] A HTMLElement from the resulting render
   #
   render: (model) ->
-    rendered = @Template.render(model)
     $el = document.createElement('div')
-    $el.innerHTML = rendered
+    $el.innerHTML = @compileTemplate(model, @template)
     $el = $el.firstChild
-    return $el
+    $el
+
+  compileTemplate: (model, template) ->
+    template.replace Wraith.ViewModel.TEMPLATE_REGEX, (tag, results) ->
+      tokens = results.split('.')
+      count = 0
+      for token in tokens
+        # @TODO This depends on a get function.. is this necessary?
+        target = if count is 0 then model else val
+        if target.hasOwnProperty(token)
+          val = target[token]
+        else
+          val = target.get(token)
+        val = val() if Wraith.isFunction(val)
+        count++
+      val
 
   #
   # Updates the view for a given model. Calls the
@@ -41,6 +60,8 @@ class @Wraith.ViewModel extends @Wraith.BaseView
   # @param [Wraith.Model] model The model used when rendering
   #
   updateView: (model) ->
+    @unbindUIEvents @$el
+
     $view = @render(model)
     @$parent.replaceChild($view, @$el)
     @$el = $view

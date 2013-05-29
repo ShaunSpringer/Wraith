@@ -8,7 +8,6 @@ task 'build', 'Continually build', ->
     'src/wraith.coffee'
     'src/bootloader.coffee'
     'src/base.coffee'
-    'src/template.coffee'
     'src/model.coffee'
     'src/collection.coffee'
     'src/baseview.coffee'

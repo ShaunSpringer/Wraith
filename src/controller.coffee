@@ -174,5 +174,6 @@ class @Wraith.Controller extends @Wraith.BaseView
     while $el
       break if modelId = $el.attributes['data-model']?.value
       $el = $el.parentNode
+      break if not $el.attributes
 
     Wraith.models[modelId]

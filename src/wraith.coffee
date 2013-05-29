@@ -30,53 +30,14 @@
   delay: (ms, func) -> setTimeout func, ms
 
   #
-  # Borrowed from Underscores ERB-style templates
-  # @param [String] string The string to escape
-  #
-  escapeRegExp: (string) -> string.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1')
-
-  #
   # This is partly borrowed from underscores ERB-style template
   # settings.
   #
   templateSettings:
     start:        '{{'
     end:          '}}'
-    interpolate:  /{{(.+?)}}/g
-    checked: /data-checked=['"](.+?)['"]/g
-
-  #
-  # Compiles a template with a ERB style markup.
-  # Note: Override this if you want to use a different
-  # template system.
-  #
-  # NOTE:
-  # JavaScript templating a-la **ERB**, pilfered from John Resig's
-  # *Secrets of the JavaScript Ninja*, page 83.
-  # Single-quote fix from Rick Strahl.
-  # With alterations for arbitrary delimiters, and to preserve whitespace.
-  #
-  # @param [String] template The template to compile
-  #
-  compile: (template) ->
-    c = Wraith.templateSettings
-    endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + Wraith.escapeRegExp(c.end) + ")", "g")
-    fn = new Function 'obj',
-      'var p=[],print=function(){p.push.apply(p,arguments);};' +
-      'with(obj||{}){p.push(\'' +
-      template.replace(/\r/g, '\\r')
-      .replace(/\n/g, '\\n')
-      .replace(/\t/g, '\\t')
-      .replace(endMatch, "✄")
-      .split("'").join("\\'")
-      .split("✄").join("'")
-      .replace(c.interpolate, "' + ((hasOwnProperty('get') && get(\'$1\')) || $1) + '")
-      .replace(c.checked, "' + ((hasOwnProperty('get') && get(\'$1\') === true) ? 'checked' : \'\') + '")
-      .split(c.start).join("');")
-      .split(c.end).join("p.push('") +
-      "');}return p.join('');"
-
-    return fn
+    checked: 'data-checked=[\'"](.+?)[\'"]'
+    dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
 
   #
   # Generates a UID at the desired length
