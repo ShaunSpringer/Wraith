@@ -9,7 +9,7 @@ class Wraith
   @Collections: {}
   @Models: {}
   @models: {}
-  @UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus']
+  @UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit']
 
   @log: (args ...) -> if Wraith.DEBUG then console.log args ...
 

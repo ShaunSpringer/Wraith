@@ -1,3 +1,5 @@
+root = exports ? @
+
 #
 # Our bootloader object. This should be
 # instantiated after all JS is loaded on the page
@@ -26,6 +28,8 @@ class Wraith.Bootloader
   # @param [Object] $item The HTML element to bind to
   #
   loadController: (id, $item) ->
-    throw 'Controller does not exist' unless Controller = Wraith.Controllers[id]
+    obj = root
+    id.replace /[^\.]+/g, (m) -> obj = obj[m]
+    throw 'Controller does not exist' unless Controller = obj
     controller = new Controller($item)
     Wraith.controllers[controller.id] = controller
