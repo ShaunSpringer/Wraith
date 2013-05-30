@@ -51,6 +51,8 @@ class Wraith.ViewModel extends Wraith.BaseView
   # attempt to execute it and use the resulting value/object with the next token
   # or will return it if it is the last token.
   #
+  # @todo This depends on a {Wraith.Model} and its get function.. is this necessary?
+  #
   # @param [Wraith.Model] model The model to be applied to the template.
   # @param [String] template The string template to be rendered.
   #
@@ -61,7 +63,6 @@ class Wraith.ViewModel extends Wraith.BaseView
       tokens = results.split('.')
       count = 0
       for token in tokens
-        # @TODO This depends on a get function.. is this necessary?
         target = if count is 0 then model else val
         if target.hasOwnProperty(token)
           val = target[token]
@@ -84,11 +85,40 @@ class Wraith.ViewModel extends Wraith.BaseView
     @unbindUIEvents @$el
 
     $view = @render(model)
-    @$parent.replaceChild($view, @$el)
-    @$el = $view
-    @$el.setAttribute('data-model', model.get('_id'))
-    @bindClasses $view, model
+    @applyClasses $view, model
     @bindUIEvents $view
+    @applyViewUpdate(@$el, $view)
 
     @
 
+  applyViewUpdate: ($old, $new) =>
+    attrs = []
+    if $old.attributes
+      attrs = (attr.name for attr in $old.attributes)
+
+    if $new.attributes
+      for attr in $new.attributes
+        if attrs.indexOf(attr.name) is -1
+          attrs.push attr.name
+
+    @updateAttribute(attr, $old, $new) for attr in attrs
+
+    if $old.nodeValue isnt $new.nodeValue
+      $old.nodeValue = $new.nodeValue
+
+    for $child, i in $old.childNodes
+      @applyViewUpdate $child, $new.childNodes[i]
+
+    @
+
+
+  updateAttribute: (name, $old, $new) ->
+    oldval = $old.attributes[name]?.value
+    newval = $new.attributes[name]?.value
+
+    return if oldval is newval
+
+    if newval
+      $old.setAttribute(name, newval)
+    else
+      $old.removeAttribute(name)

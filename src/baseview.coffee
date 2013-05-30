@@ -46,12 +46,10 @@ class Wraith.BaseView extends Wraith.Base
   # @param [HTMLElement] $view The view to be binding the classes to/from
   # @param [Wraith.Model] model The model to use when applying the classes
   #
-  bindClasses: ($view, model) =>
-    @bindClass $view, model if $view.attributes['data-class']
-
+  applyClasses: ($view, model) =>
     els = $view.querySelectorAll('[data-class]')
-    @bindClass $el, model for $el in els
-
+    @applyClass $view, model if $view.attributes['data-class']
+    @applyClass $el, model for $el in els
     @
 
   #
@@ -65,7 +63,7 @@ class Wraith.BaseView extends Wraith.Base
   # @param [HTMLElement] $view The view to be binding the classes to/from
   # @param [Wraith.Model] model The model to use when applying the classes
   #
-  bindClass: ($view, model) =>
+  applyClass: ($view, model) =>
     klasses = $view.attributes['data-class'].value
     for klassMap in klasses.split(' ')
       binding = klassMap.split(':')

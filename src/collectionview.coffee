@@ -15,29 +15,26 @@ class Wraith.CollectionView extends Wraith.ViewModel
 
   createView: (model) ->
     return unless model instanceof Wraith.Model
-    $el = @render(model)
-    return unless $node = $el
-    $node.setAttribute('data-id', Wraith.uniqueId())
-    $node.setAttribute('data-model', model.get('_id'))
-    @$parent.appendChild $el
-    @bindClasses $el, model
-    @bindUIEvents $el
+    $view = @render(model)
+    $view.setAttribute('data-model', model.get('_id'))
+    @applyClasses $view, model
+    @bindUIEvents $view
+    @$parent.appendChild $view
 
   removeView: (model) ->
     return unless model instanceof Wraith.Model
-    $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
-    @unbindUIEvents $el
-    @$parent.removeChild $el
+    $view = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
+    @unbindUIEvents $view
+    @$parent.removeChild $view
 
   updateView: (model) ->
-    return unless $oldView = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
-    @unbindUIEvents $oldView
+    return unless $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
 
-    $el = @render(model)
-    return unless $node = $el
-    id = $oldView.attributes['data-id'].value or Wraith.uniqueId()
-    $node.setAttribute('data-id', id)
-    $node.setAttribute('data-model', model.get('_id'))
-    @$parent.replaceChild($node, $oldView)
-    @bindClasses $node, model
-    @bindUIEvents $node
+    $view = @render(model)
+    $view.setAttribute('data-model', model.get('_id'))
+    @applyClasses $view, model
+    @unbindUIEvents $el
+    @bindUIEvents $view
+    @applyViewUpdate $el, $view
+
+
