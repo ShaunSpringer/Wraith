@@ -177,6 +177,27 @@ and re-render each time it changes</p>
       Updates the view for a given model.
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#applyViewUpdate-instance'>
+        - (void) <strong>applyViewUpdate</strong>($old, $new)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Crawls the old nodes and new nodes, compares their contents and attributes, and updates the old node accordingly.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#updateAttribute-instance'>
+        - (void) <strong>updateAttribute</strong>(name, $old, $new)
+      </a>
+    </span>
+    <span class='desc'>
+      Updates a given attribute on $old to the latest value on $new.
+    </span>
+  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -188,8 +209,8 @@ and re-render each time it changes</p>
       <p class='inherited'>
                 <a href='../../classes/Wraith/BaseView.html#constructor-instance'>#constructor</a>,
                 <a href='../../classes/Wraith/BaseView.html#resolveToken-instance'>#resolveToken</a>,
-                <a href='../../classes/Wraith/BaseView.html#bindClasses-instance'>#bindClasses</a>,
-                <a href='../../classes/Wraith/BaseView.html#bindClass-instance'>#bindClass</a>,
+                <a href='../../classes/Wraith/BaseView.html#applyClasses-instance'>#applyClasses</a>,
+                <a href='../../classes/Wraith/BaseView.html#applyClass-instance'>#applyClass</a>,
                 <a href='../../classes/Wraith/BaseView.html#bindUIEvents-instance'>#bindUIEvents</a>,
                 <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>#bindUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#wrapUIEvent-instance'>#wrapUIEvent</a>,
@@ -280,6 +301,10 @@ which is the desired returned result.</p>
       - (String) <strong>compileTemplate</strong>(model, template)
     </p>
     <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    This depends on a <a href='../../classes/Wraith/Model.html'>Wraith.Model</a> and its get function.. is this necessary?
+  </div>
   <p>Compiles a given template using the data from the model provided.
 It will take into account dot notation and methods used in said notation.
 If the type of a given token is mapped to a function on the model it will
@@ -342,11 +367,86 @@ rendered and inserted into the DOM.</p>
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='applyViewUpdate-instance'>
+      - (void) <strong>applyViewUpdate</strong>($old, $new)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    make this more efficient!
+  </div>
+  <p>Crawls the old nodes and new nodes, compares
+their contents and attributes, and updates the old
+node accordingly. This prevents the entire view from
+re-rendering each time data changes.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$old</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The old DOM element that we are updating</span>
+    </li>
+    <li>
+      <span class='name'>$new</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new DOM element we are updating based on</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='updateAttribute-instance'>
+      - (void) <strong>updateAttribute</strong>(name, $old, $new)
+    </p>
+    <div class='docstring'>
+  <p>Updates a given attribute on $old to the
+latest value on $new.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The attribute name to update</span>
+    </li>
+    <li>
+      <span class='name'>$old</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The old DOM element that we are updating</span>
+    </li>
+    <li>
+      <span class='name'>$new</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The new DOM element we are updating based on</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Wed May 29 2013 23:25:19 GMT-0400 (EDT)
+  Thu May 30 2013 01:05:42 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

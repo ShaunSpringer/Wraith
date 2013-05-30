@@ -83,14 +83,23 @@ class Wraith.ViewModel extends Wraith.BaseView
   #
   updateView: (model) ->
     @unbindUIEvents @$el
-
     $view = @render(model)
     @applyClasses $view, model
     @bindUIEvents $view
     @applyViewUpdate(@$el, $view)
-
     @
 
+  #
+  # Crawls the old nodes and new nodes, compares
+  # their contents and attributes, and updates the old
+  # node accordingly. This prevents the entire view from
+  # re-rendering each time data changes.
+  #
+  # @todo make this more efficient!
+  #
+  # @param [HTMLElement] $old The old DOM element that we are updating
+  # @param [HTMLElement] $new The new DOM element we are updating based on
+  #
   applyViewUpdate: ($old, $new) =>
     attrs = []
     if $old.attributes
@@ -111,7 +120,14 @@ class Wraith.ViewModel extends Wraith.BaseView
 
     @
 
-
+  #
+  # Updates a given attribute on $old to the
+  # latest value on $new.
+  #
+  # @param [String] name The attribute name to update
+  # @param [HTMLElement] $old The old DOM element that we are updating
+  # @param [HTMLElement] $new The new DOM element we are updating based on
+  #
   updateAttribute: (name, $old, $new) ->
     oldval = $old.attributes[name]?.value
     newval = $new.attributes[name]?.value

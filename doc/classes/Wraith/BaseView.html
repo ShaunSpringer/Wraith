@@ -163,19 +163,19 @@ bindings that might be required in the future.</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#bindClasses-instance'>
-        - (void) <strong>bindClasses</strong>($view, model)
+      <a href='#applyClasses-instance'>
+        - (void) <strong>applyClasses</strong>($view, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Iterates over each of $view&#39;s children as well as $view itself and calls <a href='../../classes/Wraith/BaseView.html#bindClasses-instance'>Wraith.BaseView#bindClasses</a> to apply the class(es) accordingly.
+      Iterates over each of $view&#39;s children as well as $view itself and calls {Wraith.BaseView#bindClasses} to apply the class(es) accordingly.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#bindClass-instance'>
-        - (void) <strong>bindClass</strong>($view, model)
+      <a href='#applyClass-instance'>
+        - (void) <strong>applyClass</strong>($view, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -191,7 +191,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Iterates over a view and its children looking for the data-events attribute which should be a comma separated list of events.
     </span>
   </li>
   <li>
@@ -202,7 +202,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Binds to a UI event on a given view.
     </span>
   </li>
   <li>
@@ -213,7 +213,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Used as a wrapper for handling UI events and maintaining the proper context.
     </span>
   </li>
   <li>
@@ -224,7 +224,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Handles a UI event on the view level.
     </span>
   </li>
   <li>
@@ -235,7 +235,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Unbinds a given view and its childrens UI events.
     </span>
   </li>
   <li>
@@ -246,7 +246,7 @@ bindings that might be required in the future.</p>
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      
+      Unbinds a given view from the given set of events.
     </span>
   </li>
 </ul>
@@ -331,13 +331,13 @@ assumes that a model is a Wraith.Model object.</p><p>@returns [Object|String|Boo
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='bindClasses-instance'>
-      - (void) <strong>bindClasses</strong>($view, model)
+    <p class='signature' id='applyClasses-instance'>
+      - (void) <strong>applyClasses</strong>($view, model)
       (bound)
     </p>
     <div class='docstring'>
   <p>Iterates over each of $view&#39;s children as well as $view itself and calls
-<a href='../../classes/Wraith/BaseView.html#bindClasses-instance'>Wraith.BaseView#bindClasses</a> to apply the class(es) accordingly. This requires
+{Wraith.BaseView#bindClasses} to apply the class(es) accordingly. This requires
 the $view and its children to be marked up with data-class attributes.</p>
 </div>
 <div class='tags'>
@@ -363,8 +363,8 @@ the $view and its children to be marked up with data-class attributes.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='bindClass-instance'>
-      - (void) <strong>bindClass</strong>($view, model)
+    <p class='signature' id='applyClass-instance'>
+      - (void) <strong>applyClass</strong>($view, model)
       (bound)
     </p>
     <div class='docstring'>
@@ -402,7 +402,23 @@ during the rendering process.</p>
       - (void) <strong>bindUIEvents</strong>($view)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Iterates over a view and its children looking for the
+data-events attribute which should be a comma separated list
+of events. The scheme is defined by <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>Wraith.BaseView#bindUIEvent</a></p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view element to bind to</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -410,7 +426,32 @@ during the rendering process.</p>
       - (void) <strong>bindUIEvent</strong>($view, event)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Binds to a UI event on a given view. Relies on the data-events
+attribute to be a space or comma delimited list of events.
+A valid event is given in the schema event:callback
+The event must be part of {Wraith.UIEvents}</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view element to bind to</span>
+    </li>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The event as defined in the description above</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -418,7 +459,22 @@ during the rendering process.</p>
       - (void) <strong>wrapUIEvent</strong>(cb)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Used as a wrapper for handling UI events and maintaining
+the proper context.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function on the controller</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -426,7 +482,32 @@ during the rendering process.</p>
       - (void) <strong>handleUIEvent</strong>(e, cb)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Handles a UI event on the view level.
+Calls stopPropagation by default to prevent bubbling.
+Also will emit a uievent for the parent controller to listen to
+so it can invoke the proper method in the controller.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The UI Event from the browser</span>
+    </li>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function on the controller</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -434,7 +515,21 @@ during the rendering process.</p>
       - (void) <strong>unbindUIEvents</strong>($view)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Unbinds a given view and its childrens UI events.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to unbind events from</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -442,14 +537,37 @@ during the rendering process.</p>
       - (void) <strong>unbindUIEvent</strong>($view, event)
       (bound)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Unbinds a given view from the given set of events. Follows the same
+schema as <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>Wraith.BaseView#bindUIEvent</a> does for binding.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to unbind events from</span>
+    </li>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The event as defined in the description above</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Wed May 29 2013 23:25:19 GMT-0400 (EDT)
+  Thu May 30 2013 01:05:42 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

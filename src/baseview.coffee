@@ -79,23 +79,40 @@ class Wraith.BaseView extends Wraith.Base
       results = @resolveToken(tokens.split('.'), model)
 
       results = !results if invert
-      if results
-        klasses = $view.attributes['class']?.value
-        if klasses
-          if klasses.split(' ').indexOf(klass) is -1
-            klasses = klasses + ' ' + klass
-        else
-          klasses = klass
+      continue if not results
 
-        $view.setAttribute('class', klasses)
-      @
+      klasses = $view.attributes['class']?.value
+      if klasses
+        if klasses.split(' ').indexOf(klass) is -1
+          klasses = klasses + ' ' + klass
+      else
+        klasses = klass
 
+      $view.setAttribute('class', klasses)
+    @
+
+  #
+  # Iterates over a view and its children looking for the
+  # data-events attribute which should be a comma separated list
+  # of events. The scheme is defined by {Wraith.BaseView#bindUIEvent}
+  #
+  # @param [HTMLElement] $view The view element to bind to
+  #
   bindUIEvents: ($view) =>
     els = $view.querySelectorAll('[data-events]')
     @bindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
     @bindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 
+  #
+  # Binds to a UI event on a given view. Relies on the data-events
+  # attribute to be a space or comma delimited list of events.
+  # A valid event is given in the schema event:callback
+  # The event must be part of {Wraith.UIEvents}
+  #
+  # @param [HTMLElement] $view The view element to bind to
+  # @param [HTMLElement] event The event as defined in the description above
+  #
   bindUIEvent: ($view, event) =>
     events = event.split(/[,?\s?]/)
     for event in events
@@ -107,18 +124,45 @@ class Wraith.BaseView extends Wraith.Base
       $view.addEventListener name, @wrapUIEvent(cb)
     @
 
+  #
+  # Used as a wrapper for handling UI events and maintaining
+  # the proper context.
+  #
+  # @param [String] cb The name of the callback function on the controller
+  #
   wrapUIEvent: (cb) => (e) => @handleUIEvent e, cb
 
+  #
+  # Handles a UI event on the view level.
+  # Calls stopPropagation by default to prevent bubbling.
+  # Also will emit a uievent for the parent controller to listen to
+  # so it can invoke the proper method in the controller.
+  #
+  # @param [Event] e The UI Event from the browser
+  # @param [String] cb The name of the callback function on the controller
+  #
   handleUIEvent: (e, cb) =>
     e.stopPropagation()
     @emit 'uievent', e, cb
 
+  #
+  # Unbinds a given view and its childrens UI events.
+  #
+  # @param [HTMLElement] $view The view to unbind events from
+  #
   unbindUIEvents: ($view) =>
     els = $view.querySelectorAll('[data-events]')
     @unbindUIEvent $view, $view.attributes['data-events'].value if $view.attributes['data-events']
     @unbindUIEvent $el, $el.attributes['data-events'].value for $el in els
     @
 
+  #
+  # Unbinds a given view from the given set of events. Follows the same
+  # schema as {Wraith.BaseView#bindUIEvent} does for binding.
+  #
+  # @param [HTMLElement] $view The view to unbind events from
+  # @param [HTMLElement] event The event as defined in the description above
+  #
   unbindUIEvent: ($view, event) =>
     events = event.split(/[,?\s?]/)
     for event in events
