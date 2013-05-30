@@ -1,8 +1,12 @@
 root = exports ? @
 
 #
-# Our bootloader object. This should be
-# instantiated after all JS is loaded on the page
+# The bootloader object. This should be
+# instantiated after all JS is loaded on the page.
+# It will search the DOM for elements with the
+# data-controller attribute and try to load their respective
+# controller from the global namespace. It is acceptable
+# to use dot notation to do so, e.g. App.Controller
 #
 # @example
 #   bootloader = new Wraith.Bootloader
@@ -13,12 +17,10 @@ class Wraith.Bootloader
   #
   constructor: ->
     controllers = document.querySelectorAll('[data-controller]')
-    for $controller in controllers
-      @loadController $controller.attributes['data-controller'].value, $controller
+    @loadController $controller.attributes['data-controller'].value, $controller for $controller in controllers
 
     # Activate our controllers via .init
-    for id, controller of Wraith.controllers
-      controller.init()
+    controller.init() for id, controller of Wraith.controllers
     @
 
   #
