@@ -17,7 +17,6 @@ class Wraith.CollectionView extends Wraith.ViewModel
     return unless model instanceof Wraith.Model
     $view = @render(model)
     $view.setAttribute('data-model', model.get('_id'))
-    @applyClasses $view, model
     @bindUIEvents $view
     @$parent.appendChild $view
 
@@ -32,7 +31,6 @@ class Wraith.CollectionView extends Wraith.ViewModel
 
     $view = @render(model)
     $view.setAttribute('data-model', model.get('_id'))
-    @applyClasses $view, model
     @unbindUIEvents $el
     @bindUIEvents $view
     @applyViewUpdate $el, $view

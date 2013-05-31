@@ -32,34 +32,6 @@ class Wraith.ViewModel extends Wraith.BaseView
     $el = $el.firstChild
     $el
 
-  #
-  # Compiles a given template using the data from the model provided.
-  # It will take into account dot notation and methods used in said notation.
-  # If the type of a given token is mapped to a function on the model it will
-  # attempt to execute it and use the resulting value/object with the next token
-  # or will return it if it is the last token.
-  #
-  # @todo This depends on a {Wraith.Model} and its get function.. is this necessary?
-  #
-  # @param [Wraith.Model] model The model to be applied to the template.
-  # @param [String] template The string template to be rendered.
-  #
-  # @return [String] The resulting template after the model is applied to it.
-  #
-  compileTemplate: (model, template) ->
-    template.replace Wraith.ViewModel.TEMPLATE_REGEX, (tag, results) ->
-      tokens = results.split('.')
-      count = 0
-      for token in tokens
-        target = if count is 0 then model else val
-        if target.hasOwnProperty(token)
-          val = target[token]
-        else
-          val = target.get(token)
-        val = val() if Wraith.isFunction(val)
-        count++
-      val
-
 
   #
   # Updates the view for a given model. Calls the
@@ -73,7 +45,6 @@ class Wraith.ViewModel extends Wraith.BaseView
   updateView: (model) ->
     @unbindUIEvents @$el
     $view = @render(model)
-    @applyClasses $view, model
     @bindUIEvents $view
     @applyViewUpdate(@$el, $view)
     @
