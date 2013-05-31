@@ -5,18 +5,6 @@
 #
 class Wraith.ViewModel extends Wraith.BaseView
   #
-  # The template REGEX object as a static property.
-  # Used when parsing the template to bind to a model.
-  #
-  @TEMPLATE_REGEX = new RegExp(
-    Wraith.templateSettings.start +
-    '\\s*(' +
-    Wraith.templateSettings.dotNotation +
-    ')\\s*' +
-    Wraith.templateSettings.end,
-    'gi')
-
-  #
   # Constructor
   # @param [HTMLElement] $el The HTML Element to attach the view to
   # @param [String] template The template string to use when rendering
@@ -40,7 +28,7 @@ class Wraith.ViewModel extends Wraith.BaseView
   #
   render: (model) ->
     $el = document.createElement('div')
-    $el.innerHTML = @compileTemplate(model, @template)
+    $el.innerHTML = new Wraith.Template(@template).compile(model) #@compileTemplate(model, @template)
     $el = $el.firstChild
     $el
 
@@ -71,6 +59,7 @@ class Wraith.ViewModel extends Wraith.BaseView
         val = val() if Wraith.isFunction(val)
         count++
       val
+
 
   #
   # Updates the view for a given model. Calls the

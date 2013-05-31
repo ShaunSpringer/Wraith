@@ -47,6 +47,7 @@ class Wraith.BaseView extends Wraith.Base
   # @param [Wraith.Model] model The model to use when applying the classes
   #
   applyClasses: ($view, model) =>
+    return
     els = $view.querySelectorAll('[data-class]')
     @applyClass $view, model if $view.attributes['data-class']
     @applyClass $el, model for $el in els

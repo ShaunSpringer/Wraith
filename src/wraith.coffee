@@ -29,15 +29,14 @@ class Wraith
   @delay: (ms, func) -> setTimeout func, ms
 
   #
-  # This is partly borrowed from underscores ERB-style template
-  # settings.
+  # Types of objects after being cast as a string
+  # (via .toString())
   #
-  @templateSettings:
-    start:        '{{'
-    end:          '}}'
-    checked: 'data-checked=[\'"](.+?)[\'"]'
-    dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
-
+  @objectTypes:
+    ARRAY: '[object Array]'
+    STRING: '[object String]'
+    FUNCTION: '[object Function]'
+    OBJECT: '[object Object]'
   #
   # Generates a UID at the desired length
   # @param [Number] length Desired length of the UID

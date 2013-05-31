@@ -10,6 +10,7 @@ task 'build', 'Continually build', ->
     'src/base.coffee'
     'src/model.coffee'
     'src/collection.coffee'
+    'src/template.coffee'
     'src/baseview.coffee'
     'src/viewmodel.coffee'
     'src/collectionview.coffee'
