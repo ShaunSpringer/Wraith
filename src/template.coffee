@@ -18,7 +18,7 @@ class Wraith.Template
     end:          '}}'
     checked: /data-checked=[\'\"](.+?)[\'\"]/gi
     classes: /data-class=[\'\"](.+?)[\'\"]/gi
-    classesMerge: /\bclass="(.+?)"([^<^>]*)class="(.+?)"/gi #/(?:<.*class=\"([^\".]*)\")([^<^>]+)(?:class=\"([^\".]*)\")/gi
+    classesMerge: /class="(.+?)"([^<^>]*)class="(.+?)"/gi #/(?:<.*class=\"([^\".]*)\")([^<^>]+)(?:class=\"([^\".]*)\")/gi
     interpolate:  /{{(.+?)}}/g
     dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
 
