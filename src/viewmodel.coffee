@@ -62,6 +62,7 @@ class Wraith.ViewModel extends Wraith.BaseView
   #
   applyViewUpdate: ($old, $new) =>
     attrs = []
+
     if $old.attributes
       attrs = (attr.name for attr in $old.attributes)
 
@@ -70,7 +71,8 @@ class Wraith.ViewModel extends Wraith.BaseView
         if attrs.indexOf(attr.name) is -1
           attrs.push attr.name
 
-    @updateAttribute(attr, $old, $new) for attr in attrs
+    if attrs.length > 0
+      @updateAttribute(attr, $old, $new) for attr in attrs
 
     if $old.nodeValue isnt $new.nodeValue
       $old.nodeValue = $new.nodeValue

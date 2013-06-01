@@ -53,7 +53,7 @@ class Wraith.Template
       .split("'").join("\\'")
       .split("✄").join("'")
       .replace(c.interpolate, "' + Wraith.Template.interpolate(obj, \'$1\') + '")
-      .replace(c.checked, "' + ((Wraith.Template.interpolate(obj, \'$1\') === true) ? 'checked' : \'\') + '")
+      .replace(c.checked, "' + ((Wraith.Template.interpolate(obj, \'$1\') === true) ? 'checked=\"checked\"' : \'\') + '")
       .replace(c.classes, "class=\"' + Wraith.Template.interpolateClass(obj, \'$1\') + '\"")
       .replace(c.classesMerge, "class=\"$1 $3\" $2")
       .split(c.start).join("');")
@@ -61,10 +61,9 @@ class Wraith.Template
       "'); return p.join('');"
 
     fn = new Function 'obj', str
-
     @template_fn = fn
-    console.log fn
-    return @template_fn(data)
+    @template_fn(data)
+
 
   getType: (obj) => obj?.toString()
 
@@ -90,6 +89,7 @@ class Wraith.Template
         results = target.get(token)
       results = results() if Wraith.isFunction(results)
       count++
+
     results
 
   #
