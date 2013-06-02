@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Wraith'>Wraith</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <a href='../../classes/Wraith.html' title='Wraith'>Wraith</a>
+    &raquo;
+    <span class='title'>BaseView</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Wraith.BaseView
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;baseview.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Wraith/Base.html'>Wraith.Base</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The core Wraith View responsible for rendering a single
+instance of a view. It will bind to a models update event
+and re-render each time it changes. Additionally it will handle
+setting classes up based on the data-class directive, and other
+bindings that might be required in the future.</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+                <a href='../../classes/Wraith/Controller.html'>Wraith.Controller</a>,
+        <a href='../../classes/Wraith/ViewModel.html'>Wraith.ViewModel</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($el)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Constructor
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindUIEvents-instance'>
+        - (void) <strong>bindUIEvents</strong>($view)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Iterates over a view and its children looking for the data-events attribute which should be a comma separated list of events.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindUIEvent-instance'>
+        - (void) <strong>bindUIEvent</strong>($view, event)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Binds to a UI event on a given view.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#wrapUIEvent-instance'>
+        - (void) <strong>wrapUIEvent</strong>(cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Used as a wrapper for handling UI events and maintaining the proper context.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleUIEvent-instance'>
+        - (void) <strong>handleUIEvent</strong>(e, cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Handles a UI event on the view level.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindUIEvents-instance'>
+        - (void) <strong>unbindUIEvents</strong>($view)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Unbinds a given view and its childrens UI events.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindUIEvent-instance'>
+        - (void) <strong>unbindUIEvent</strong>($view, event)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Unbinds a given view from the given set of events.
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Wraith/Base.html'>Wraith.Base</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Wraith/Base.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Wraith/Base.html#bind-instance'>#bind</a>,
+                <a href='../../classes/Wraith/Base.html#unbind-instance'>#unbind</a>,
+                <a href='../../classes/Wraith/Base.html#emit-instance'>#emit</a>,
+        <a href='../../classes/Wraith/Base.html#proxy-instance'>#proxy</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($el)
+    </p>
+    <div class='docstring'>
+  <p>Constructor</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$el</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The HTML Element to attach the view to</span>
+    </li>
+    <li>
+      <span class='name'>template</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The template string to use when rendering</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='bindUIEvents-instance'>
+      - (void) <strong>bindUIEvents</strong>($view)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Iterates over a view and its children looking for the
+data-events attribute which should be a comma separated list
+of events. The scheme is defined by <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>#bindUIEvent</a></p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view element to bind to</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindUIEvent-instance'>
+      - (void) <strong>bindUIEvent</strong>($view, event)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Binds to a UI event on a given view. Relies on the data-events
+attribute to be a space or comma delimited list of events.
+A valid event is given in the schema event:callback
+The event must be part of Wraith.UIEvents</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view element to bind to</span>
+    </li>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The event as defined in the description above</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='wrapUIEvent-instance'>
+      - (void) <strong>wrapUIEvent</strong>(cb)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Used as a wrapper for handling UI events and maintaining
+the proper context.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function on the controller</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleUIEvent-instance'>
+      - (void) <strong>handleUIEvent</strong>(e, cb)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Handles a UI event on the view level.
+Calls stopPropagation by default to prevent bubbling.
+Also will emit a uievent for the parent controller to listen to
+so it can invoke the proper method in the controller.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The UI Event from the browser</span>
+    </li>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function on the controller</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindUIEvents-instance'>
+      - (void) <strong>unbindUIEvents</strong>($view)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Unbinds a given view and its childrens UI events.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to unbind events from</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindUIEvent-instance'>
+      - (void) <strong>unbindUIEvent</strong>($view, event)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Unbinds a given view from the given set of events. Follows the same
+schema as <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>Wraith.BaseView#bindUIEvent</a> does for binding.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to unbind events from</span>
+    </li>
+    <li>
+      <span class='name'>event</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The event as defined in the description above</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.6.1
+  (Node.js v0.8.19).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
