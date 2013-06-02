@@ -185,7 +185,7 @@ and re-render each time it changes</p>
       </a>
     </span>
     <span class='desc'>
-      Updates a given attribute on $old to the latest value on $new.
+      Updates a given attribute on $old to the current value on $new.
     </span>
   </li>
 </ul>
@@ -350,8 +350,9 @@ re-rendering each time data changes.</p>
       - (void) <strong>updateAttribute</strong>(name, $old, $new)
     </p>
     <div class='docstring'>
-  <p>Updates a given attribute on $old to the
-latest value on $new.</p>
+  <p>Updates a given attribute on $old to the current value on $new.
+Used to update values on a DOM element without having to rewrite the
+entire DOM structure (children etc).</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -387,7 +388,7 @@ latest value on $new.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

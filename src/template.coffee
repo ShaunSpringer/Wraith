@@ -1,11 +1,14 @@
+#
+# The Wraith Template object is responsible for storing a template string,
+# generating a template function and interpolating the data to generate
+# a view off a given set of data.
+#
+# Note: Based on John Resig's microtemplating function(s).
+#
 class Wraith.Template
   #
-  # Template Cache object
+  # Borrowed from Underscores templates
   #
-  @cache: {}
-
-  #
-  # Borrowed from Underscores ERB-style templates
   # @param [String] string The string to escape
   #
   @escapeRegExp: (string) -> string.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1')
@@ -18,10 +21,15 @@ class Wraith.Template
     end:          '}}'
     checked: /data-checked=[\'\"](.+?)[\'\"]/gi
     classes: /data-class=[\'\"](.+?)[\'\"]/gi
-    classesMerge: /class="([^"]+?)"([^<^>]*)class="([^"]+?)"/gi #/(?:<.*class=\"([^\".]*)\")([^<^>]+)(?:class=\"([^\".]*)\")/gi
+    classesMerge: /class="([^"]+?)"([^<^>]*)class="([^"]+?)"/gi
     interpolate:  /{{(.+?)}}/g
     dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
 
+  #
+  # Constructor
+  #
+  # @param [String] template The template string to apply the data to on render.
+  #
   constructor: (@template) -> @
 
   #
@@ -59,13 +67,9 @@ class Wraith.Template
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "'); return p.join('');"
-    #console.log str
-    fn = new Function 'obj', str
-    @template_fn = fn
+
+    @template_fn = new Function 'obj', str
     @template_fn(data)
-
-
-  getType: (obj) => obj?.toString()
 
   #
   # Takes a given token array

@@ -116,6 +116,14 @@
           <td>src&#47;template.coffee</td>
         </tr>
       </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The Wraith Template object is responsible for storing a template string,
+generating a template function and interpolating the data to generate
+a view off a given set of data.</p><p>Note: Based on John Resig&#39;s microtemplating function(s).</p>
+</div>
+<div class='tags'>
+</div>
       <h2>Class Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -125,7 +133,7 @@
       </a>
     </span>
     <span class='desc'>
-      Borrowed from Underscores ERB-style templates
+      Borrowed from Underscores templates
     </span>
   </li>
   <li>
@@ -161,7 +169,7 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      
+      Constructor
     </span>
   </li>
   <li>
@@ -174,17 +182,6 @@
       Compiles a template with a ERB style markup.
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#getType-instance'>
-        - (void) <strong>getType</strong>(obj)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      
-    </span>
-  </li>
 </ul>
       <h2>Class Method Details</h2>
       <div class='methods'>
@@ -193,7 +190,7 @@
       + (void) <strong>escapeRegExp</strong>(string)
     </p>
     <div class='docstring'>
-  <p>Borrowed from Underscores ERB-style templates</p>
+  <p>Borrowed from Underscores templates</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -280,7 +277,21 @@ assumes that a model is a Wraith.Model object.</p><p>@returns [Object|String|Boo
     <p class='signature' id='constructor-instance'>
       - (void) <strong>constructor</strong>(template)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Constructor</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>template</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The template string to apply the data to on render.</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
@@ -313,19 +324,11 @@ With alterations for arbitrary delimiters, and to preserve whitespace.</p>
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='getType-instance'>
-      - (void) <strong>getType</strong>(obj)
-      (bound)
-    </p>
-    <div class='tags'>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

@@ -1,5 +1,3 @@
-root = exports ? @
-
 #
 # The bootloader object. This should be
 # instantiated after all JS is loaded on the page.

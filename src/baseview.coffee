@@ -8,6 +8,7 @@
 class Wraith.BaseView extends Wraith.Base
   #
   # Constructor
+  #
   # @param [HTMLElement] $el The HTML Element to attach the view to
   # @param [String] template The template string to use when rendering
   #
@@ -18,7 +19,7 @@ class Wraith.BaseView extends Wraith.Base
   #
   # Iterates over a view and its children looking for the
   # data-events attribute which should be a comma separated list
-  # of events. The scheme is defined by {Wraith.BaseView#bindUIEvent}
+  # of events. The scheme is defined by {#bindUIEvent}
   #
   # @param [HTMLElement] $view The view element to bind to
   #
@@ -32,7 +33,7 @@ class Wraith.BaseView extends Wraith.Base
   # Binds to a UI event on a given view. Relies on the data-events
   # attribute to be a space or comma delimited list of events.
   # A valid event is given in the schema event:callback
-  # The event must be part of {Wraith.UIEvents}
+  # The event must be part of Wraith.UIEvents
   #
   # @param [HTMLElement] $view The view element to bind to
   # @param [HTMLElement] event The event as defined in the description above

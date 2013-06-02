@@ -15,7 +15,10 @@
 #
 class Wraith.Controller extends Wraith.BaseView
   #
-  # Constructor
+  # Initializes a few private variables and sets the data-id
+  # attribute to a uniquely generated id.
+  #
+  # @param [HTMLElement] $el The main element to bind the controller to.
   #
   constructor: (@$el) ->
     Wraith.log '@Wraith.Controller', 'constructor'
@@ -164,6 +167,7 @@ class Wraith.Controller extends Wraith.BaseView
   # This is a wrapper for any UI event happening on views in this
   # controller. We do this so we can do a lookup of the model and pass
   # it through with the event
+  #
   # @param [Event] e The native event object
   # @param [String] cb The name of the callback function to call
   #
@@ -175,7 +179,10 @@ class Wraith.Controller extends Wraith.BaseView
   #
   # Traverses the dom upwards to find the first model it encounters
   # If no model is found, it will return null
+  #
   # @param [HTMLElement] $el The element from which to start the traversal
+  #
+  # @return [Wraith.Model] The model that belongs to the respective view
   #
   getModelFromEl: ($el) =>
     while $el
@@ -183,4 +190,5 @@ class Wraith.Controller extends Wraith.BaseView
       break if modelId = $el.attributes['data-model']?.value
       $el = $el.parentNode
 
+    return if not modelId
     Wraith.models[modelId]

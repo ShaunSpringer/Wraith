@@ -126,7 +126,10 @@ Contains a list of Collections, Models, and Controllers</p>
         <dt id='DEBUG-constant'>
           DEBUG
           =
-          <div class='tags'>
+          <div class='docstring'>
+  <p>Essentially allow logging or not</p>
+</div>
+<div class='tags'>
 </div>
         </dt>
         <dd>
@@ -142,7 +145,7 @@ Contains a list of Collections, Models, and Controllers</p>
       </a>
     </span>
     <span class='desc'>
-      
+      Logs to the console if DEBUG is set to true
     </span>
   </li>
   <li>
@@ -157,22 +160,12 @@ Contains a list of Collections, Models, and Controllers</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#delay-class'>
-        + (void) <strong>delay</strong>(ms, func)
-      </a>
-    </span>
-    <span class='desc'>
-      Delays the execution of a function for the given time in ms
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#uniqueId-class'>
         + (void) <strong>uniqueId</strong>(length = 16, prefix = "wraith-")
       </a>
     </span>
     <span class='desc'>
-      Generates a UID at the desired length Unfortunately this is here because zepto doesn&#39;t like id&#39;s in selectors to start with numbers.
+      Generates a UID at the desired length
     </span>
   </li>
 </ul>
@@ -182,7 +175,10 @@ Contains a list of Collections, Models, and Controllers</p>
     <p class='signature' id='log-class'>
       + (void) <strong>log</strong>(args...)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Logs to the console if DEBUG is set to true</p>
+</div>
+<div class='tags'>
 </div>
   </div>
   <div class='method_details'>
@@ -208,43 +204,11 @@ is a funciton.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='delay-class'>
-      + (void) <strong>delay</strong>(ms, func)
-    </p>
-    <div class='docstring'>
-  <p>Delays the execution of a function for the
-given time in ms</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>ms</span>
-      <span class='type'>
-        (<tt>Number</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The time to delay in ms</span>
-    </li>
-    <li>
-      <span class='name'>func</span>
-      <span class='type'>
-        (<tt>Function</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The function to execute after the given time</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='uniqueId-class'>
       + (void) <strong>uniqueId</strong>(length = 16, prefix = "wraith-")
     </p>
     <div class='docstring'>
-  <p>Generates a UID at the desired length
-Unfortunately this is here because zepto doesn&#39;t like id&#39;s
-in selectors to start with numbers.</p>
+  <p>Generates a UID at the desired length</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -272,7 +236,7 @@ in selectors to start with numbers.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

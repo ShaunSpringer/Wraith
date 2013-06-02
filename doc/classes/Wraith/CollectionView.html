@@ -151,7 +151,7 @@ view when a model changes.</p>
       </a>
     </span>
     <span class='desc'>
-      
+      Creates a view as a child of $el using the append method.
     </span>
   </li>
   <li>
@@ -161,7 +161,7 @@ view when a model changes.</p>
       </a>
     </span>
     <span class='desc'>
-      
+      Removes a view that was bound to a given model.
     </span>
   </li>
   <li>
@@ -171,7 +171,7 @@ view when a model changes.</p>
       </a>
     </span>
     <span class='desc'>
-      
+      Updates a view that is bound to the given model.
     </span>
   </li>
 </ul>
@@ -223,6 +223,25 @@ view when a model changes.</p>
   <p>Constructor</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$el</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The HTMLElement to bind our collection to</span>
+    </li>
+    <li>
+      <span class='name'>template</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The template to use when rendering views.</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
@@ -232,28 +251,75 @@ view when a model changes.</p>
     <p class='signature' id='createView-instance'>
       - (void) <strong>createView</strong>(model)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Creates a view as a child of $el using the append method.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model that this view it to use when rendering.</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='removeView-instance'>
       - (void) <strong>removeView</strong>(model)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <p>Removes a view that was bound to a given model. Performs a lookup
+within the parent $el for the data-model=[model_id] attribute.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to do the view lookup with and remove.</span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
     <p class='signature' id='updateView-instance'>
       - (void) <strong>updateView</strong>(model)
     </p>
-    <div class='tags'>
+    <div class='docstring'>
+  <div class='note todo'>
+    <strong>TODO:</strong>
+    Break the dependency on the view bound data-model (which really isnt necessary)
+  </div>
+  <p>Updates a view that is bound to the given model.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to do the view lookup with and update.</span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1

@@ -9,13 +9,14 @@ class Wraith.ViewModel extends Wraith.BaseView
   # @param [HTMLElement] $el The HTML Element to attach the view to
   # @param [String] template The template string to use when rendering
   #
-  constructor: (@$el, @template) ->
+  constructor: (@$el, template) ->
     Wraith.log '@Wraith.ViewModel', 'constructor'
     throw 'Element is required by View' unless @$el
-    throw 'Template is required by View' unless @template
+    throw 'Template is required by View' unless template
 
     super(@$el)
     @$parent = @$el.parentNode
+    @template = new Wraith.Template(template)
 
   #
   # Renders the view given a {Wraith.Model} object.
@@ -28,10 +29,9 @@ class Wraith.ViewModel extends Wraith.BaseView
   #
   render: (model) ->
     $el = document.createElement('div')
-    $el.innerHTML = new Wraith.Template(@template).compile(model) #@compileTemplate(model, @template)
+    $el.innerHTML = @template.compile(model)
     $el = $el.firstChild
     $el
-
 
   #
   # Updates the view for a given model. Calls the
@@ -83,8 +83,9 @@ class Wraith.ViewModel extends Wraith.BaseView
     @
 
   #
-  # Updates a given attribute on $old to the
-  # latest value on $new.
+  # Updates a given attribute on $old to the current value on $new.
+  # Used to update values on a DOM element without having to rewrite the
+  # entire DOM structure (children etc).
   #
   # @param [String] name The attribute name to update
   # @param [HTMLElement] $old The old DOM element that we are updating

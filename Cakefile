@@ -43,7 +43,7 @@ task 'minify', 'Builds and then minifies Wraith', ->
 task 'docs', 'Generate annotated source code with Codo', ->
   fs.readdir 'src', (err, contents) ->
     files = ("src/#{file}" for file in contents when /\.coffee$/.test file)
-    docco = spawn 'codo', files
+    docco = spawn 'codo', files, '-d'
     docco.stdout.on 'data', (data) -> print data.toString().trim()
     docco.stderr.on 'data', (data) -> print data.toString().trim()
     docco.on 'exit', (status) -> callback?() if status is 0
