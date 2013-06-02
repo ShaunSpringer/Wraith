@@ -19,10 +19,10 @@ class Wraith.Template
   @settings:
     start:        '{{'
     end:          '}}'
+    interpolate:  /{{(.+?)}}/g
     checked: /data-checked=[\'\"](.+?)[\'\"]/gi
     classes: /data-class=[\'\"](.+?)[\'\"]/gi
     classesMerge: /class="([^"]+?)"([^<^>]*)class="([^"]+?)"/gi
-    interpolate:  /{{(.+?)}}/g
     dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
 
   #
@@ -53,7 +53,7 @@ class Wraith.Template
 
     endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + Wraith.Template.escapeRegExp(c.end) + ")", "g")
     str = 'var p=[],print=function(){p.push.apply(p,arguments);};' +
-      'p.push(\'' +
+      'p[p.length] = \'' +
       template.replace(/\r/g, '\\r')
       .replace(/\n/g, '\\n')
       .replace(/\t/g, '\\t')
@@ -63,13 +63,14 @@ class Wraith.Template
       .replace(c.interpolate, "' + Wraith.Template.interpolate(obj, \'$1\') + '")
       .replace(c.checked, "' + ((Wraith.Template.interpolate(obj, \'$1\') === true) ? 'checked=\"checked\"' : \'\') + '")
       .replace(c.classes, "class=\"' + Wraith.Template.interpolateClass(obj, \'$1\') + '\"")
-      .replace(c.classesMerge, "class=\"$1 $3\" $2")
+      .replace(c.classesMerge, "class=\"$1 $3\"' + ((\'$2\').length > 0 ? \'$2\' : '') + '")
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
-      "'); return p.join('');"
+      "'; return p.join('');"
 
     @template_fn = new Function 'obj', str
     @template_fn(data)
+
 
   #
   # Takes a given token array
