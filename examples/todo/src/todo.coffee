@@ -1,4 +1,4 @@
-root = exports ? @
+App = {}
 
 #
 # Our list item model. Will be represetented
@@ -7,7 +7,7 @@ root = exports ? @
 # @include Wraith.Models.ListItem
 # @extend Wraith.Model
 #
-class Wraith.Models.ListItem extends Wraith.Model
+class App.ListItem extends Wraith.Model
   @field 'text', { default: 'New Item' }
   @field 'selected', { default: false }
 
@@ -17,8 +17,8 @@ class Wraith.Models.ListItem extends Wraith.Model
 # @include Wraith.Models.List
 # @extend Wraith.Model
 #
-class Wraith.Models.List extends Wraith.Model
-  @hasMany Wraith.Models.ListItem, as: 'items'
+class App.List extends Wraith.Model
+  @hasMany App.ListItem, 'items'
   completed: =>
     items = @get('items').all()
     items = items.filter (item) -> item.get('selected') is true
@@ -31,10 +31,10 @@ class Wraith.Models.List extends Wraith.Model
 # @include Wraith.Controllers.TodoManager
 # @extend Wraith.Controller
 #
-class Wraith.Controllers.TodoManager extends Wraith.Controller
+class App.TodoManager extends Wraith.Controller
   init: ->
     super()
-    @list = @registerModel(new Wraith.Models.List, 'list')
+    @list = @registerModel(new App.List, 'list')
     @items = @list.get('items')
     @items.create { text: 'Task 1', selected: true }
     @items.create { text: 'Task 2' }
@@ -47,3 +47,7 @@ class Wraith.Controllers.TodoManager extends Wraith.Controller
 
   itemDelete: (e) => @items.remove e.model.get('_id')
   itemToggle: (e) => e.model.set('selected', !e.model.get('selected'))
+
+
+root = exports ? @
+root.App = App
