@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
+  <script src='../../assets/codo.js'></script>
+  <script src='../../assets/search_data.js'></script>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../README.md.html' title='Wraith'>Wraith</a>
+    &raquo;
+    <a href='../../class_index.html' title='Index'>Index</a>
+    &raquo;
+    <a href='../../classes/Wraith.html' title='Wraith'>Wraith</a>
+    &raquo;
+    <span class='title'>Controller</span>
+    <nav>
+      <ul>
+        <li class='noframes'>
+          (<a class='noframes' href='#'>no frames</a>)
+        </li>
+      </ul>
+    </nav>
+    <div id='search'>
+      <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+    </div>
+  </div>
+  <iframe id='search_frame'></iframe>
+  <div id='fuzzySearch'>
+    <input type='text'>
+    <ol></ol>
+  </div>
+  <div id='help'>
+    <p>
+      Quickly fuzzy find classes, mixins, methods, file:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-T</span>
+        Open fuzzy finder dialog
+      </li>
+    </ul>
+    <p>
+      In frame mode you can toggle the list naviation frame on the left side:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-L</span>
+        Toggle list view
+      </li>
+    </ul>
+    <p>
+      You can focus a list in frame mode or toggle a tab in frameless mode:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-C</span>
+        Class list
+      </li>
+      <li>
+        <span>Ctrl-I</span>
+        Mixin list
+      </li>
+      <li>
+        <span>Ctrl-F</span>
+        File list
+      </li>
+      <li>
+        <span>Ctrl-M</span>
+        Method list
+      </li>
+      <li>
+        <span>Ctrl-E</span>
+        Extras list
+      </li>
+    </ul>
+    <p>
+      You can focus and blur the search input:
+    </p>
+    <ul>
+      <li>
+        <span>Ctrl-S</span>
+        Focus search input
+      </li>
+      <li>
+        <span>Esc</span>
+        Blur search input
+      </li>
+    </ul>
+    <p>
+      In frameless mode you can close the list tab:
+    </p>
+    <ul>
+      <li>
+        <span>Esc</span>
+        Close list tab
+      </li>
+    </ul>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Wraith.Controller
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>src&#47;controller.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../classes/Wraith/BaseView.html'>Wraith.BaseView</a>
+          </td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>The proverbial &#39;controller&#39; in the MVC pattern.
+The Controller handles the logic your applications or
+components may have. This controller handles automatical registration
+and mapping of models to views.</p>
+  <div class='examples'>
+    <h3>Examples:</h3>
+    <h4>
+      Example markup in HTML.
+    </h4>
+    <pre><code class='coffee'>This will create a SelectList controller
+and then create a view using the template with id &quot;ListItem&quot;
+mapping to the model list.items (belonging to SelectList)
+
+&lt;ul data-view=&quot;SelectList&quot;&gt;
+  &lt;div data-template=&quot;ListItem&quot; data-map=&quot;list.items&quot;&gt;&lt;&#47;div&gt;
+&lt;&#47;ul&gt;</code></pre>
+  </div>
+</div>
+<div class='tags'>
+</div>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#constructor-instance'>
+        - (void) <strong>constructor</strong>($el)
+      </a>
+    </span>
+    <span class='constructor note title'>Constructor</span>
+    <span class='desc'>
+      Initializes a few private variables and sets the data-id attribute to a uniquely generated id.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#init-instance'>
+        - (void) <strong>init</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Initialize the controller by loading the
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#loadElements-instance'>
+        - (void) <strong>loadElements</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Load our elements with id attributes into an object that is accesible at the controller level.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#findViews-instance'>
+        - (void) <strong>findViews</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Find all the views embedded inside the controller and register them with the controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#registerView-instance'>
+        - (void) <strong>registerView</strong>($view)
+      </a>
+    </span>
+    <span class='desc'>
+      Register the view to this controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#registerModel-instance'>
+        - (Wraith.Model) <strong>registerModel</strong>(model, as)
+      </a>
+    </span>
+    <span class='desc'>
+      Register the model to this controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindViews-instance'>
+        - (void) <strong>bindViews</strong>(name, model)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds any view that is loaded into the controller to the given model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindView-instance'>
+        - (void) <strong>bindView</strong>(model, binding, view)
+      </a>
+    </span>
+    <span class='desc'>
+      Binds a single instance of a view to a model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleUIEvent-instance'>
+        - (void) <strong>handleUIEvent</strong>(e, cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Handles the UI event which is mapped from the DOM to the controller.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleViewUIEvent-instance'>
+        - (void) <strong>handleViewUIEvent</strong>(e, cb)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      This is a wrapper for any UI event happening on views in this controller.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getModelFromEl-instance'>
+        - (Wraith.Model) <strong>getModelFromEl</strong>($el)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Traverses the dom upwards to find the first model it encounters If no model is found, it will return null
+    </span>
+  </li>
+</ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Wraith/BaseView.html'>Wraith.BaseView</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Wraith/BaseView.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Wraith/BaseView.html#bindUIEvents-instance'>#bindUIEvents</a>,
+                <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>#bindUIEvent</a>,
+                <a href='../../classes/Wraith/BaseView.html#wrapUIEvent-instance'>#wrapUIEvent</a>,
+                <a href='../../classes/Wraith/BaseView.html#handleUIEvent-instance'>#handleUIEvent</a>,
+                <a href='../../classes/Wraith/BaseView.html#unbindUIEvents-instance'>#unbindUIEvents</a>,
+        <a href='../../classes/Wraith/BaseView.html#unbindUIEvent-instance'>#unbindUIEvent</a>
+      </p>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../classes/Wraith/Base.html'>Wraith.Base</a>
+      </h3>
+      <p class='inherited'>
+                <a href='../../classes/Wraith/Base.html#constructor-instance'>#constructor</a>,
+                <a href='../../classes/Wraith/Base.html#bind-instance'>#bind</a>,
+                <a href='../../classes/Wraith/Base.html#unbind-instance'>#unbind</a>,
+                <a href='../../classes/Wraith/Base.html#emit-instance'>#emit</a>,
+        <a href='../../classes/Wraith/Base.html#proxy-instance'>#proxy</a>
+      </p>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-instance'>
+      - (void) <strong>constructor</strong>($el)
+    </p>
+    <div class='docstring'>
+  <p>Initializes a few private variables and sets the data-id
+attribute to a uniquely generated id.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$el</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The main element to bind the controller to.</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='init-instance'>
+      - (void) <strong>init</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Initialize the controller by loading the</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='loadElements-instance'>
+      - (void) <strong>loadElements</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Load our elements with id attributes into
+an object that is accesible at the controller level.
+This makes it easier to access discrete DOM objects
+within the controller via @els[&#39;el-id&#39;]</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='findViews-instance'>
+      - (void) <strong>findViews</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Find all the views embedded inside the controller and
+register them with the controller</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='registerView-instance'>
+      - (void) <strong>registerView</strong>($view)
+    </p>
+    <div class='docstring'>
+  <p>Register the view to this controller</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$view</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to be registered</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='registerModel-instance'>
+      - (Wraith.Model) <strong>registerModel</strong>(model, as)
+    </p>
+    <div class='docstring'>
+  <p>Register the model to this controller</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to register to this controller</span>
+    </li>
+    <li>
+      <span class='name'>as</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the model to register</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      &mdash;
+      <span class='desc'>The model that was registered</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindViews-instance'>
+      - (void) <strong>bindViews</strong>(name, model)
+    </p>
+    <div class='docstring'>
+  <p>Binds any view that is loaded into the controller
+to the given model.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>name</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the model to bind to</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to map the namespace to</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindView-instance'>
+      - (void) <strong>bindView</strong>(model, binding, view)
+    </p>
+    <div class='docstring'>
+  <p>Binds a single instance of a view to a model.
+Usings binding as the dot notation map.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to bind to</span>
+    </li>
+    <li>
+      <span class='name'>binding</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The dot notation binding (first item should be the model name)</span>
+    </li>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>Wraith.View|Wraith.CollectionView</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view object to bind to.</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleUIEvent-instance'>
+      - (void) <strong>handleUIEvent</strong>(e, cb)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Handles the UI event which is mapped from the DOM to the controller.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The event data object from the UI Event</span>
+    </li>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function to call on the controller</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleViewUIEvent-instance'>
+      - (void) <strong>handleViewUIEvent</strong>(e, cb)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>This is a wrapper for any UI event happening on views in this
+controller. We do this so we can do a lookup of the model and pass
+it through with the event</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The native event object</span>
+    </li>
+    <li>
+      <span class='name'>cb</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The name of the callback function to call</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='getModelFromEl-instance'>
+      - (Wraith.Model) <strong>getModelFromEl</strong>($el)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Traverses the dom upwards to find the first model it encounters
+If no model is found, it will return null</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$el</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The element from which to start the traversal</span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      &mdash;
+      <span class='desc'>The model that belongs to the respective view</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  Generated on
+  Sat Jun 01 2013 23:16:40 GMT-0400 (EDT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.6.1
+  (Node.js v0.8.19).
+  &#10034;
+  Press Ctrl-h to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/#!/netzpirat'>@netzpirat</a>
+  &#10034;
+  <a href='https://mksoft.ch'>mksoft.ch</a>
+</div>
+  </body>
+</html>
