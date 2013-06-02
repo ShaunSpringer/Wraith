@@ -42,7 +42,6 @@ describe "Template", ->
       results = results.replace /[\t\n\r]*/g, ''
       expect(results).toBe('<span class="b">false true</span>')
 
-
     it "should output a compiled template with class interpolation and merging with existing classes", ->
       $template = $('#templateClasses')[0]
       template = new Wraith.Template($template.innerHTML)
