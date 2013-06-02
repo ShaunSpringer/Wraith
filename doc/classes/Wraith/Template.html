@@ -15,7 +15,7 @@
     &raquo;
     <a href='../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <span class='title'>Wraith</span>
+    <a href='../../classes/Wraith.html' title='Wraith'>Wraith</a>
     &raquo;
     <span class='title'>Template</span>
     <nav>
@@ -27,6 +27,7 @@
     </nav>
     <div id='search'>
       <a id='class_list_link' href='../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../file_list.html'>Files</a>
       <a id='method_list_link' href='../../method_list.html'>Methods</a>
       <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
     </div>
@@ -114,13 +115,42 @@
           <td>Defined in:</td>
           <td>src&#47;template.coffee</td>
         </tr>
-        <tr>
-          <td>Inherits:</td>
-          <td>
-            <a href='../../classes//Wraith/Base.html'>.Wraith.Base</a>
-          </td>
-        </tr>
       </table>
+      <h2>Class Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#escapeRegExp-class'>
+        + (void) <strong>escapeRegExp</strong>(string)
+      </a>
+    </span>
+    <span class='desc'>
+      Borrowed from Underscores ERB-style templates
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#interpolate-class'>
+        + (void) <strong>interpolate</strong>(model, tokens)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Takes a given token array and seeks out its value in the given model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#interpolateClass-class'>
+        + (void) <strong>interpolateClass</strong>(model, tokens)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Takes a given token array and seeks out its value in the given model.
+    </span>
+  </li>
+</ul>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
@@ -131,28 +161,143 @@
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor
+      
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#render-instance'>
-        - (String) <strong>render</strong>(data)
+      <a href='#compile-instance'>
+        - (void) <strong>compile</strong>(data)
       </a>
     </span>
     <span class='desc'>
-      Renders the given data.
+      Compiles a template with a ERB style markup.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getType-instance'>
+        - (void) <strong>getType</strong>(obj)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      
     </span>
   </li>
 </ul>
+      <h2>Class Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='escapeRegExp-class'>
+      + (void) <strong>escapeRegExp</strong>(string)
+    </p>
+    <div class='docstring'>
+  <p>Borrowed from Underscores ERB-style templates</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>string</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The string to escape</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='interpolate-class'>
+      + (void) <strong>interpolate</strong>(model, tokens)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Takes a given token array
+and seeks out its value in the given model. It currently
+assumes that a model is a Wraith.Model object.</p><p>@returns [Object|String|Boolean] The results of the token search</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to search for the given token array</span>
+    </li>
+    <li>
+      <span class='name'>tokens</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The string of tokens to be used when searching the model (dot notation)</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='interpolateClass-class'>
+      + (void) <strong>interpolateClass</strong>(model, tokens)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Takes a given token array
+and seeks out its value in the given model. It currently
+assumes that a model is a Wraith.Model object.</p><p>@returns [Object|String|Boolean] The results of the token search</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to search for the given token array</span>
+    </li>
+    <li>
+      <span class='name'>tokens</span>
+      <span class='type'>
+        (<tt>String</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The string of tokens to be used when searching the model (dot notation)</span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-instance'>
       - (void) <strong>constructor</strong>(template)
     </p>
+    <div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='compile-instance'>
+      - (void) <strong>compile</strong>(data)
+    </p>
     <div class='docstring'>
-  <p>Constructor</p>
+  <p>Compiles a template with a ERB style markup.
+Note: Override this if you want to use a different
+template system.</p><p>NOTE:
+JavaScript templating a-la <strong>ERB</strong>, pilfered from John Resig&#39;s
+<em>Secrets of the JavaScript Ninja</em>, page 83.
+Single-quote fix from Rick Strahl.
+With alterations for arbitrary delimiters, and to preserve whitespace.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
@@ -163,54 +308,28 @@
         (<tt>String</tt>)
       </span>
       &mdash;
-      <span class='desc'>The template string to register</span>
+      <span class='desc'>The template to compile</span>
     </li>
   </ul>
 </div>
   </div>
-</div>
-      <h2>Instance Method Details</h2>
-      <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='render-instance'>
-      - (String) <strong>render</strong>(data)
+    <p class='signature' id='getType-instance'>
+      - (void) <strong>getType</strong>(obj)
+      (bound)
     </p>
-    <div class='docstring'>
-  <p>Renders the given data. Expects data to be an object
-that has a .toJSON method.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>data</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The data object to be rendered.</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>String</tt>)
-      &mdash;
-      <span class='desc'>The result of the execution of the template function</span>
-    </li>
-  </ul>
+    <div class='tags'>
 </div>
   </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
-  Tue May 28 2013 15:18:04 GMT-0400 (EDT)
+  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.7.0
-  (Node.js v0.8.18).
+  v1.6.1
+  (Node.js v0.8.19).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;

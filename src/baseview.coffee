@@ -54,7 +54,9 @@ class Wraith.BaseView extends Wraith.Base
   #
   # @param [String] cb The name of the callback function on the controller
   #
-  wrapUIEvent: (cb) => (e) => @handleUIEvent e, cb
+  wrapUIEvent: (cb) => (e) =>
+    e.stopPropagation()
+    @handleUIEvent e, cb
 
   #
   # Handles a UI event on the view level.
@@ -66,7 +68,6 @@ class Wraith.BaseView extends Wraith.Base
   # @param [String] cb The name of the callback function on the controller
   #
   handleUIEvent: (e, cb) =>
-    e.stopPropagation()
     @emit 'uievent', e, cb
 
   #

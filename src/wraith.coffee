@@ -29,15 +29,6 @@ class Wraith
   @delay: (ms, func) -> setTimeout func, ms
 
   #
-  # Types of objects after being cast as a string
-  # (via .toString())
-  #
-  @objectTypes:
-    ARRAY: '[object Array]'
-    STRING: '[object String]'
-    FUNCTION: '[object Function]'
-    OBJECT: '[object Object]'
-  #
   # Generates a UID at the desired length
   # @param [Number] length Desired length of the UID
   # @param [String] prefix A prefix to append to the UID

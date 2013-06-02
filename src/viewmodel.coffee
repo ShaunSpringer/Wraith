@@ -94,6 +94,9 @@ class Wraith.ViewModel extends Wraith.BaseView
     oldval = $old.attributes[name]?.value
     newval = $new.attributes[name]?.value
 
+    # Handle checked attribute as properties
+    $old.checked = newval? if name is 'checked'
+
     return if oldval is newval
 
     if newval

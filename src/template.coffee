@@ -18,7 +18,7 @@ class Wraith.Template
     end:          '}}'
     checked: /data-checked=[\'\"](.+?)[\'\"]/gi
     classes: /data-class=[\'\"](.+?)[\'\"]/gi
-    classesMerge: /class="(.+?)"([^<^>]*)class="(.+?)"/gi #/(?:<.*class=\"([^\".]*)\")([^<^>]+)(?:class=\"([^\".]*)\")/gi
+    classesMerge: /class="([^"]+?)"([^<^>]*)class="([^"]+?)"/gi #/(?:<.*class=\"([^\".]*)\")([^<^>]+)(?:class=\"([^\".]*)\")/gi
     interpolate:  /{{(.+?)}}/g
     dotNotation: '[a-z0-9_()][\\.a-z0-9_()]*'
 
@@ -59,7 +59,7 @@ class Wraith.Template
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "'); return p.join('');"
-
+    #console.log str
     fn = new Function 'obj', str
     @template_fn = fn
     @template_fn(data)

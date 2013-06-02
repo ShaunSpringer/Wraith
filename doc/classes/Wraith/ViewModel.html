@@ -159,16 +159,6 @@ and re-render each time it changes</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#compileTemplate-instance'>
-        - (String) <strong>compileTemplate</strong>(model, template)
-      </a>
-    </span>
-    <span class='desc'>
-      Compiles a given template using the data from the model provided.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#updateView-instance'>
         - (void) <strong>updateView</strong>(model)
       </a>
@@ -208,9 +198,6 @@ and re-render each time it changes</p>
       </h3>
       <p class='inherited'>
                 <a href='../../classes/Wraith/BaseView.html#constructor-instance'>#constructor</a>,
-                <a href='../../classes/Wraith/BaseView.html#resolveToken-instance'>#resolveToken</a>,
-                <a href='../../classes/Wraith/BaseView.html#applyClasses-instance'>#applyClasses</a>,
-                <a href='../../classes/Wraith/BaseView.html#applyClass-instance'>#applyClass</a>,
                 <a href='../../classes/Wraith/BaseView.html#bindUIEvents-instance'>#bindUIEvents</a>,
                 <a href='../../classes/Wraith/BaseView.html#bindUIEvent-instance'>#bindUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#wrapUIEvent-instance'>#wrapUIEvent</a>,
@@ -292,52 +279,6 @@ which is the desired returned result.</p>
       (<tt>HTMLElement</tt>)
       &mdash;
       <span class='desc'>A HTMLElement from the resulting render</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='compileTemplate-instance'>
-      - (String) <strong>compileTemplate</strong>(model, template)
-    </p>
-    <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    This depends on a <a href='../../classes/Wraith/Model.html'>Wraith.Model</a> and its get function.. is this necessary?
-  </div>
-  <p>Compiles a given template using the data from the model provided.
-It will take into account dot notation and methods used in said notation.
-If the type of a given token is mapped to a function on the model it will
-attempt to execute it and use the resulting value/object with the next token
-or will return it if it is the last token.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>model</span>
-      <span class='type'>
-        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The model to be applied to the template.</span>
-    </li>
-    <li>
-      <span class='name'>template</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The string template to be rendered.</span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (<tt>String</tt>)
-      &mdash;
-      <span class='desc'>The resulting template after the model is applied to it.</span>
     </li>
   </ul>
 </div>
@@ -446,7 +387,7 @@ latest value on $new.</p>
     </div>
     <div id='footer'>
   Generated on
-  Thu May 30 2013 01:05:42 GMT-0400 (EDT)
+  Sat Jun 01 2013 20:19:16 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1
