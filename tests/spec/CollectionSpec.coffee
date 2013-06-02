@@ -15,7 +15,7 @@ describe "Collection", ->
     model = new TestList()
     items = model.get('items')
 
-  describe "on create", ->
+  describe "on item create", ->
     it "should create a new model w/defaults", ->
       item = items.create {}
       expect(items.all().length).toBe(1)
@@ -46,25 +46,56 @@ describe "Collection", ->
 
       waitsFor (-> results isnt false ), 100
 
-
-    it "should emit a generic change event when an item updates", ->
-      results = false
+  describe "on item change", ->
+    item = null
+    beforeEach ->
       item = items.create {}
+
+    it "should emit a generic change event", ->
+      results = false
       model.bind 'change', (key, val) ->
         results = {key, val}
 
       item.set('a', true)
-
       waitsFor (-> results isnt false ), 100
 
-
-    it "should emit an explicit change event when an item updates", ->
+    it "should emit an explicit change event w/key and value of change", ->
       results = false
-      item = items.create {}
       model.bind 'change:items', (key, val) ->
         results = {key, val}
 
       item.set('a', true)
+      waitsFor (-> results.key is 'a' and results.val is true ), 100
 
-      waitsFor (-> results isnt false ), 100
+
+  describe "on item remove", ->
+    item = null
+    beforeEach ->
+      item = items.create {}
+
+    it "should emit a generic change event", ->
+      results = false
+      model.bind 'change', ->
+        results = true
+
+      items.remove item.get('_id')
+
+      waitsFor (-> results isnt false), 100
+
+    it "should emit a generic remove event", ->
+      results = false
+      model.bind 'remove', (item_) ->
+        results = item_
+
+      items.remove item.get('_id')
+      waitsFor (-> results is item), 100
+
+
+    it "should emit an explicit remove event", ->
+      results = false
+      model.bind 'remove:items', (item_) ->
+        results = item_
+
+      items.remove item.get('_id')
+      waitsFor (-> results is item), 100
 

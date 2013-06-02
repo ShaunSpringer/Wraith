@@ -51,7 +51,7 @@
       model = new TestList();
       return items = model.get('items');
     });
-    return describe("on create", function() {
+    describe("on item create", function() {
       it("should create a new model w/defaults", function() {
         var item;
         item = items.create({});
@@ -83,7 +83,7 @@
           return results !== false;
         }), 100);
       });
-      it("should emit an explicit change event", function() {
+      return it("should emit an explicit change event", function() {
         var results;
         results = false;
         model.bind('change:items', function(key, val) {
@@ -97,10 +97,16 @@
           return results !== false;
         }), 100);
       });
-      it("should emit a generic change event when an item updates", function() {
-        var item, results;
+    });
+    describe("on item change", function() {
+      var item;
+      item = null;
+      beforeEach(function() {
+        return item = items.create({});
+      });
+      it("should emit a generic change event", function() {
+        var results;
         results = false;
-        item = items.create({});
         model.bind('change', function(key, val) {
           return results = {
             key: key,
@@ -112,10 +118,9 @@
           return results !== false;
         }), 100);
       });
-      return it("should emit an explicit change event when an item updates", function() {
-        var item, results;
+      return it("should emit an explicit change event w/key and value of change", function() {
+        var results;
         results = false;
-        item = items.create({});
         model.bind('change:items', function(key, val) {
           return results = {
             key: key,
@@ -124,7 +129,47 @@
         });
         item.set('a', true);
         return waitsFor((function() {
+          return results.key === 'a' && results.val === true;
+        }), 100);
+      });
+    });
+    return describe("on item remove", function() {
+      var item;
+      item = null;
+      beforeEach(function() {
+        return item = items.create({});
+      });
+      it("should emit a generic change event", function() {
+        var results;
+        results = false;
+        model.bind('change', function() {
+          return results = true;
+        });
+        items.remove(item.get('_id'));
+        return waitsFor((function() {
           return results !== false;
+        }), 100);
+      });
+      it("should emit a generic remove event", function() {
+        var results;
+        results = false;
+        model.bind('remove', function(item_) {
+          return results = item_;
+        });
+        items.remove(item.get('_id'));
+        return waitsFor((function() {
+          return results === item;
+        }), 100);
+      });
+      return it("should emit an explicit remove event", function() {
+        var results;
+        results = false;
+        model.bind('remove:items', function(item_) {
+          return results = item_;
+        });
+        items.remove(item.get('_id'));
+        return waitsFor((function() {
+          return results === item;
         }), 100);
       });
     });

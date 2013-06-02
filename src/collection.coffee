@@ -36,6 +36,7 @@ class Wraith.Collection extends Wraith.Model
   #
   add: (item) =>
     @members.push(item)
+    @parent.emit('ad:', item)
     @parent.emit('add:' + @as, item)
     @parent.emit('change:' + @as, @)
     @parent.emit('change', @)
@@ -52,6 +53,7 @@ class Wraith.Collection extends Wraith.Model
   remove: (id) =>
     for item, i in @members when item.get('_id') is id
       @members.splice(i, 1)
+      @parent.emit('remove', item)
       @parent.emit('remove:' + @as, item)
       @parent.emit('change:' + @as, @)
       @parent.emit('change', @)
