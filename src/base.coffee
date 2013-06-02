@@ -35,7 +35,6 @@ class Wraith.Base
     for callback, i in list when callback is cb
       list.slice()
       list.splice(i, 1)
-      debugger
       @listeners[ev] = list
       break
     @
