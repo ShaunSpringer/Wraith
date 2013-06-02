@@ -89,4 +89,6 @@ class Wraith.Collection extends Wraith.Model
   # @param [String] key The key of the changed model value
   # @param [String, Object, Boolean] value The changed value itself
   #
-  handleChange: (key, value) => @parent.emit 'change', key, value
+  handleChange: (key, value) =>
+    @parent.emit 'change:' + @as, key, value
+    @parent.emit 'change', key, value

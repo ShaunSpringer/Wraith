@@ -27,7 +27,7 @@ describe "Base", ->
 
       expect(val).toBe(true)
 
-    it  "handle the emitted response w/data", ->
+    it  "should handle the emitted response w/data", ->
       # this would only work with bind calling emit directly on the stack,
       # otherwise if it was async it would fail.
       val = false

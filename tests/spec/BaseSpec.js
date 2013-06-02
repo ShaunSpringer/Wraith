@@ -30,7 +30,7 @@
         base.emit('testevent');
         return expect(val).toBe(true);
       });
-      return it("handle the emitted response w/data", function() {
+      return it("should handle the emitted response w/data", function() {
         var data, val;
         val = false;
         data = {
