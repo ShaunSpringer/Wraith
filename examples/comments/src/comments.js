@@ -54,20 +54,18 @@
       CommentController.__super__.init.call(this);
       this.list = this.registerModel(new App.CommentList, 'commentlist');
       this.comments = this.list.get('comments');
-      this.comments.create({
+      return this.comments.create({
         author: 'ShaunSpringer',
         text: 'This is a comment'
       });
-      return this;
     };
 
     CommentController.prototype.formSubmit = function(e) {
       e.preventDefault();
-      this.comments.create({
-        author: this.$els['author'].value,
-        text: this.$els['comment'].value
+      return this.comments.create({
+        author: e.data['author'],
+        text: e.data['comment']
       });
-      return this.$els['author'].value = this.$els['comment'].value = '';
     };
 
     return CommentController;

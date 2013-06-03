@@ -14,9 +14,7 @@ class App.CommentController extends Wraith.Controller
     @list = @registerModel new App.CommentList, 'commentlist'
     @comments = @list.get('comments')
     @comments.create { author: 'ShaunSpringer', text: 'This is a comment' }
-    @
 
   formSubmit: (e) ->
     e.preventDefault()
-    @comments.create { author: @$els['author'].value, text: @$els['comment'].value }
-    @$els['author'].value = @$els['comment'].value = ''
+    @comments.create { author: e.data['author'], text: e.data['comment'] }
