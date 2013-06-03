@@ -128,7 +128,7 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 </section>
 ```
 
-When selected is true, the class highlight will be applied to the span surround our text.
+When selected is true, the class highlight will be applied to the span surrounding our text.
 
 ## Building and Testing
 In order to build Wraith you will have to install several dependencies, do this with node (npm).
