@@ -1,4 +1,4 @@
-<center>![Wraith v0.1b](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")</center>
+![Wraith v0.1b](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
 
 ## Wraith v0.1b
 #### Created by Shaun Springer
