@@ -16,8 +16,7 @@
   var ANSI = {}
   ANSI.color_map = {
       "green" : 32,
-      "red"   : 31,
-      "teal"  : 36
+      "red"   : 31
   }
 
   ANSI.colorize_text = function(text, color) {
@@ -25,28 +24,12 @@
     return "\033[" + color_code + "m" + text + "\033[0m";
   }
 
-  var indent = function(str, amount) {
-    var indentation = "";
-    var amount = amount || 2;
-
-    for(var i = 0; i < amount; i++) {
-      indentation += " ";
-    }
-
-    return indentation + str;
-  }
-
-  var ConsoleReporter = function(trace, format) {
+  var ConsoleReporter = function() {
     if (!console || !console.log) { throw "console isn't present!"; }
     this.status = this.statuses.stopped;
-    this.finished = false;
-
-    this.trace = trace;
-    this.format = format;
   };
 
   var proto = ConsoleReporter.prototype;
-
   proto.statuses = {
     stopped : "stopped",
     running : "running",
@@ -57,106 +40,58 @@
   proto.reportRunnerStarting = function(runner) {
     this.status = this.statuses.running;
     this.start_time = (new Date()).getTime();
-
-    var startMessage = 'Starting...';
-
-    if (this.format == 'doc') {
-      startMessage = 'Specs:';
-    }
-
-    this.log(startMessage);
+    this.executed_specs = 0;
+    this.passed_specs = 0;
+    this.log("Starting...");
   };
 
   proto.reportRunnerResults = function(runner) {
-    var results = runner.results();
-    var failed = results.failedCount;
-    var specs = runner.specs();
-    var spec_str = specs.length + (specs.length === 1 ? " spec, " : " specs, ");
-    var fail_str = failed + (failed === 1 ? " failure" : " failures");
+    var failed = this.executed_specs - this.passed_specs;
+    var spec_str = this.executed_specs + (this.executed_specs === 1 ? " spec, " : " specs, ");
+    var fail_str = failed + (failed === 1 ? " failure in " : " failures in ");
     var color = (failed > 0)? "red" : "green";
     var dur = (new Date()).getTime() - this.start_time;
 
-    if (failed) {
-      this.log("");
-      this.log("Failures:");
-      this.log("");
-    }
-
-    var failCount = 0;
-
-    for(var i = 0; i < specs.length; i++) {
-      var spec = specs[i];
-
-      if (spec.results().passed()) {
-        continue;
-      }
-
-      failCount++;
-
-      var resultText = failCount + ') ' + spec.getFullName();
-      var indentLevel = failCount > 9 ? 1 : 2;
-      this.log(indent(resultText, indentLevel));
-
-      var items = spec.results().getItems()
-      for (var j = 0; j < items.length; j++) {
-        var message = items[j].trace.stack || items[j].trace.message;
-
-        if (message) {
-          var lines = message.split('\n');
-
-          if (this.trace) {
-            this.log(indent(lines.shift(), 5), 'red');
-            this.log(indent(lines.join('\n   '), 3), 'teal');
-          }
-          else {
-            this.log(indent(lines[0], 5), 'red');
-          }
-        }
-      }
-
-      this.log('');
-    }
-
     this.log("");
-    this.log("Finished in " + (dur/1000) + " seconds");
-    this.finished = true;
-    this.log(spec_str + fail_str, color);
+    this.log("Finished");
+    this.log("-----------------");
+    this.log(spec_str + fail_str + (dur/1000) + "s.", color);
 
     this.status = (failed > 0)? this.statuses.fail : this.statuses.success;
+
+    /* Print something that signals that testing is over so that headless browsers
+       like PhantomJs know when to terminate. */
+    this.log("");
+    this.log("ConsoleReporter finished");
+  };
+
+
+  proto.reportSpecStarting = function(spec) {
+    this.executed_specs++;
+  };
+
+  proto.reportSpecResults = function(spec) {
+    if (spec.results().passed()) {
+      this.passed_specs++;
+      return;
+    }
+
+    var resultText = spec.suite.description + " : " + spec.description;
+    this.log(resultText, "red");
+
+    var items = spec.results().getItems()
+    for (var i = 0; i < items.length; i++) {
+      var trace = items[i].trace.stack || items[i].trace;
+      this.log(trace, "red");
+    }
   };
 
   proto.reportSuiteResults = function(suite) {
-    var self = this;
-
-    if (suite.parentSuite) {
-      return false;
-    }
-
-    var logSpecs = function(specs, level) {
-      var level = level || 0;
-
-      specs.forEach(function(spec) {
-        var color = spec.results().passed() ? 'green' : 'red';
-        self.log(indent('- ' + spec.description, 4 + level), color);
-      });
-    };
-
-    var logSuite = function(suite, level) {
-      var level = level || 0;
-
-      self.log('');
-      self.log(indent(suite.description, 4 + level));
-
-      logSpecs(suite.specs(), level + 2);
-
-      suite.suites().forEach(function(suite, index) {
-        logSuite(suite, level + 2);
-      });
-    }
-
-    if (this.format == 'doc') {
-      logSuite(suite);
-    }
+    if (!suite.parentSuite) { return; }
+    var results = suite.results();
+    var failed = results.totalCount - results.passedCount;
+    var color = (failed > 0)? "red" : "green";
+    this.log(suite.getFullName() + ": " + results.passedCount + " of " + results.totalCount + " passed.", color);
   };
 
   proto.log = function(str, color) {
@@ -166,4 +101,3 @@
 
   jasmine.ConsoleReporter = ConsoleReporter;
 })(jasmine, console);
-

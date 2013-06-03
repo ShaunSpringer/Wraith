@@ -41,7 +41,7 @@
       return htmlReporter.specFilter(spec);
     };
 
-    jasmineEnv.addReporter(new jasmine.ConsoleReporter());
+    jasmineEnv.addReporter(window.console_reporter = new jasmine.ConsoleReporter());
 
     var currentWindowOnload = window.onload;
 
