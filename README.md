@@ -153,4 +153,7 @@ To run the tests or view the examples, use
 cake server
 ```
 
-This will start a server on port 8000. Tests are located at [http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
+This will start a server on port 8000, making tests and examples available for browsing.
+* Tests are located at [http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
+ 	* Note: Tests can be run as headless with the command ```npm test```
+* Examples are located at [http://localhost:8000/examples/](http://localhost:8000/examples/)
