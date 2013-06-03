@@ -161,7 +161,10 @@ class Wraith.Controller extends Wraith.BaseView
   #
   handleUIEvent: (e, cb) =>
     throw "Callback #{cb} not found on controller" unless @[cb]
+    e.data = @getInputDataFromEl e.target
+    debugger
     @[cb](e)
+
 
   #
   # This is a wrapper for any UI event happening on views in this
@@ -174,6 +177,7 @@ class Wraith.Controller extends Wraith.BaseView
   handleViewUIEvent: (e, cb) =>
     throw "Callback #{cb} not found on controller" unless @[cb]
     e.model = @getModelFromEl e.target
+    e.data = @getInputDataFromEl e.target
     @[cb](e)
 
   #
@@ -192,3 +196,10 @@ class Wraith.Controller extends Wraith.BaseView
 
     return if not modelId
     Wraith.models[modelId]
+
+
+  getInputDataFromEl: ($el) ->
+    data = {}
+    els = $el.querySelectorAll('input[name]')
+    data[$el.attributes['name'].value] = $el.value for $el in els
+    data

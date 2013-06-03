@@ -17,5 +17,4 @@ class App.CommentController extends Wraith.Controller
 
   formSubmit: (e) ->
     e.preventDefault()
-    @comments.create { author: @$els['author'].value, text: @$els['comment'].value }
-    @$els['author'].value = @$els['comment'].value = ''
+    @comments.create { author: e.data['author'], text: e.data['comment'] }
