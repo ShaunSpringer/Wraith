@@ -35,7 +35,7 @@
 #
 class Wraith
   # Essentially allow logging or not
-  @DEBUG: true
+  @DEBUG: false
   # List of controllers keyed by id
   @controllers: {}
   # List of models keyed by id

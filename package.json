@@ -17,10 +17,9 @@
   "dependencies": {
     "uglify-js": "~2.3.6",
     "codo": "~1.7.0",
-    "coffee-script": "~1.6.3",
-    "jasmine-node": "~1.8.0"
+    "coffee-script": "~1.6.3"
   },
   "scripts": {
-    "test": "jasmine-node tests/spec/BootloaderSpec.js"
+    "test": "phantomjs tests/SpecRunner.coffee tests/SpecRunner.html"
   }
 }
