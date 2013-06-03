@@ -1,0 +1,21 @@
+{
+  "name": "Wraith",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "author": "Shaun Springer",
+  "description": "a light weight mvc framework",
+  "contributors": [
+    {
+      "name": "Shaun Springer"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaunspringer/wraith.git"
+  },
+  "dependencies": {
+    "uglify-js": "~2.3.6",
+    "codo": "~1.7.0",
+    "coffee-script": "~1.6.3"
+  }
+}

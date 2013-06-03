@@ -128,3 +128,21 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 ```
 
 When selected is true, the class highlight will be applied to the span surround our text.
+
+## Building and Testing
+In order to build Wraith you will have to install several dependencies, do this with node (npm).
+
+To install all the dependencies to build and run wraith, clone or fork this repository, and then run
+
+```
+sudo npm install
+```
+
+This will run the installation file for the node dependencies. Next run
+
+```
+cake build
+```
+
+Which will build the source files, tests, and examples
+
