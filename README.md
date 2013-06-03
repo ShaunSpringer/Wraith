@@ -55,7 +55,7 @@ var App = {};
 App.MainController = (function(_super) {
 	function MainController() {
 		_super.call();
-		this.registerModel(App.List, ‘list’) // Register our model as 'list'
+		this.registerModel(App.List, 'list') // Register our model as 'list'
 	}
 	MainController.prototype.onKeypress = function(e) {
 		alert(e);
