@@ -18,12 +18,14 @@ sourceFiles = [
 copyLocations = [
   'examples/todo/lib/'
   'examples/todomvc/architecture-examples/wraith/js/'
+  'examples/comments/lib/'
   'tests/src/'
 ]
 
 examples = [
   { base: 'examples/todo/', dest: 'lib', source: 'src' }
   { base:'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
+  { base:'examples/comments/', dest: 'lib', source: 'src' }
 ]
 
 tests = [
@@ -39,8 +41,8 @@ compile = (source, dest, watch, join) ->
   ]
 
   coffee = exec 'coffee ' + params.join(' ')
-  coffee.stdout.on 'data', (data) -> console.log data.toString()
-  coffee.stderr.on 'data', (data) -> console.log data.toString()
+  coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
+  coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
 task 'watchwraith', 'Continuously Watch/Build', ->
   compile(sourceFiles.join(' '), 'lib/wraith.js', true, true)
