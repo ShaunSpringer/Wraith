@@ -45,7 +45,7 @@ class App.MainController extends Wraith.Controller
 	constructor: ->
 		@registerModel(App.List, 'list') # Register our model as 'list'
 
-	onKeypress: ->
+	onKeypress: (e) ->
 		alert(e)
 ```
 
