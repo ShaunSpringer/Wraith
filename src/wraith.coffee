@@ -30,7 +30,7 @@
 #
 # @author Shaun Springer
 # @copyright Shaun Springer
-# @version 0.1b
+# @version 0.1.0
 #
 #
 class Wraith
