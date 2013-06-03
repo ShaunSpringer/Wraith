@@ -1,6 +1,7 @@
-![Wraith v0.1b](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
+![Wraith v0.1.0](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
 
-## Wraith v0.1b
+
+## Wraith v0.1.0 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
 #### Created by Shaun Springer
 
 #### Meet Wraith
