@@ -152,4 +152,4 @@ To run the tests or view the examples, use
 cake server
 ```
 
-This will start a server on port 8000. Tests are located at ![http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
+This will start a server on port 8000. Tests are located at [http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
