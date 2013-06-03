@@ -43,7 +43,7 @@ App.MainController = (function(_super) {
 	function MainController() {
 		_super.call();
 		this.registerModel(App.List, ‘list’) # Register our model as this.list
-    	}
+	}
 	MainController.prototype.onCheckboxClick = function(e) {
 		alert(e);
 	}
@@ -82,7 +82,7 @@ App.ListItem = (function(_super) {
 		_super.call();
 		this.field('text', { default: 'New Item' };
 		this.field('selected', { default: false };
- 	}
+	}
   	return ListItem;
 })(Wraith.Model);
 ```
