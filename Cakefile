@@ -15,6 +15,12 @@ sourceFiles = [
   'src/controller.coffee'
 ]
 
+copyLocations = [
+  'examples/todo/lib/'
+  'examples/todomvc/architecture-examples/wraith/js/'
+  'tests/src/'
+]
+
 examples = [
   { base: 'examples/todo/', dest: 'lib', source: 'src' }
   { base:'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
@@ -33,12 +39,16 @@ compile = (source, dest, watch, join) ->
   ]
 
   coffee = exec 'coffee ' + params.join(' ')
+  coffee.stdout.on 'data', (data) -> console.log data.toString()
+  coffee.stderr.on 'data', (data) -> console.log data.toString()
 
-  coffee.stdout.on 'data', (data) -> console.log data.toString().trim()
-  coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
+task 'watchwraith', 'Continuously Watch/Build', ->
+  compile(sourceFiles.join(' '), 'lib/wraith.js', true, true)
+  invoke 'createlinks'
 
-task 'watchwraith', 'Continuously Watch/Build', -> compile sourceFiles.join(' '), 'lib/wraith.js', true, true
-task 'buildwraith', 'Builds Wraith', -> compile(sourceFiles.join(' '), 'lib/wraith.js', false, true)
+task 'buildwraith', 'Builds Wraith', ->
+  compile(sourceFiles.join(' '), 'lib/wraith.js', false, true)
+  invoke 'createlinks'
 
 task 'buildexamples', 'Builds Examples', ->
   for example in examples
@@ -68,19 +78,27 @@ task 'watch', 'Watches Everything', ->
 
 task 'minify', 'Builds and then minifies Wraith', ->
   uglify = exec 'uglifyjs lib/wraith.js > lib/wraith.min.js'
-  uglify.stdout.on 'data', (data) -> console.log data.toString().trim()
-  uglify.stderr.on 'data', (data) -> console.log data.toString().trim()
-
+  uglify.stdout.on 'data', (data) -> console.log data.toString()
+  uglify.stderr.on 'data', (data) -> console.log data.toString()
 
 task 'docs', 'Generate annotated source code with Codo', ->
   fs.readdir 'src', (err, contents) ->
     files = ("src/#{file}" for file in contents when /\.coffee$/.test file)
     docco = spawn 'codo', files, '-d'
-    docco.stdout.on 'data', (data) -> print data.toString().trim()
-    docco.stderr.on 'data', (data) -> print data.toString().trim()
+    docco.stdout.on 'data', (data) -> print data.toString()
+    docco.stderr.on 'data', (data) -> print data.toString()
     docco.on 'exit', (status) -> callback?() if status is 0
 
+task 'createlinks', 'Create symlinks for all the places wraith.js needs to live', ->
+  for loc in copyLocations
+    link = exec 'ln -n lib/wraith.js ' + loc + 'wraith.js'
+    link = exec 'ln -n lib/wraith.min.js ' + loc + 'wraith.min.js'
+
+task 'test', 'Run the tests in a headless webkit browser', ->
+  phantom = exec 'npm test'
+  phantom.stdout.on 'data', (data) -> print data.toString()
+  phantom.stderr.on 'data', (data) -> print data.toString()
 
 task 'server', 'run a python simple server', ->
   server = spawn 'python', ['-m', 'SimpleHTTPServer']
-  server.stdout.on 'data', (data) -> console.log data.toString().trim()
+  server.stdout.on 'data', (data) -> console.log data.toString()
