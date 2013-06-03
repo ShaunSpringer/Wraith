@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "author": "Shaun Springer",
   "description": "a light weight mvc framework",
+  "licenses": ["MIT"],
   "contributors": [
     {
       "name": "Shaun Springer"
@@ -16,6 +17,10 @@
   "dependencies": {
     "uglify-js": "~2.3.6",
     "codo": "~1.7.0",
-    "coffee-script": "~1.6.3"
+    "coffee-script": "~1.6.3",
+    "jasmine-node": "~1.8.0"
+  },
+  "scripts": {
+    "test": "jasmine-node tests/spec/BootloaderSpec.js"
   }
 }
