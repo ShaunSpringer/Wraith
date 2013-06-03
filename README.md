@@ -40,10 +40,10 @@ Wraith will require you to create an App.MainController object in the global nam
 ```javascript
 var App = {};
 App.MainController = (function(_super) {
-    		function MainController() {
-      		_super.call();
+	function MainController() {
+		_super.call();
 		this.registerModel(App.List, ‘list’) # Register our model as this.list
-    		}
+    	}
 	MainController.prototype.onCheckboxClick = function(e) {
 		alert(e);
 	}
