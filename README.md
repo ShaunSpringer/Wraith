@@ -1,7 +1,7 @@
 ![Wraith v0.1.0](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
 
 
-## Wraith v0.1.0 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
+## v0.1.0 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
 #### Created by Shaun Springer
 
 #### Meet Wraith
@@ -77,6 +77,14 @@ Now when the text input is typed into, the onCheckboxKeypress method on App.Main
 #### Models and Collections
 I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:
 
+Coffeescript:
+```coffeescript
+	class App.ListItem extends Wraith.Model
+		@field 'text', { default: 'New Item' }
+		@field 'selected', { default: false }
+```
+
+Javascript:
 ```javascript
 App.ListItem = (function(_super) {
 	function ListItem() {
@@ -90,6 +98,13 @@ App.ListItem = (function(_super) {
 
 Collections can be done similarly:
 
+Coffeescript:
+```coffeescript
+	class App.List extends Wraith.Model
+		@hasMany App.ListItem, 'items'
+```
+
+Javascript:
 ```javascript
 App.List = (function(_super) {
 	function List() {
@@ -136,7 +151,7 @@ In order to build Wraith you will have to install several dependencies, do this 
 To install all the dependencies to build and run wraith, clone or fork this repository, and then run
 
 ```
-sudo npm install
+npm install
 ```
 
 This will run the installation file for the node dependencies. Next run
@@ -147,7 +162,7 @@ cake build
 
 Which will build the source files, tests, and examples
 
-To run the tests or view the examples, use
+To run the tests in browser or view the examples, use
 
 ```
 cake server
@@ -157,3 +172,9 @@ This will start a server on port 8000, making tests and examples available for b
 * Tests are located at [http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
  	* Note: Tests can be run as headless with the command ```npm test```
 * Examples are located at [http://localhost:8000/examples/](http://localhost:8000/examples/)
+
+To run the tests in a headless browser (using phantomjs) run
+
+```
+cake test
+```
