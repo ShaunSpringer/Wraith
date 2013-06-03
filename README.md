@@ -1,7 +1,6 @@
 ![alt text](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
 
 ## Wraith v0.1b
-#### Created by Shaun Springer
 
 #### Meet Wraith
 Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views. 
@@ -112,8 +111,8 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 	<div data-bind=”list.items” data-repeat>
 		<span data-class=”highlight:selected”>
 			{{text}}
-			</span>
-		</div>
+		</span>
+	</div>
 </section>
 ```
 
