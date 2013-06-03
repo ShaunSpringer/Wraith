@@ -79,10 +79,10 @@
 
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">App</span> <span class="o">=</span> <span class="p">{};</span>
 <span class="nx">App</span><span class="p">.</span><span class="nx">MainController</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kd">function</span> <span class="nx">MainController</span><span class="p">()</span> <span class="p">{</span>
-            <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
+    <span class="kd">function</span> <span class="nx">MainController</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">registerModel</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">List</span><span class="p">,</span> <span class="err">‘</span><span class="nx">list</span><span class="err">’</span><span class="p">)</span> <span class="err">#</span> <span class="nx">Register</span> <span class="nx">our</span> <span class="nx">model</span> <span class="nx">as</span> <span class="k">this</span><span class="p">.</span><span class="nx">list</span>
-            <span class="p">}</span>
+    <span class="p">}</span>
     <span class="nx">MainController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onCheckboxClick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
     <span class="p">}</span>
@@ -118,23 +118,23 @@
 <p>I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:</p>
 
 <div class="highlight"><pre><span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">function</span> <span class="nx">ListItem</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="p">{</span> <span class="k">default</span><span class="o">:</span> <span class="s1">'New Item'</span> <span class="p">};</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'selected'</span><span class="p">,</span> <span class="p">{</span> <span class="k">default</span><span class="o">:</span> <span class="kc">false</span> <span class="p">};</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nx">ListItem</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">ListItem</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'text'</span><span class="p">,</span> <span class="p">{</span> <span class="k">default</span><span class="o">:</span> <span class="s1">'New Item'</span> <span class="p">};</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">field</span><span class="p">(</span><span class="s1">'selected'</span><span class="p">,</span> <span class="p">{</span> <span class="k">default</span><span class="o">:</span> <span class="kc">false</span> <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">ListItem</span><span class="p">;</span>
 <span class="p">})(</span><span class="nx">Wraith</span><span class="p">.</span><span class="nx">Model</span><span class="p">);</span>
 </pre></div>
 
 <p>Collections can be done similarly:</p>
 
 <div class="highlight"><pre><span class="nx">App</span><span class="p">.</span><span class="nx">List</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kd">function</span> <span class="nx">List</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">hasMany</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span><span class="p">,</span> <span class="s1">'items'</span><span class="p">);</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nx">List</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nx">List</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">hasMany</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span><span class="p">,</span> <span class="s1">'items'</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">List</span><span class="p">;</span>
 <span class="p">})(</span><span class="nx">Wraith</span><span class="p">.</span><span class="nx">Model</span><span class="p">);</span>
 </pre></div>
 
