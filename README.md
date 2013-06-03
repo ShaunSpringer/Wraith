@@ -78,12 +78,12 @@ I really enjoyed working with Models in Spine when compared to other frameworks,
 
 ```javascript
 App.ListItem = (function(_super) {
-  function ListItem() {
-    _super.call();
-    this.field('text', { default: 'New Item' };
-    this.field('selected', { default: false };
-  }
-  return ListItem;
+	function ListItem() {
+		_super.call();
+		this.field('text', { default: 'New Item' };
+		this.field('selected', { default: false };
+ 	}
+  	return ListItem;
 })(Wraith.Model);
 ```
 
@@ -91,11 +91,11 @@ Collections can be done similarly:
 
 ```javascript
 App.List = (function(_super) {
-  function List() {
-    _super.call();
-    this.hasMany(App.ListItem, 'items');
-  }
-  return List;
+	function List() {
+		_super.call();
+		this.hasMany(App.ListItem, 'items');
+	}
+	return List;
 })(Wraith.Model);
 ```
 
