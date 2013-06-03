@@ -18,13 +18,13 @@ Wraith is completely self contained. You need nothing else to get started creati
 
 Now that I have identified what Wraith doesn’t have, lets talk about what it does well.
 
-*Implicit Model-View binding
-*Controllers that are also views (a la View-Controller pattern)
-*Handlebars-esque logicless templating
-*Template declaration directly in the DOM that doesn’t require a compilation process
-*Event binding directly from the DOM, instead of requiring JS to do so
-*Partial view updating (only update elements that changed)
-*Well under 20kb when minified
+* Implicit Model-View binding
+* Controllers that are also views (a la View-Controller pattern)
+* Handlebars-esque logicless templating
+* Template declaration directly in the DOM that doesn’t require a compilation process
+* Event binding directly from the DOM, instead of requiring JS to do so
+* Partial view updating (only update elements that changed)
+* Well under 20kb when minified
 
 #### How to get started with wraith?
 Wraith is declarative, in that much of the heavy lifting -- data and event binding, class and text manipulation -- happens directly in the markup (HTML). Your controller is initialized from the DOM directly, so when you create your app it’ll look something like this:
