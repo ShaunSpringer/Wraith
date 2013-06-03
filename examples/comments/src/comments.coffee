@@ -8,7 +8,6 @@ class App.Comment extends Wraith.Model
 class App.CommentList extends Wraith.Model
   @hasMany App.Comment, 'comments'
 
-
 class App.CommentController extends Wraith.Controller
   init: ->
     super()
@@ -20,4 +19,4 @@ class App.CommentController extends Wraith.Controller
   formSubmit: (e) ->
     e.preventDefault()
     @comments.create { author: @$els['author'].value, text: @$els['comment'].value }
-    @$els['author'].value =  @$els['comment'].value = ''
+    @$els['author'].value = @$els['comment'].value = ''
