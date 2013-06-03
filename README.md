@@ -1,14 +1,15 @@
 ![alt text](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
 
 ## Wraith v0.1b
+#### Created by Shaun Springer
 
 #### Meet Wraith
-Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views. 
+Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views.
 
 For all intents and purposes, Angular does provide this level of functionality, and so does Backbone, with the help from a variety of different plugins. But Angular is rather big, has a pretty steep learning curve, and doesn’t enforce logicless views (something I feel is extremely important in such a framework), and Backbone takes a bit of finagling to get anything to work quite right. Additionally all of these frameworks work best when used with a library like jQuery, or Zepto to handle event delegation and DOM manipulation.
 
 #### Why make another MV* Framework?
-I wrote Wraith because wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in. 
+I wrote Wraith because wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.
 
 Along the way I sought inspiration from Spine, Backbone and Angular, mixing Spine-style Models and Collections, Angular style directives, with Backbone style templating (a la Handlebars). All of these inspirations make Wraith a unique experience, but still feeling incredibly familiar to most frontend developers.
 
@@ -35,7 +36,7 @@ Wraith is declarative, in that much of the heavy lifting -- data and event bindi
 ```
 
 Wraith will require you to create an App.MainController object in the global namespace, that it will find, and create an instance of, binding it to the element that its defined on (in this case, section).
- 
+
 ```javascript
 var App = {};
 App.MainController = (function(_super) {
@@ -66,7 +67,7 @@ In Wraith, you are required to create event handlers in your controllers, but yo
 	<input type=”text” data-events=”keypress;onCheckboxKeypress” />
 	<div data-bind=”list.items” data-repeat>
 		{{text}}
-		</div>
+	</div>
 </section>
 ```
 
@@ -75,17 +76,27 @@ Now when the text input is typed into, the onCheckboxKeypress method on App.Main
 #### Models and Collections
 I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:
 
-```coffeescript
-class App.ListItem extends Wraith.Model
-  @field 'text', { default: 'New Item' }
-  @field 'selected', { default: false }
+```javascript
+App.ListItem = (function(_super) {
+  function ListItem() {
+    _super.call();
+    this.field('text', { default: 'New Item' };
+    this.field('selected', { default: false };
+  }
+  return ListItem;
+})(Wraith.Model);
 ```
 
 Collections can be done similarly:
 
-```coffeescript
-  class App.List extends Wraith.Model
-    @hasMany App.ListItem, ‘items’
+```javascript
+App.List = (function(_super) {
+  function List() {
+    _super.call();
+    this.hasMany(App.ListItem, 'items');
+  }
+  return List;
+})(Wraith.Model);
 ```
 
 #### Data Binding
@@ -106,7 +117,7 @@ This will bind the input to the list property on your controller (App.MainContro
 Want to hide or show something? Instead of writing logic in javascript to hide and show an element or alter its class attributes, you can use data or methods from your models to alter the class structure.
 
 ```html
-<section data-controller=”App.MainController”>	
+<section data-controller=”App.MainController”>
 <input type=”text” data-events=”keypress;onCheckboxKeypress” />
 	<div data-bind=”list.items” data-repeat>
 		<span data-class=”highlight:selected”>
