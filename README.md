@@ -38,14 +38,26 @@ Wraith is declarative, in that much of the heavy lifting -- data and event bindi
 
 Wraith will require you to create an App.MainController object in the global namespace, that it will find, and create an instance of, binding it to the element that its defined on (in this case, section).
 
+Coffeescript:
+```coffeescript
+App = {}
+class App.MainController extends Wraith.Controller
+	constructor: ->
+		@registerModel(App.List, 'list') # Register our model as 'list'
+
+	onKeypress: ->
+		alert(e)
+```
+
+Javascript:
 ```javascript
 var App = {};
 App.MainController = (function(_super) {
 	function MainController() {
 		_super.call();
-		this.registerModel(App.List, ‘list’) # Register our model as this.list
+		this.registerModel(App.List, ‘list’) // Register our model as 'list'
 	}
-	MainController.prototype.onCheckboxClick = function(e) {
+	MainController.prototype.onKeypress = function(e) {
 		alert(e);
 	}
 	return MainController;
@@ -65,23 +77,23 @@ In Wraith, you are required to create event handlers in your controllers, but yo
 
 ```html
 <section data-controller=”App.MainController”>
-	<input type=”text” data-events=”keypress;onCheckboxKeypress” />
+	<input type=”text” data-events=”keypress;onKeypress />
 	<div data-bind=”list.items” data-repeat>
 		{{text}}
 	</div>
 </section>
 ```
 
-Now when the text input is typed into, the onCheckboxKeypress method on App.MainController will be invoked.
+Now when the text input is typed into, the onKeypress method on App.MainController will be invoked.
 
 #### Models and Collections
 I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:
 
 Coffeescript:
 ```coffeescript
-	class App.ListItem extends Wraith.Model
-		@field 'text', { default: 'New Item' }
-		@field 'selected', { default: false }
+class App.ListItem extends Wraith.Model
+	@field 'text', { default: 'New Item' }
+	@field 'selected', { default: false }
 ```
 
 Javascript:
@@ -92,7 +104,7 @@ App.ListItem = (function(_super) {
 		this.field('text', { default: 'New Item' };
 		this.field('selected', { default: false };
 	}
-  	return ListItem;
+	return ListItem;
 })(Wraith.Model);
 ```
 
@@ -100,8 +112,8 @@ Collections can be done similarly:
 
 Coffeescript:
 ```coffeescript
-	class App.List extends Wraith.Model
-		@hasMany App.ListItem, 'items'
+class App.List extends Wraith.Model
+	@hasMany App.ListItem, 'items'
 ```
 
 Javascript:
