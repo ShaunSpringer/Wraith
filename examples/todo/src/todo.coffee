@@ -23,7 +23,6 @@ class App.List extends Wraith.Model
     items = @get('items').all()
     items = items.filter (item) -> item.get('selected') is true
     items.length
-
 #
 # TodoManager handles all the interaction between the
 # components of the todo list.

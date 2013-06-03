@@ -84,7 +84,7 @@ class Wraith.Model extends Wraith.Base
     @attributes[key] = val
     # Emit change events!
     @emit('change', key, val)
-    @emit("change:#{key}", val)
+    @emit('change:' + key, val)
 
   #
   # "Serializes" the model's attributes as JSON.
