@@ -31,7 +31,7 @@
         <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.0" title="Wraith v0.1b"></p>
 
 <h2>
-<a name="wraith-v010-" class="anchor" href="#wraith-v010-"><span class="octicon octicon-link"></span></a>Wraith v0.1.0 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a>
+<a name="v010-" class="anchor" href="#v010-"><span class="octicon octicon-link"></span></a>v0.1.0 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a>
 </h2>
 
 <h4>
@@ -47,7 +47,7 @@
 <h4>
 <a name="why-make-another-mv-framework" class="anchor" href="#why-make-another-mv-framework"><span class="octicon octicon-link"></span></a>Why make another MV* Framework?</h4>
 
-<p>I wrote Wraith because wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.</p>
+<p>I wrote Wraith because I wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.</p>
 
 <p>Along the way I sought inspiration from Spine, Backbone and Angular, mixing Spine-style Models and Collections, Angular style directives, with Backbone style templating (a la Handlebars). All of these inspirations make Wraith a unique experience, but still feeling incredibly familiar to most frontend developers.</p>
 
@@ -78,13 +78,26 @@
 
 <p>Wraith will require you to create an App.MainController object in the global namespace, that it will find, and create an instance of, binding it to the element that its defined on (in this case, section).</p>
 
+<p>Coffeescript:</p>
+
+<div class="highlight"><pre><span class="nv">App = </span><span class="p">{}</span>
+<span class="k">class</span> <span class="nx">App</span><span class="p">.</span><span class="nx">MainController</span> <span class="k">extends</span> <span class="nx">Wraith</span><span class="p">.</span><span class="nx">Controller</span>
+    <span class="nv">constructor: </span><span class="nf">-&gt;</span>
+        <span class="nx">@registerModel</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">List</span><span class="p">,</span> <span class="s">'list'</span><span class="p">)</span> <span class="c1"># Register our model as 'list'</span>
+
+    <span class="nv">onKeypress: </span><span class="nf">(e) -&gt;</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span>
+</pre></div>
+
+<p>Javascript:</p>
+
 <div class="highlight"><pre><span class="kd">var</span> <span class="nx">App</span> <span class="o">=</span> <span class="p">{};</span>
 <span class="nx">App</span><span class="p">.</span><span class="nx">MainController</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">function</span> <span class="nx">MainController</span><span class="p">()</span> <span class="p">{</span>
         <span class="nx">_super</span><span class="p">.</span><span class="nx">call</span><span class="p">();</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">registerModel</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">List</span><span class="p">,</span> <span class="err">‘</span><span class="nx">list</span><span class="err">’</span><span class="p">)</span> <span class="err">#</span> <span class="nx">Register</span> <span class="nx">our</span> <span class="nx">model</span> <span class="nx">as</span> <span class="k">this</span><span class="p">.</span><span class="nx">list</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">registerModel</span><span class="p">(</span><span class="nx">App</span><span class="p">.</span><span class="nx">List</span><span class="p">,</span> <span class="err">‘</span><span class="nx">list</span><span class="err">’</span><span class="p">)</span> <span class="c1">// Register our model as 'list'</span>
     <span class="p">}</span>
-    <span class="nx">MainController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onCheckboxClick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">MainController</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">onKeypress</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
         <span class="nx">alert</span><span class="p">(</span><span class="nx">e</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">MainController</span><span class="p">;</span>
@@ -104,19 +117,28 @@
 <p>In Wraith, you are required to create event handlers in your controllers, but you bind them to events inside the DOM structure like so:</p>
 
 <div class="highlight"><pre><span class="nt">&lt;section</span> <span class="na">data-controller=</span><span class="s">”App.MainController”</span><span class="nt">&gt;</span>
-    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">”text”</span> <span class="na">data-events=</span><span class="s">”keypress;onCheckboxKeypress”</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">”text”</span> <span class="na">data-events=</span><span class="s">”keypress;onKeypress</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">data-bind=</span><span class="s">”list.items”</span> <span class="na">data-repeat</span><span class="nt">&gt;</span>
         {{text}}
     <span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;/section&gt;</span>
 </pre></div>
 
-<p>Now when the text input is typed into, the onCheckboxKeypress method on App.MainController will be invoked.</p>
+<p>Now when the text input is typed into, the onKeypress method on App.MainController will be invoked.</p>
 
 <h4>
 <a name="models-and-collections" class="anchor" href="#models-and-collections"><span class="octicon octicon-link"></span></a>Models and Collections</h4>
 
 <p>I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:</p>
+
+<p>Coffeescript:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span> <span class="k">extends</span> <span class="nx">Wraith</span><span class="p">.</span><span class="nx">Model</span>
+    <span class="nx">@field</span> <span class="s">'text'</span><span class="p">,</span> <span class="p">{</span> <span class="nv">default: </span><span class="s">'New Item'</span> <span class="p">}</span>
+    <span class="nx">@field</span> <span class="s">'selected'</span><span class="p">,</span> <span class="p">{</span> <span class="nv">default: </span><span class="kc">false</span> <span class="p">}</span>
+</pre></div>
+
+<p>Javascript:</p>
 
 <div class="highlight"><pre><span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">function</span> <span class="nx">ListItem</span><span class="p">()</span> <span class="p">{</span>
@@ -129,6 +151,14 @@
 </pre></div>
 
 <p>Collections can be done similarly:</p>
+
+<p>Coffeescript:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nx">App</span><span class="p">.</span><span class="nx">List</span> <span class="k">extends</span> <span class="nx">Wraith</span><span class="p">.</span><span class="nx">Model</span>
+    <span class="nx">@hasMany</span> <span class="nx">App</span><span class="p">.</span><span class="nx">ListItem</span><span class="p">,</span> <span class="s">'items'</span>
+</pre></div>
+
+<p>Javascript:</p>
 
 <div class="highlight"><pre><span class="nx">App</span><span class="p">.</span><span class="nx">List</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">_super</span><span class="p">)</span> <span class="p">{</span>
     <span class="kd">function</span> <span class="nx">List</span><span class="p">()</span> <span class="p">{</span>
@@ -169,7 +199,7 @@
 <span class="nt">&lt;/section&gt;</span>
 </pre></div>
 
-<p>When selected is true, the class highlight will be applied to the span surround our text.</p>
+<p>When selected is true, the class highlight will be applied to the span surrounding our text.</p>
 
 <h2>
 <a name="building-and-testing" class="anchor" href="#building-and-testing"><span class="octicon octicon-link"></span></a>Building and Testing</h2>
@@ -178,7 +208,7 @@
 
 <p>To install all the dependencies to build and run wraith, clone or fork this repository, and then run</p>
 
-<pre><code>sudo npm install
+<pre><code>npm install
 </code></pre>
 
 <p>This will run the installation file for the node dependencies. Next run</p>
@@ -188,12 +218,27 @@
 
 <p>Which will build the source files, tests, and examples</p>
 
-<p>To run the tests or view the examples, use</p>
+<p>To run the tests in browser or view the examples, use</p>
 
 <pre><code>cake server
 </code></pre>
 
-<p>This will start a server on port 8000. Tests are located at <a href="http://localhost:8000/tests/SpecRunner.html">http://localhost:8000/tests/SpecRunner.html</a></p>
+<p>This will start a server on port 8000, making tests and examples available for browsing.</p>
+
+<ul>
+<li>Tests are located at <a href="http://localhost:8000/tests/SpecRunner.html">http://localhost:8000/tests/SpecRunner.html</a>
+
+<ul>
+<li>Note: Tests can be run as headless with the command <code>npm test</code>
+</li>
+</ul>
+</li>
+<li>Examples are located at <a href="http://localhost:8000/examples/">http://localhost:8000/examples/</a>
+</li>
+</ul><p>To run the tests in a headless browser (using phantomjs) run</p>
+
+<pre><code>cake test
+</code></pre>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/ShaunSpringer">ShaunSpringer</a></p>
