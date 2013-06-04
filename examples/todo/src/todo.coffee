@@ -1,4 +1,5 @@
-App = {}
+root = exports ? @
+root.App = App = {}
 
 #
 # Our list item model. Will be represetented
@@ -47,6 +48,3 @@ class App.TodoManager extends Wraith.Controller
   itemDelete: (e) => @items.remove e.model.get('_id')
   itemToggle: (e) => e.model.set('selected', !e.model.get('selected'))
 
-
-root = exports ? @
-root.App = App
