@@ -1,4 +1,4 @@
-root = @ ? exports
+root = exports ? @
 root.App = App = {}
 
 class App.Comment extends Wraith.Model
