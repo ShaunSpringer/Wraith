@@ -31,7 +31,7 @@ Now that I have identified what Wraith doesn’t have, lets talk about what it d
 Wraith is declarative, in that much of the heavy lifting -- data and event binding, class and text manipulation -- happens directly in the markup (HTML). Your controller is initialized from the DOM directly, so when you create your app it’ll look something like this:
 
 ```html
-<section data-controller=”App.MainController”>
+<section data-controller="App.MainController">
   …
 </section>
 ```
@@ -67,7 +67,7 @@ App.MainController = (function(_super) {
 Before Wraith will do anything though, you must initialize its bootloader. This will start the controller initialization.
 
 ```html
-<script type=”text/javascript”>
+<script type="text/javascript">
 	new Wraith.Bootloader(); // My app is starting!
 </script>
 ```
@@ -76,9 +76,9 @@ Before Wraith will do anything though, you must initialize its bootloader. This 
 In Wraith, you are required to create event handlers in your controllers, but you bind them to events inside the DOM structure like so:
 
 ```html
-<section data-controller=”App.MainController”>
-	<input type=”text” data-events=”keypress;onKeypress />
-	<div data-bind=”list.items” data-repeat>
+<section data-controller="App.MainController">
+	<input type="text" data-events="keypress:onKeypress" />
+	<div data-bind="list.items" data-repeat>
 		{{text}}
 	</div>
 </section>
@@ -101,8 +101,8 @@ Javascript:
 App.ListItem = (function(_super) {
 	function ListItem() {
 		_super.call();
-		this.field('text', { default: 'New Item' };
-		this.field('selected', { default: false };
+		this.field('text', { default: 'New Item' });
+		this.field('selected', { default: false });
 	}
 	return ListItem;
 })(Wraith.Model);
@@ -131,9 +131,9 @@ App.List = (function(_super) {
 One of the most important things I tried to accomplish with Wraith was easy data binding. I didn’t want to write logic in my views, so I needed to handle looping over collections as well as showing and hiding views or partial views. The solution was to allow a view to be bound via dot-notation to a property on a model similar to what Angular does.
 
 ```html
-<section data-controller=”App.MainController”>
-	<input type=”text” data-events=”keypress;onCheckboxKeypress” />
-	<div data-bind=”list.items” data-repeat>
+<section data-controller="App.MainController">
+	<input type="text" data-events="keypress:onCheckboxKeypress" />
+	<div data-bind="list.items" data-repeat>
 		{{text}}
 	</div>
 </section>
@@ -145,10 +145,10 @@ This will bind the input to the list property on your controller (App.MainContro
 Want to hide or show something? Instead of writing logic in javascript to hide and show an element or alter its class attributes, you can use data or methods from your models to alter the class structure.
 
 ```html
-<section data-controller=”App.MainController”>
-<input type=”text” data-events=”keypress;onCheckboxKeypress” />
-	<div data-bind=”list.items” data-repeat>
-		<span data-class=”highlight:selected”>
+<section data-controller="App.MainController">
+<input type="text" data-events="keypress:onCheckboxKeypress" />
+	<div data-bind="list.items" data-repeat>
+		<span data-class="highlight:selected">
 			{{text}}
 		</span>
 	</div>
