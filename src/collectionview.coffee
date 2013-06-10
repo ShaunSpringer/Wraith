@@ -24,7 +24,7 @@ class Wraith.CollectionView extends Wraith.ViewModel
   createView: (model) ->
     return unless model instanceof Wraith.Model
     $view = @render(model)
-    $view.setAttribute('data-model', model.get('_id'))
+    $view.setAttribute('data-model-id', model.get('_id'))
     @bindUIEvents $view
     @$parent.appendChild $view
 
@@ -36,22 +36,22 @@ class Wraith.CollectionView extends Wraith.ViewModel
   #
   removeView: (model) ->
     return unless model instanceof Wraith.Model
-    $view = @$parent.querySelector('[data-model=' + model.get('_id') + ']')
+    $view = @$parent.querySelector('[data-model-id=' + model.get('_id') + ']')
     @unbindUIEvents $view
     @$parent.removeChild $view
 
   #
   # Updates a view that is bound to the given model.
   #
-  # @todo Break the dependency on the view bound data-model (which really isnt necessary)
+  # @todo Break the dependency on the view bound data-model-id (which really isnt necessary)
   #
   # @param [Wraith.Model] model The model to do the view lookup with and update.
   #
   updateView: (model) ->
-    return unless $el = @$parent.querySelector('[data-model=' + model.get('_id') + ']');
+    return unless $el = @$parent.querySelector('[data-model-id=' + model.get('_id') + ']');
 
     $view = @render(model)
-    $view.setAttribute('data-model', model.get('_id'))
+    $view.setAttribute('data-model-id', model.get('_id'))
     @unbindUIEvents $el
     @bindUIEvents $view
     @applyViewUpdate $el, $view

@@ -17,4 +17,5 @@ class App.CommentController extends Wraith.Controller
 
   formSubmit: (e) ->
     e.preventDefault()
-    @comments.create { author: e.data['author'], text: e.data['comment'] }
+    @comments.add e.model
+
