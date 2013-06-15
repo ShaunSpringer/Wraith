@@ -32,10 +32,11 @@ tests = [
   { base: 'tests/', dest: 'spec', source: 'spec' }
 ]
 
-compile = (source, dest, watch, join) ->
+compile = (source, dest, watch, join, sourcemap) ->
   params = [
     if watch then '-cw' else '-c',
     if join then '-j' else '' ,
+    if sourcemap then '-m' else '',
     if join then dest else source,
     if join then source else dest
   ]
@@ -45,11 +46,11 @@ compile = (source, dest, watch, join) ->
   coffee.stderr.on 'data', (data) -> console.log data.toString().trim()
 
 task 'watchwraith', 'Continuously Watch/Build', ->
-  compile(sourceFiles.join(' '), 'lib/wraith.js', true, true)
+  compile(sourceFiles.join(' '), 'lib/wraith.js', true, true, false)
   invoke 'createlinks'
 
 task 'buildwraith', 'Builds Wraith', ->
-  compile(sourceFiles.join(' '), 'lib/wraith.js', false, true)
+  compile(sourceFiles.join(' '), 'lib/wraith.js', false, true, false)
   invoke 'createlinks'
 
 task 'buildexamples', 'Builds Examples', ->
