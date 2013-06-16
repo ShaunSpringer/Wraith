@@ -180,13 +180,24 @@ class Wraith.Controller extends Wraith.BaseView
       else
         model.bind 'change', -> view.updateView(model)
     else
-      if map then model = model.get(map)
-      if model instanceof Wraith.Collection
-        klass = model.klass
-        model = new klass({})
+      if map then model_ = model.get(map)
+      if model_ instanceof Wraith.Collection
+        model = model_
 
-      model.bind 'change', -> view.updateView(model)
-      view.bindModel model
+      @bindModelView model, view
+
+  bindModelView: (model, view) ->
+    if model instanceof Wraith.Collection
+      klass = model.klass
+      model_ = new klass({})
+      model_.parent = model
+      model = model_
+
+    model.bind 'change', -> view.updateView(model)
+    view.bindModel model
+
+  unbindModelView: (model, view) ->
+    view.unbindModel model
 
   #
   # Handles the UI event which is mapped from the DOM to the controller.

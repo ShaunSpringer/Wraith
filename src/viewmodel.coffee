@@ -104,3 +104,27 @@ class Wraith.ViewModel extends Wraith.BaseView
       $old.setAttribute(name, newval)
     else
       $old.removeAttribute(name)
+
+
+  # Bind our view to the model for two-way binding
+  bindModel: (model) =>
+    @$el.addEventListener 'keyup', (e) => @handleInputKeypress_ e, model
+    if @$el.nodeName is 'FORM'
+      @$el.addEventListener 'submit', (e) => @handleFormSubmit_ e, model
+
+    @updateView model
+
+  unbindModel: (model) =>
+    @$el.removeEventListener 'keyup', (e) => @handleInputKeypress_ e, model
+    if @$el.nodeName is 'FORM'
+      @$el.removeEventListener 'submit', (e) => @handleFormSubmit_ e, model
+
+  handleInputKeypress_: (e, model) =>
+    $target = e.target
+    model.set($target.name, $target.value)
+
+  handleFormSubmit_: (e, model) =>
+    $target = e.target
+    return unless parent = model.parent
+    parent.create model.toJSON()
+    model.reset {}

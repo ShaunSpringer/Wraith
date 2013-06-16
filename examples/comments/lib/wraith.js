@@ -203,7 +203,7 @@
       this.toJSON = __bind(this.toJSON, this);
       this.set = __bind(this.set, this);
       this.get = __bind(this.get, this);
-      var d, name, options, _base, _ref, _ref1;
+      var _base;
       Wraith.log('@Wraith.Model', 'constructor');
       Model.__super__.constructor.call(this);
       if ((_base = this.constructor).fields == null) {
@@ -214,6 +214,13 @@
           "default": Wraith.uniqueId
         };
       }
+      this.reset(attributes);
+      Wraith.models[this.attributes['_id']] = this;
+      this;
+    }
+
+    Model.prototype.reset = function(attributes) {
+      var d, name, options, _ref, _ref1, _results;
       this.listeners = {};
       this.attributes = {};
       _ref = this.constructor.fields;
@@ -227,13 +234,13 @@
         this.set(name, d);
       }
       _ref1 = this.constructor.collections;
+      _results = [];
       for (name in _ref1) {
         options = _ref1[name];
-        this.attributes[name] = new Wraith.Collection(this, options.as, options.klass);
+        _results.push(this.attributes[name] = new Wraith.Collection(this, options.as, options.klass));
       }
-      Wraith.models[this.attributes['_id']] = this;
-      this;
-    }
+      return _results;
+    };
 
     Model.prototype.get = function(key) {
       var _ref;
@@ -432,8 +439,6 @@
 
     function BaseView($el) {
       this.$el = $el;
-      this.handleInputKeypress = __bind(this.handleInputKeypress, this);
-      this.bindModel = __bind(this.bindModel, this);
       this.unbindUIEvent = __bind(this.unbindUIEvent, this);
       this.unbindUIEvents = __bind(this.unbindUIEvents, this);
       this.handleUIEvent = __bind(this.handleUIEvent, this);
@@ -525,19 +530,6 @@
       return this;
     };
 
-    BaseView.prototype.bindModel = function(model) {
-      var _this = this;
-      return this.$el.addEventListener('keyup', function(e) {
-        return _this.handleInputKeypress(e, model);
-      });
-    };
-
-    BaseView.prototype.handleInputKeypress = function(e, model) {
-      var $target;
-      $target = e.target;
-      return model.set($target.name, $target.value);
-    };
-
     return BaseView;
 
   })(Wraith.Base);
@@ -547,6 +539,10 @@
 
     function ViewModel($el, template) {
       this.$el = $el;
+      this.handleFormSubmit_ = __bind(this.handleFormSubmit_, this);
+      this.handleInputKeypress_ = __bind(this.handleInputKeypress_, this);
+      this.unbindModel = __bind(this.unbindModel, this);
+      this.bindModel = __bind(this.bindModel, this);
       this.applyViewUpdate = __bind(this.applyViewUpdate, this);
       Wraith.log('@Wraith.ViewModel', 'constructor');
       if (!this.$el) {
@@ -633,6 +629,47 @@
       } else {
         return $old.removeAttribute(name);
       }
+    };
+
+    ViewModel.prototype.bindModel = function(model) {
+      var _this = this;
+      this.$el.addEventListener('keyup', function(e) {
+        return _this.handleInputKeypress_(e, model);
+      });
+      if (this.$el.nodeName === 'FORM') {
+        this.$el.addEventListener('submit', function(e) {
+          return _this.handleFormSubmit_(e, model);
+        });
+      }
+      return this.updateView(model);
+    };
+
+    ViewModel.prototype.unbindModel = function(model) {
+      var _this = this;
+      this.$el.removeEventListener('keyup', function(e) {
+        return _this.handleInputKeypress_(e, model);
+      });
+      if (this.$el.nodeName === 'FORM') {
+        return this.$el.removeEventListener('submit', function(e) {
+          return _this.handleFormSubmit_(e, model);
+        });
+      }
+    };
+
+    ViewModel.prototype.handleInputKeypress_ = function(e, model) {
+      var $target;
+      $target = e.target;
+      return model.set($target.name, $target.value);
+    };
+
+    ViewModel.prototype.handleFormSubmit_ = function(e, model) {
+      var $target, parent;
+      $target = e.target;
+      if (!(parent = model.parent)) {
+        return;
+      }
+      parent.create(model.toJSON());
+      return model.reset({});
     };
 
     return ViewModel;
@@ -806,7 +843,7 @@
     };
 
     Controller.prototype.bindView = function(model, binding, view, twoWay) {
-      var klass, map, mapping;
+      var map, mapping, model_;
       mapping = binding.split('.');
       map = mapping[1];
       if (!twoWay) {
@@ -831,17 +868,31 @@
         }
       } else {
         if (map) {
-          model = model.get(map);
+          model_ = model.get(map);
         }
-        if (model instanceof Wraith.Collection) {
-          klass = model.klass;
-          model = new klass({});
+        if (model_ instanceof Wraith.Collection) {
+          model = model_;
         }
-        model.bind('change', function() {
-          return view.updateView(model);
-        });
-        return view.bindModel(model);
+        return this.bindModelView(model, view);
       }
+    };
+
+    Controller.prototype.bindModelView = function(model, view) {
+      var klass, model_;
+      if (model instanceof Wraith.Collection) {
+        klass = model.klass;
+        model_ = new klass({});
+        model_.parent = model;
+        model = model_;
+      }
+      model.bind('change', function() {
+        return view.updateView(model);
+      });
+      return view.bindModel(model);
+    };
+
+    Controller.prototype.unbindModelView = function(model, view) {
+      return view.unbindModel(model);
     };
 
     Controller.prototype.handleUIEvent = function(e, cb) {

@@ -44,6 +44,13 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
+    @reset attributes
+
+    Wraith.models[@attributes['_id']] = @
+
+    @
+
+  reset: (attributes) ->
     @listeners = {}
     @attributes = {}
     for name, options of @constructor.fields
@@ -55,10 +62,6 @@ class Wraith.Model extends Wraith.Base
 
     for name, options of @constructor.collections
       @attributes[name] = new Wraith.Collection(@, options.as, options.klass)
-
-    Wraith.models[@attributes['_id']] = @
-
-    @
 
   #
   # Returns the value for the given key. Will return undefined if

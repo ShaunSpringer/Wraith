@@ -99,10 +99,3 @@ class Wraith.BaseView extends Wraith.Base
       continue if not name in Wraith.UIEvents
       $view.removeEventListener name, (e) => @handleUIEvent e, cb
     @
-
-  # Bind our view to the model for two-way binding
-  bindModel: (model) => @$el.addEventListener 'keyup', (e) => @handleInputKeypress e, model
-
-  handleInputKeypress: (e, model) =>
-    $target = e.target
-    model.set($target.name, $target.value)
