@@ -15,5 +15,3 @@ class App.CommentController extends Wraith.Controller
     @comments = @list.get('comments')
     @comments.create { author: 'ShaunSpringer', text: 'This is a comment' }
 
-  formSubmit: (e) ->
-    e.preventDefault()

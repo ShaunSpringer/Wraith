@@ -660,9 +660,9 @@
     };
 
     ViewModel.prototype.handleInputKeypress_ = function(e, model) {
-      var $target;
+      var $target, _ref;
       $target = e.target;
-      return model.set($target.name, $target.value);
+      return model.set($target.name, $target.value || ((_ref = $target.attributes['value']) != null ? _ref.value : void 0));
     };
 
     ViewModel.prototype.handleFormSubmit_ = function(e, model) {
@@ -670,6 +670,7 @@
       if (!(parent = model.parent)) {
         return;
       }
+      e.preventDefault();
       data = model.toJSON();
       id = data['_id'];
       data['_id'] = null;
@@ -772,14 +773,16 @@
       views = document.querySelectorAll('[data-bind]');
       for (_i = 0, _len = views.length; _i < _len; _i++) {
         $view = views[_i];
-        this.registerView($view, false);
+        if ($view.nodeName !== 'FORM') {
+          this.registerView($view, false);
+        }
       }
       return this;
     };
 
     Controller.prototype.loadForms = function() {
       var $forms, forms, _i, _len;
-      forms = document.querySelectorAll('form[data-model]');
+      forms = document.querySelectorAll('form[data-bind]');
       for (_i = 0, _len = forms.length; _i < _len; _i++) {
         $forms = forms[_i];
         this.registerView($forms, true);
@@ -788,8 +791,8 @@
     };
 
     Controller.prototype.registerView = function($view, twoWay) {
-      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref, _ref1, _ref2, _ref3;
-      if (!(binding = ((_ref = $view.attributes['data-bind']) != null ? _ref.value : void 0) || ((_ref1 = $view.attributes['data-model']) != null ? _ref1.value : void 0))) {
+      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref, _ref1, _ref2;
+      if (!(binding = (_ref = $view.attributes['data-bind']) != null ? _ref.value : void 0)) {
         return;
       }
       maps = binding.split('.');
@@ -797,9 +800,9 @@
         return;
       }
       repeating = $view.attributes['data-repeat'] !== void 0;
-      templateId = (_ref2 = $view.attributes['data-template']) != null ? _ref2.value : void 0;
+      templateId = (_ref1 = $view.attributes['data-template']) != null ? _ref1.value : void 0;
       if (templateId !== void 0) {
-        if (!(template = (_ref3 = document.getElementById(templateId)) != null ? _ref3.innerHTML : void 0)) {
+        if (!(template = (_ref2 = document.getElementById(templateId)) != null ? _ref2.innerHTML : void 0)) {
           return;
         }
       } else {

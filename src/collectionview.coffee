@@ -30,7 +30,7 @@ class Wraith.CollectionView extends Wraith.ViewModel
 
   #
   # Removes a view that was bound to a given model. Performs a lookup
-  # within the parent $el for the data-model=[model_id] attribute.
+  # within the parent $el for the data-model-id=[model_id] attribute.
   #
   # @param [Wraith.Model] model The model to do the view lookup with and remove.
   #

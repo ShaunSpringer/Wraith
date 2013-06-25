@@ -122,10 +122,13 @@ class Wraith.ViewModel extends Wraith.BaseView
 
   handleInputKeypress_: (e, model) =>
     $target = e.target
-    model.set($target.name, $target.value)
+    model.set($target.name, $target.value or $target.attributes['value']?.value)
 
   handleFormSubmit_: (e, model) =>
     return unless parent = model.parent
+
+    # Never submit.
+    e.preventDefault()
 
     # Shallow copy of data to new model
     # @todo replace with a clone method
@@ -134,6 +137,7 @@ class Wraith.ViewModel extends Wraith.BaseView
     data['_id'] = null
     delete data['_id']
 
+    # Create the new model via the parent object
     parent.create data
 
     # Reset the model (but keep the same _id attribute)

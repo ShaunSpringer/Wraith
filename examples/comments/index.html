@@ -21,7 +21,7 @@
                 </div>
             </div>
             <br />
-            <form name="commentForm" data-events="submit:formSubmit" data-model="commentlist.comments">
+            <form name="commentForm" data-bind="commentlist.comments">
                 <input type="text" name="author" placeholder="Your name" value="{{author}}" required />
                 <input type="text" name="text" placeholder="Say something..." value="{{text}}" required />
                 <input type="submit" value="Add" />

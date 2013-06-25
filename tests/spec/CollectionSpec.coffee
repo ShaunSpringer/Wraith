@@ -35,7 +35,7 @@ describe "Collection", ->
 
       items.create {}
 
-      waitsFor (-> results isnt false ), 100
+      waitsFor (-> results isnt false ), 1
 
     it "should emit an explicit change event", ->
       results = false
@@ -44,7 +44,7 @@ describe "Collection", ->
 
       items.create {}
 
-      waitsFor (-> results isnt false ), 100
+      waitsFor (-> results isnt false ), 1
 
   describe "on item change", ->
     item = null
@@ -57,7 +57,7 @@ describe "Collection", ->
         results = {key, val}
 
       item.set('a', true)
-      waitsFor (-> results isnt false ), 100
+      waitsFor (-> results isnt false ), 1
 
     it "should emit an explicit change event w/key and value of change", ->
       results = false
@@ -65,7 +65,7 @@ describe "Collection", ->
         results = {key, val}
 
       item.set('a', true)
-      waitsFor (-> results.key is 'a' and results.val is true ), 100
+      waitsFor (-> results.key is 'a' and results.val is true ), 1
 
 
   describe "on item remove", ->
@@ -80,7 +80,7 @@ describe "Collection", ->
 
       items.remove item.get('_id')
 
-      waitsFor (-> results isnt false), 100
+      waitsFor (-> results isnt false), 1
 
     it "should emit a generic remove event", ->
       results = false
@@ -88,7 +88,7 @@ describe "Collection", ->
         results = item_
 
       items.remove item.get('_id')
-      waitsFor (-> results is item), 100
+      waitsFor (-> results is item), 1
 
 
     it "should emit an explicit remove event", ->
@@ -97,5 +97,5 @@ describe "Collection", ->
         results = item_
 
       items.remove item.get('_id')
-      waitsFor (-> results is item), 100
+      waitsFor (-> results is item), 1
 
