@@ -97,6 +97,7 @@ class Wraith.ViewModel extends Wraith.BaseView
 
     # Handle checked attribute as properties
     $old.checked = newval? if name is 'checked'
+    $old.value = newval if name is 'value'
 
     return if oldval is newval
 
@@ -124,7 +125,16 @@ class Wraith.ViewModel extends Wraith.BaseView
     model.set($target.name, $target.value)
 
   handleFormSubmit_: (e, model) =>
-    $target = e.target
     return unless parent = model.parent
-    parent.create model.toJSON()
-    model.reset {}
+
+    # Shallow copy of data to new model
+    # @todo replace with a clone method
+    data = model.toJSON()
+    id = data['_id']
+    data['_id'] = null
+    delete data['_id']
+
+    parent.create data
+
+    # Reset the model (but keep the same _id attribute)
+    model.reset { '_id': id }

@@ -17,11 +17,11 @@
     }
 
     Comment.field('author', {
-      "default": 'Author'
+      "default": ''
     });
 
     Comment.field('text', {
-      "default": 'Comment'
+      "default": ''
     });
 
     return Comment;
