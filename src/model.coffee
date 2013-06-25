@@ -44,14 +44,22 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
+    @listeners = {}
+
     @reset attributes
 
     Wraith.models[@attributes['_id']] = @
 
     @
 
+  #
+  # Perform a reset of the models attributes. Will trigger
+  # "change" events on each property that is reset.
+  #
+  # @param [Object] attributes Contains all default data to be
+  #   applied to the object when being reset.
+  #
   reset: (attributes) ->
-    @listeners = {}
     @attributes = {}
     for name, options of @constructor.fields
       if attributes?[name]?

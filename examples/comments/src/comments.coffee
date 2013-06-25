@@ -2,8 +2,8 @@ root = exports ? @
 root.App = App = {}
 
 class App.Comment extends Wraith.Model
-  @field 'author', { default: 'Author' }
-  @field 'text', { default: 'Comment' }
+  @field 'author', { default: '' }
+  @field 'text', { default: '' }
 
 class App.CommentList extends Wraith.Model
   @hasMany App.Comment, 'comments'
