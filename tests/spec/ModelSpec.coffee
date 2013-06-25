@@ -44,3 +44,9 @@ describe "Model", ->
       model.set('a', true)
       waitsFor (-> val is true), 100
 
+  describe "on reset", ->
+    it "should reset all properties", ->
+      model.reset()
+      expect(model.get('a')).toBe(false)
+      expect(model.get('b')).toBe(true)
+

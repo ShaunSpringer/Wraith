@@ -51,7 +51,7 @@
         return expect(model_.get('b')).toBe(false);
       });
     });
-    return describe("on set", function() {
+    describe("on set", function() {
       it("should update the field to the desired value", function() {
         expect(model.get('a')).toBe(false);
         model.set('a', true);
@@ -78,6 +78,13 @@
         return waitsFor((function() {
           return val === true;
         }), 100);
+      });
+    });
+    return describe("on reset", function() {
+      return it("should reset all properties", function() {
+        model.reset();
+        expect(model.get('a')).toBe(false);
+        return expect(model.get('b')).toBe(true);
       });
     });
   });
