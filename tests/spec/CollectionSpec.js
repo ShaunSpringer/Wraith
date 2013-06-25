@@ -81,7 +81,7 @@
         items.create({});
         return waitsFor((function() {
           return results !== false;
-        }), 100);
+        }), 1);
       });
       return it("should emit an explicit change event", function() {
         var results;
@@ -95,7 +95,7 @@
         items.create({});
         return waitsFor((function() {
           return results !== false;
-        }), 100);
+        }), 1);
       });
     });
     describe("on item change", function() {
@@ -116,7 +116,7 @@
         item.set('a', true);
         return waitsFor((function() {
           return results !== false;
-        }), 100);
+        }), 1);
       });
       return it("should emit an explicit change event w/key and value of change", function() {
         var results;
@@ -130,7 +130,7 @@
         item.set('a', true);
         return waitsFor((function() {
           return results.key === 'a' && results.val === true;
-        }), 100);
+        }), 1);
       });
     });
     return describe("on item remove", function() {
@@ -148,7 +148,7 @@
         items.remove(item.get('_id'));
         return waitsFor((function() {
           return results !== false;
-        }), 100);
+        }), 1);
       });
       it("should emit a generic remove event", function() {
         var results;
@@ -159,7 +159,7 @@
         items.remove(item.get('_id'));
         return waitsFor((function() {
           return results === item;
-        }), 100);
+        }), 1);
       });
       return it("should emit an explicit remove event", function() {
         var results;
@@ -170,7 +170,7 @@
         items.remove(item.get('_id'));
         return waitsFor((function() {
           return results === item;
-        }), 100);
+        }), 1);
       });
     });
   });

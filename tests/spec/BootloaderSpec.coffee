@@ -8,7 +8,7 @@ describe "Bootloader", ->
       success: (data) -> $('#fixture').append($(data));
 
   afterEach ->
-    $('#fixture').innerHTML = ''
+    $('#fixture').text('')
 
   describe "on initialization", ->
 

@@ -36,13 +36,13 @@ describe "Model", ->
       val = false
       model.bind 'change', -> val = true
       model.set('a', true)
-      waitsFor (-> val is true), 100
+      waitsFor (-> val is true), 1
 
     it "should emit an explicit event", ->
       val = false
       model.bind 'change:a', -> val = true
       model.set('a', true)
-      waitsFor (-> val is true), 100
+      waitsFor (-> val is true), 1
 
   describe "on reset", ->
     it "should reset all properties", ->

@@ -60,10 +60,6 @@
       });
     };
 
-    CommentController.prototype.formSubmit = function(e) {
-      return e.preventDefault();
-    };
-
     return CommentController;
 
   })(Wraith.Controller);

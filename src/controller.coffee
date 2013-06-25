@@ -66,7 +66,7 @@ class Wraith.Controller extends Wraith.BaseView
     # so we seek out elements with data-bind and register the
     # view
     views = document.querySelectorAll('[data-bind]')
-    @registerView($view, false) for $view in views
+    @registerView($view, false) for $view in views when $view.nodeName isnt 'FORM'
     @
 
   #
@@ -75,7 +75,7 @@ class Wraith.Controller extends Wraith.BaseView
   #
   loadForms: ->
     # Any form with a data-model attribute is loaded
-    forms = document.querySelectorAll('form[data-model]')
+    forms = document.querySelectorAll('form[data-bind]')
     @registerView($forms, true) for $forms in forms
     @
 
@@ -86,7 +86,7 @@ class Wraith.Controller extends Wraith.BaseView
   #
   registerView: ($view, twoWay) ->
     # Unless we have a binding attribute we cant be a view!
-    return unless binding = ($view.attributes['data-bind']?.value || $view.attributes['data-model']?.value)
+    return unless binding = $view.attributes['data-bind']?.value
 
     # Split our map on a period for dotnotation
     maps = binding.split('.')

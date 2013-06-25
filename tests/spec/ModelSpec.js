@@ -66,7 +66,7 @@
         model.set('a', true);
         return waitsFor((function() {
           return val === true;
-        }), 100);
+        }), 1);
       });
       return it("should emit an explicit event", function() {
         var val;
@@ -77,7 +77,7 @@
         model.set('a', true);
         return waitsFor((function() {
           return val === true;
-        }), 100);
+        }), 1);
       });
     });
     return describe("on reset", function() {

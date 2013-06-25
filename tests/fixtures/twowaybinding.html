@@ -1,0 +1,9 @@
+<div data-controller="App.CommentController">
+  <form id="comments-form" data-bind="commentlist.comments">
+    <input type="text" name="comment" value="{{comment}}" required />
+    <div id="comment">Comment: {{comment}}</div>
+  </form>
+  <div id="comment-list">
+    <div data-bind="commentlist.comments" data-repeat>{{comment}}</div>
+  </div>
+</div>

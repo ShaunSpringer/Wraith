@@ -15,7 +15,7 @@
       });
     });
     afterEach(function() {
-      return $('#fixture').innerHTML = '';
+      return $('#fixture').text('');
     });
     return describe("on initialization", function() {
       beforeEach(function() {
