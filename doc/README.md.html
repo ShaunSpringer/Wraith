@@ -117,7 +117,7 @@
       <div id='filecontents'>
         <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.0" title="Wraith v0.1b"></p><h2>v0.1.0 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a></h2>
 <h4>Created by Shaun Springer</h4>
-<h4>Meet Wraith</h4><p>Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views.</p><p>For all intents and purposes, Angular does provide this level of functionality, and so does Backbone, with the help from a variety of different plugins. But Angular is rather big, has a pretty steep learning curve, and doesn’t enforce logicless views (something I feel is extremely important in such a framework), and Backbone takes a bit of finagling to get anything to work quite right. Additionally all of these frameworks work best when used with a library like jQuery, or Zepto to handle event delegation and DOM manipulation.</p><h4>Why make another MV* Framework?</h4><p>I wrote Wraith because wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.</p><p>Along the way I sought inspiration from Spine, Backbone and Angular, mixing Spine-style Models and Collections, Angular style directives, with Backbone style templating (a la Handlebars). All of these inspirations make Wraith a unique experience, but still feeling incredibly familiar to most frontend developers.</p><h4>What makes Wraith different?</h4><p>Wraith is completely self contained. You need nothing else to get started creating a basic single page application. I say basic because the framework is very much in its infancy. It does not have support for URL routing, AJAX requests, animations, or persistent storage.  All things I hope to accomplish in the near future.</p><p>Now that I have identified what Wraith doesn’t have, lets talk about what it does well.</p><ul>
+<h4>Meet Wraith</h4><p>Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views.</p><p>For all intents and purposes, Angular does provide this level of functionality, and so does Backbone, with the help from a variety of different plugins. But Angular is rather big, has a pretty steep learning curve, and doesn’t enforce logicless views (something I feel is extremely important in such a framework), and Backbone takes a bit of finagling to get anything to work quite right. Additionally all of these frameworks work best when used with a library like jQuery, or Zepto to handle event delegation and DOM manipulation.</p><h4>Why make another MV* Framework?</h4><p>I wrote Wraith because I wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.</p><p>Along the way I sought inspiration from Spine, Backbone and Angular, mixing Spine-style Models and Collections, Angular style directives, with Backbone style templating (a la Handlebars). All of these inspirations make Wraith a unique experience, but still feeling incredibly familiar to most frontend developers.</p><h4>What makes Wraith different?</h4><p>Wraith is completely self contained. You need nothing else to get started creating a basic single page application. I say basic because the framework is very much in its infancy. It does not have support for URL routing, AJAX requests, animations, or persistent storage.  All things I hope to accomplish in the near future.</p><p>Now that I have identified what Wraith doesn’t have, lets talk about what it does well.</p><ul>
 <li>Implicit Model-View binding</li>
 <li>Controllers that are also views (a la View-Controller pattern)</li>
 <li>Handlebars-esque logicless templating</li>
@@ -128,13 +128,19 @@
 </ul>
 <h4>How to get started with wraith?</h4><p>Wraith is declarative, in that much of the heavy lifting -- data and event binding, class and text manipulation -- happens directly in the markup (HTML). Your controller is initialized from the DOM directly, so when you create your app it’ll look something like this:</p><pre><code class="lang-html">&lt;section data-controller=”App.MainController”&gt;
   …
-&lt;/section&gt;</code></pre><p>Wraith will require you to create an App.MainController object in the global namespace, that it will find, and create an instance of, binding it to the element that its defined on (in this case, section).</p><pre><code class="lang-javascript">var App = {};
+&lt;/section&gt;</code></pre><p>Wraith will require you to create an App.MainController object in the global namespace, that it will find, and create an instance of, binding it to the element that its defined on (in this case, section).</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">App = {}
+class App.MainController extends Wraith.Controller
+    constructor: -&gt;
+        @registerModel(App.List, &#39;list&#39;) # Register our model as &#39;list&#39;
+
+    onKeypress: (e) -&gt;
+        alert(e)</code></pre><p>Javascript:</p><pre><code class="lang-javascript">var App = {};
 App.MainController = (function(_super) {
     function MainController() {
         _super.call();
-        this.registerModel(App.List, ‘list’) # Register our model as this.list
+        this.registerModel(App.List, &#39;list&#39;) // Register our model as &#39;list&#39;
     }
-    MainController.prototype.onCheckboxClick = function(e) {
+    MainController.prototype.onKeypress = function(e) {
         alert(e);
     }
     return MainController;
@@ -142,21 +148,21 @@ App.MainController = (function(_super) {
     new Wraith.Bootloader(); // My app is starting!
 &lt;/script&gt;</code></pre>
 <h4>Event Handling</h4><p>In Wraith, you are required to create event handlers in your controllers, but you bind them to events inside the DOM structure like so:</p><pre><code class="lang-html">&lt;section data-controller=”App.MainController”&gt;
-    &lt;input type=”text” data-events=”keypress;onCheckboxKeypress” /&gt;
+    &lt;input type=”text” data-events=”keypress;onKeypress /&gt;
     &lt;div data-bind=”list.items” data-repeat&gt;
         {{text}}
     &lt;/div&gt;
-&lt;/section&gt;</code></pre><p>Now when the text input is typed into, the onCheckboxKeypress method on App.MainController will be invoked.</p><h4>Models and Collections</h4><p>I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">    class App.ListItem extends Wraith.Model
-        @field &#39;text&#39;, { default: &#39;New Item&#39; }
-        @field &#39;selected&#39;, { default: false }</code></pre><p>Javascript:</p><pre><code class="lang-javascript">App.ListItem = (function(_super) {
+&lt;/section&gt;</code></pre><p>Now when the text input is typed into, the onKeypress method on App.MainController will be invoked.</p><h4>Models and Collections</h4><p>I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">class App.ListItem extends Wraith.Model
+    @field &#39;text&#39;, { default: &#39;New Item&#39; }
+    @field &#39;selected&#39;, { default: false }</code></pre><p>Javascript:</p><pre><code class="lang-javascript">App.ListItem = (function(_super) {
     function ListItem() {
         _super.call();
         this.field(&#39;text&#39;, { default: &#39;New Item&#39; };
         this.field(&#39;selected&#39;, { default: false };
     }
-      return ListItem;
-})(Wraith.Model);</code></pre><p>Collections can be done similarly:</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">    class App.List extends Wraith.Model
-        @hasMany App.ListItem, &#39;items&#39;</code></pre><p>Javascript:</p><pre><code class="lang-javascript">App.List = (function(_super) {
+    return ListItem;
+})(Wraith.Model);</code></pre><p>Collections can be done similarly:</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">class App.List extends Wraith.Model
+    @hasMany App.ListItem, &#39;items&#39;</code></pre><p>Javascript:</p><pre><code class="lang-javascript">App.List = (function(_super) {
     function List() {
         _super.call();
         this.hasMany(App.ListItem, &#39;items&#39;);
@@ -184,11 +190,11 @@ App.MainController = (function(_super) {
     </div>
     <div id='footer'>
   Generated on
-  Mon Jun 03 2013 11:24:15 GMT-0400 (EDT)
+  Tue Jun 25 2013 22:40:15 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0
-  (Node.js v0.8.18).
+  (Node.js v0.10.9).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
   &#10034;

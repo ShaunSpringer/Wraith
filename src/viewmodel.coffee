@@ -106,8 +106,13 @@ class Wraith.ViewModel extends Wraith.BaseView
     else
       $old.removeAttribute(name)
 
-
-  # Bind our view to the model for two-way binding
+  #
+  # Bind ourselves (the view) to the model -- this is used in two-way binding.
+  # Handles FORM submit binding if the nodeName of $el is a FORM. Also
+  # will trigger an update.
+  #
+  # @param [Wraith.Model] model The model to bind
+  #
   bindModel: (model) =>
     @$el.addEventListener 'keyup', (e) => @handleInputKeypress_ e, model
     if @$el.nodeName is 'FORM'
@@ -115,15 +120,35 @@ class Wraith.ViewModel extends Wraith.BaseView
 
     @updateView model
 
+  #
+  # Unbind ourselves from the given model.
+  #
+  # @param [Wraith.Model] model The model to unbind from
+  #
   unbindModel: (model) =>
     @$el.removeEventListener 'keyup', (e) => @handleInputKeypress_ e, model
     if @$el.nodeName is 'FORM'
       @$el.removeEventListener 'submit', (e) => @handleFormSubmit_ e, model
 
+  #
+  # When an input is typed into, we want to update
+  # the model (if it has a corresponding name)
+  #
+  # @param [Event] e The keypress event
+  # @param [Wraith.Model] model The model associated with this event
+  #
   handleInputKeypress_: (e, model) =>
     $target = e.target
     model.set($target.name, $target.value or ($target.attributes['value']?.value or ''))
 
+  #
+  # Handle the form submit by creating a new
+  # instance of the model if it belongs to a
+  # collection.
+  #
+  # @param [Event] e The form submit event
+  # @param [Wraith.Model] model The model associated with this event
+  #
   handleFormSubmit_: (e, model) =>
     return unless parent = model.parent
 

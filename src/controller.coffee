@@ -186,6 +186,13 @@ class Wraith.Controller extends Wraith.BaseView
 
       @bindModelView model, view
 
+  #
+  # Bind a model to a view and bind the
+  # view to the model (used for two-way model-view binding)
+  #
+  # @param [Wraith.Model] model The model to bind
+  # @param [Wraith.View] view The view to bind
+  #
   bindModelView: (model, view) ->
     if model instanceof Wraith.Collection
       klass = model.klass
@@ -196,7 +203,14 @@ class Wraith.Controller extends Wraith.BaseView
     model.bind 'change', -> view.updateView(model)
     view.bindModel model
 
+  #
+  # Unbind a two-way model-view relationship.
+  #
+  # @param [Wraith.Model] model The model to unbind
+  # @param [Wraith.View] view The view to unbind
+  #
   unbindModelView: (model, view) ->
+    model.unbind 'change', -> view.updateView(model)
     view.unbindModel model
 
   #
@@ -240,6 +254,11 @@ class Wraith.Controller extends Wraith.BaseView
     return if not modelId
     Wraith.models[modelId]
 
+  #
+  # Retrieve the input data from a given element
+  #
+  # @param [HTMLElement] $el The element to iterate over and get form data from
+  #
   getInputDataFromEl: ($el) ->
     data = {}
     els = $el.querySelectorAll('input[name]')
