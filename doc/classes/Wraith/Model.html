@@ -173,6 +173,16 @@ obvious inspiration.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#reset-instance'>
+        - (void) <strong>reset</strong>(attributes)
+      </a>
+    </span>
+    <span class='desc'>
+      Perform a reset of the models attributes.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#get-instance'>
         - (Object, String, Boolean, Number) <strong>get</strong>(key)
       </a>
@@ -316,6 +326,28 @@ and options object.</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
+    <p class='signature' id='reset-instance'>
+      - (void) <strong>reset</strong>(attributes)
+    </p>
+    <div class='docstring'>
+  <p>Perform a reset of the models attributes. Will trigger
+&quot;change&quot; events on each property that is reset.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>attributes</span>
+      <span class='type'>
+        (<tt>Object</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Contains all default data to be applied to the object when being reset.</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='get-instance'>
       - (Object, String, Boolean, Number) <strong>get</strong>(key)
       (bound)
@@ -385,10 +417,17 @@ on attributes, it will throw an error.</p><p>@params [String] key The key of the
     </div>
     <div id='footer'>
   Generated on
+<<<<<<< HEAD
   Fri Jun 07 2013 20:47:29 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1
+=======
+  Tue Jun 25 2013 22:40:15 GMT-0400 (EDT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.7.0
+>>>>>>> [two_way_binding] Added missing doc blocks and generated documentation. Fixed a bug in unbinding model-view
   (Node.js v0.10.9).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts

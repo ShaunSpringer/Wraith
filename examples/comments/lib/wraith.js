@@ -906,6 +906,9 @@
     };
 
     Controller.prototype.unbindModelView = function(model, view) {
+      model.unbind('change', function() {
+        return view.updateView(model);
+      });
       return view.unbindModel(model);
     };
 

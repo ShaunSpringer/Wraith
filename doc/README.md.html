@@ -147,9 +147,9 @@ App.MainController = (function(_super) {
 })(Wraith.Controller);</code></pre><p>Before Wraith will do anything though, you must initialize its bootloader. This will start the controller initialization.</p><pre><code class="lang-html">&lt;script type=&quot;text/javascript&quot;&gt;
     new Wraith.Bootloader(); // My app is starting!
 &lt;/script&gt;</code></pre>
-<h4>Event Handling</h4><p>In Wraith, you are required to create event handlers in your controllers, but you bind them to events inside the DOM structure like so:</p><pre><code class="lang-html">&lt;section data-controller=&quot;App.MainController&quot;&gt;
-    &lt;input type=&quot;text&quot; data-events=&quot;keypress:onKeypress&quot; /&gt;
-    &lt;div data-bind=&quot;list.items&quot; data-repeat&gt;
+<h4>Event Handling</h4><p>In Wraith, you are required to create event handlers in your controllers, but you bind them to events inside the DOM structure like so:</p><pre><code class="lang-html">&lt;section data-controller=”App.MainController”&gt;
+    &lt;input type=”text” data-events=”keypress;onKeypress /&gt;
+    &lt;div data-bind=”list.items” data-repeat&gt;
         {{text}}
     &lt;/div&gt;
 &lt;/section&gt;</code></pre><p>Now when the text input is typed into, the onKeypress method on App.MainController will be invoked.</p><h4>Models and Collections</h4><p>I really enjoyed working with Models in Spine when compared to other frameworks, and thus Wraith’s models are similar in design. You can create a new model with default values easily:</p><p>Coffeescript:</p><pre><code class="lang-coffeescript">class App.ListItem extends Wraith.Model
@@ -190,10 +190,10 @@ App.MainController = (function(_super) {
     </div>
     <div id='footer'>
   Generated on
-  Fri Jun 07 2013 20:47:29 GMT-0400 (EDT)
+  Tue Jun 25 2013 22:40:15 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
-  v1.6.1
+  v1.7.0
   (Node.js v0.10.9).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts

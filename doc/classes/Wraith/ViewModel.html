@@ -188,6 +188,50 @@ and re-render each time it changes</p>
       Updates a given attribute on $old to the current value on $new.
     </span>
   </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindModel-instance'>
+        - (void) <strong>bindModel</strong>(model)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Bind ourselves (the view) to the model -- this is used in two-way binding.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindModel-instance'>
+        - (void) <strong>unbindModel</strong>(model)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Unbind ourselves from the given model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleInputKeypress_-instance'>
+        - (void) <strong>handleInputKeypress_</strong>(e, model)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      When an input is typed into, we want to update the model (if it has a corresponding name)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#handleFormSubmit_-instance'>
+        - (void) <strong>handleFormSubmit_</strong>(e, model)
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Handle the form submit by creating a new instance of the model if it belongs to a collection.
+    </span>
+  </li>
 </ul>
       <h2>
         <small>Inherited Method Summary</small>
@@ -384,14 +428,130 @@ entire DOM structure (children etc).</p>
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='bindModel-instance'>
+      - (void) <strong>bindModel</strong>(model)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Bind ourselves (the view) to the model -- this is used in two-way binding.
+Handles FORM submit binding if the nodeName of $el is a FORM. Also
+will trigger an update.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to bind</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindModel-instance'>
+      - (void) <strong>unbindModel</strong>(model)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Unbind ourselves from the given model.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to unbind from</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleInputKeypress_-instance'>
+      - (void) <strong>handleInputKeypress_</strong>(e, model)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>When an input is typed into, we want to update
+the model (if it has a corresponding name)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The keypress event</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model associated with this event</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='handleFormSubmit_-instance'>
+      - (void) <strong>handleFormSubmit_</strong>(e, model)
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Handle the form submit by creating a new
+instance of the model if it belongs to a
+collection.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>e</span>
+      <span class='type'>
+        (<tt>Event</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The form submit event</span>
+    </li>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model associated with this event</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
+<<<<<<< HEAD
   Fri Jun 07 2013 20:47:29 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1
+=======
+  Tue Jun 25 2013 22:40:15 GMT-0400 (EDT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.7.0
+>>>>>>> [two_way_binding] Added missing doc blocks and generated documentation. Fixed a bug in unbinding model-view
   (Node.js v0.10.9).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts

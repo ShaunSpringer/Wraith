@@ -164,7 +164,7 @@ mapping to the model list.items (belonging to SelectList)
       </a>
     </span>
     <span class='desc'>
-      Initialize the controller by loading the
+      Initialize the controller by loading the views and elements with id tags.
     </span>
   </li>
   <li>
@@ -179,8 +179,8 @@ mapping to the model list.items (belonging to SelectList)
   </li>
   <li>
     <span class='signature'>
-      <a href='#findViews-instance'>
-        - (void) <strong>findViews</strong>()
+      <a href='#loadViews-instance'>
+        - (void) <strong>loadViews</strong>()
       </a>
     </span>
     <span class='desc'>
@@ -189,8 +189,18 @@ mapping to the model list.items (belonging to SelectList)
   </li>
   <li>
     <span class='signature'>
+      <a href='#loadForms-instance'>
+        - (void) <strong>loadForms</strong>()
+      </a>
+    </span>
+    <span class='desc'>
+      Find all the form embedded inside the controller and registers them with the controller
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#registerView-instance'>
-        - (void) <strong>registerView</strong>($view)
+        - (void) <strong>registerView</strong>($view, twoWay)
       </a>
     </span>
     <span class='desc'>
@@ -220,11 +230,31 @@ mapping to the model list.items (belonging to SelectList)
   <li>
     <span class='signature'>
       <a href='#bindView-instance'>
-        - (void) <strong>bindView</strong>(model, binding, view)
+        - (void) <strong>bindView</strong>(model, binding, view, twoWay)
       </a>
     </span>
     <span class='desc'>
       Binds a single instance of a view to a model.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#bindModelView-instance'>
+        - (void) <strong>bindModelView</strong>(model, view)
+      </a>
+    </span>
+    <span class='desc'>
+      Bind a model to a view and bind the view to the model (used for two-way model-view binding)
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#unbindModelView-instance'>
+        - (void) <strong>unbindModelView</strong>(model, view)
+      </a>
+    </span>
+    <span class='desc'>
+      Unbind a two-way model-view relationship.
     </span>
   </li>
   <li>
@@ -258,6 +288,16 @@ mapping to the model list.items (belonging to SelectList)
     <span class='bound note title'>Bound</span>
     <span class='desc'>
       Traverses the dom upwards to find the first model it encounters If no model is found, it will return null
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#getInputDataFromEl-instance'>
+        - (void) <strong>getInputDataFromEl</strong>($el)
+      </a>
+    </span>
+    <span class='desc'>
+      Retrieve the input data from a given element
     </span>
   </li>
 </ul>
@@ -320,7 +360,10 @@ attribute to a uniquely generated id.</p>
       - (void) <strong>init</strong>()
     </p>
     <div class='docstring'>
-  <p>Initialize the controller by loading the</p>
+  <p>Initialize the controller by loading the
+views and elements with id tags.
+Also binds UI events to the controllers&#39;
+respective callbacks</p>
 </div>
 <div class='tags'>
 </div>
@@ -339,8 +382,8 @@ within the controller via @els[&#39;el-id&#39;]</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='findViews-instance'>
-      - (void) <strong>findViews</strong>()
+    <p class='signature' id='loadViews-instance'>
+      - (void) <strong>loadViews</strong>()
     </p>
     <div class='docstring'>
   <p>Find all the views embedded inside the controller and
@@ -350,8 +393,19 @@ register them with the controller</p>
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='loadForms-instance'>
+      - (void) <strong>loadForms</strong>()
+    </p>
+    <div class='docstring'>
+  <p>Find all the form embedded inside the controller and
+registers them with the controller</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='registerView-instance'>
-      - (void) <strong>registerView</strong>($view)
+      - (void) <strong>registerView</strong>($view, twoWay)
     </p>
     <div class='docstring'>
   <p>Register the view to this controller</p>
@@ -440,7 +494,7 @@ to the given model.</p>
   </div>
   <div class='method_details'>
     <p class='signature' id='bindView-instance'>
-      - (void) <strong>bindView</strong>(model, binding, view)
+      - (void) <strong>bindView</strong>(model, binding, view, twoWay)
     </p>
     <div class='docstring'>
   <p>Binds a single instance of a view to a model.
@@ -472,6 +526,73 @@ Usings binding as the dot notation map.</p>
       </span>
       &mdash;
       <span class='desc'>The view object to bind to.</span>
+    </li>
+    <li>
+      <span class='name'>twoWay</span>
+      <span class='type'>
+        (<tt>Boolean</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>Indicates if the view-model relationship should be two way. Typically used to bind form data to a model.</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='bindModelView-instance'>
+      - (void) <strong>bindModelView</strong>(model, view)
+    </p>
+    <div class='docstring'>
+  <p>Bind a model to a view and bind the
+view to the model (used for two-way model-view binding)</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to bind</span>
+    </li>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>Wraith.View</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to bind</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='unbindModelView-instance'>
+      - (void) <strong>unbindModelView</strong>(model, view)
+    </p>
+    <div class='docstring'>
+  <p>Unbind a two-way model-view relationship.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>model</span>
+      <span class='type'>
+        (<tt><a href='../../classes/Wraith/Model.html'>Wraith.Model</a></tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The model to unbind</span>
+    </li>
+    <li>
+      <span class='name'>view</span>
+      <span class='type'>
+        (<tt>Wraith.View</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The view to unbind</span>
     </li>
   </ul>
 </div>
@@ -570,14 +691,42 @@ If no model is found, it will return null</p>
   </ul>
 </div>
   </div>
+  <div class='method_details'>
+    <p class='signature' id='getInputDataFromEl-instance'>
+      - (void) <strong>getInputDataFromEl</strong>($el)
+    </p>
+    <div class='docstring'>
+  <p>Retrieve the input data from a given element</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>$el</span>
+      <span class='type'>
+        (<tt>HTMLElement</tt>)
+      </span>
+      &mdash;
+      <span class='desc'>The element to iterate over and get form data from</span>
+    </li>
+  </ul>
+</div>
+  </div>
 </div>
     </div>
     <div id='footer'>
   Generated on
+<<<<<<< HEAD
   Fri Jun 07 2013 20:47:29 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.6.1
+=======
+  Tue Jun 25 2013 22:40:15 GMT-0400 (EDT)
+  by
+  <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
+  v1.7.0
+>>>>>>> [two_way_binding] Added missing doc blocks and generated documentation. Fixed a bug in unbinding model-view
   (Node.js v0.10.9).
   &#10034;
   Press Ctrl-h to see the keyboard shortcuts
