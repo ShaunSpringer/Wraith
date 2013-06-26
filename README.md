@@ -1,7 +1,7 @@
-![Wraith v0.1.0](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1b")
+![Wraith v0.1.1](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1.1")
 
 
-## v0.1.0 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
+## v0.1.1 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
 #### Created by Shaun Springer
 
 #### Meet Wraith
@@ -140,6 +140,23 @@ One of the most important things I tried to accomplish with Wraith was easy data
 ```
 
 This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).
+
+#### Two-Way Data Binding
+As of v0.1.1. forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated (and in the future, validated). On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.
+
+```html
+<div data-controller="App.CommentController">
+  <form id="comments-form" data-bind="commentlist.comments">
+    <input type="text" name="comment" value="{{comment}}" required />
+    <div id="comment">Comment: {{comment}}</div>
+  </form>
+  <div id="comment-list">
+    <div data-bind="commentlist.comments" data-repeat>{{comment}}</div>
+  </div>
+</div>
+```
+
+For more on two-way binding checkout the comments example
 
 #### Class Binding
 Want to hide or show something? Instead of writing logic in javascript to hide and show an element or alter its class attributes, you can use data or methods from your models to alter the class structure.
