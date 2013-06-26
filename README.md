@@ -42,25 +42,25 @@ Coffeescript:
 ```coffeescript
 App = {}
 class App.MainController extends Wraith.Controller
-	constructor: ->
-		@registerModel(App.List, 'list') # Register our model as 'list'
+  constructor: ->
+    @registerModel(App.List, 'list') # Register our model as 'list'
 
-	onKeypress: (e) ->
-		alert(e)
+  onKeypress: (e) ->
+    alert(e)
 ```
 
 Javascript:
 ```javascript
 var App = {};
 App.MainController = (function(_super) {
-	function MainController() {
-		_super.call();
-		this.registerModel(App.List, 'list') // Register our model as 'list'
-	}
-	MainController.prototype.onKeypress = function(e) {
-		alert(e);
-	}
-	return MainController;
+  function MainController() {
+    _super.call();
+    this.registerModel(App.List, 'list') // Register our model as 'list'
+  }
+  MainController.prototype.onKeypress = function(e) {
+    alert(e);
+  }
+  return MainController;
 })(Wraith.Controller);
 ```
 
@@ -68,7 +68,7 @@ Before Wraith will do anything though, you must initialize its bootloader. This 
 
 ```html
 <script type="text/javascript">
-	new Wraith.Bootloader(); // My app is starting!
+  new Wraith.Bootloader(); // My app is starting!
 </script>
 ```
 
@@ -77,10 +77,10 @@ In Wraith, you are required to create event handlers in your controllers, but yo
 
 ```html
 <section data-controller="App.MainController">
-	<input type="text" data-events="keypress:onKeypress" />
-	<div data-bind="list.items" data-repeat>
-		{{text}}
-	</div>
+  <input type="text" data-events="keypress:onKeypress" />
+  <div data-bind="list.items" data-repeat>
+    {{text}}
+  </div>
 </section>
 ```
 
@@ -92,19 +92,19 @@ I really enjoyed working with Models in Spine when compared to other frameworks,
 Coffeescript:
 ```coffeescript
 class App.ListItem extends Wraith.Model
-	@field 'text', { default: 'New Item' }
-	@field 'selected', { default: false }
+  @field 'text', { default: 'New Item' }
+  @field 'selected', { default: false }
 ```
 
 Javascript:
 ```javascript
 App.ListItem = (function(_super) {
-	function ListItem() {
-		_super.call();
-		this.field('text', { default: 'New Item' });
-		this.field('selected', { default: false });
-	}
-	return ListItem;
+  function ListItem() {
+    _super.call();
+    this.field('text', { default: 'New Item' });
+    this.field('selected', { default: false });
+  }
+  return ListItem;
 })(Wraith.Model);
 ```
 
@@ -113,17 +113,17 @@ Collections can be done similarly:
 Coffeescript:
 ```coffeescript
 class App.List extends Wraith.Model
-	@hasMany App.ListItem, 'items'
+  @hasMany App.ListItem, 'items'
 ```
 
 Javascript:
 ```javascript
 App.List = (function(_super) {
-	function List() {
-		_super.call();
-		this.hasMany(App.ListItem, 'items');
-	}
-	return List;
+  function List() {
+    _super.call();
+    this.hasMany(App.ListItem, 'items');
+  }
+  return List;
 })(Wraith.Model);
 ```
 
@@ -132,10 +132,10 @@ One of the most important things I tried to accomplish with Wraith was easy data
 
 ```html
 <section data-controller="App.MainController">
-	<input type="text" data-events="keypress:onCheckboxKeypress" />
-	<div data-bind="list.items" data-repeat>
-		{{text}}
-	</div>
+  <input type="text" data-events="keypress:onCheckboxKeypress" />
+  <div data-bind="list.items" data-repeat>
+    {{text}}
+  </div>
 </section>
 ```
 
@@ -164,11 +164,11 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 ```html
 <section data-controller="App.MainController">
 <input type="text" data-events="keypress:onCheckboxKeypress" />
-	<div data-bind="list.items" data-repeat>
-		<span data-class="highlight:selected">
-			{{text}}
-		</span>
-	</div>
+  <div data-bind="list.items" data-repeat>
+    <span data-class="highlight:selected">
+      {{text}}
+    </span>
+  </div>
 </section>
 ```
 
@@ -199,7 +199,7 @@ cake server
 
 This will start a server on port 8000, making tests and examples available for browsing.
 * Tests are located at [http://localhost:8000/tests/SpecRunner.html](http://localhost:8000/tests/SpecRunner.html)
- 	* Note: Tests can be run as headless with the command ```npm test```
+   * Note: Tests can be run as headless with the command ```npm test```
 * Examples are located at [http://localhost:8000/examples/](http://localhost:8000/examples/)
 
 To run the tests in a headless browser (using phantomjs) run
