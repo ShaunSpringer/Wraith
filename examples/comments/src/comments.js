@@ -52,12 +52,7 @@
 
     CommentController.prototype.init = function() {
       CommentController.__super__.init.call(this);
-      this.list = this.registerModel(new App.CommentList, 'commentlist');
-      this.comments = this.list.get('comments');
-      return this.comments.create({
-        author: 'ShaunSpringer',
-        text: 'This is a comment'
-      });
+      return this.list = this.registerModel(new App.CommentList, 'commentlist');
     };
 
     return CommentController;

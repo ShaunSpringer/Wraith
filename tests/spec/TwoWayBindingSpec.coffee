@@ -1,7 +1,7 @@
 describe "Two Way Binding", ->
 
   beforeEach ->
-    return if window.App.CommentController
+    return if window.TwoWayBindingTest
 
     $.ajax
       async: false,
@@ -10,30 +10,35 @@ describe "Two Way Binding", ->
       success: (data) ->
         $('#fixture').append($(data))
 
-        window.App = {}
+        window.TwoWayBindingTest = {}
 
-        class App.Comment extends Wraith.Model
+        class TwoWayBindingTest.Comment extends Wraith.Model
           @field 'comment', { default: '' }
 
-        class App.CommentList extends Wraith.Model
-          @hasMany App.Comment, 'comments'
+        class TwoWayBindingTest.CommentList extends Wraith.Model
+          @hasMany TwoWayBindingTest.Comment, 'comments'
 
-        class App.CommentController extends Wraith.Controller
+        class TwoWayBindingTest.CommentController extends Wraith.Controller
           init: ->
             super()
-            @list = @registerModel new App.CommentList, 'commentlist'
+            @list = @registerModel new TwoWayBindingTest.CommentList, 'commentlist'
 
         new Wraith.Bootloader()
 
   describe "form inputs", ->
 
-    it "should update model on change", ->
+    it "should update model and view on change", ->
       $input = $('input[name=comment]')
       $input.attr('value', 'Super!')
       $input.trigger('keyup')
       waitsFor (-> $('#comment').text() is 'Comment: Super!') , 1
 
     it "should create a new model on submit", ->
+      $input = $('input[name=comment]')
+      $input.attr('value', 'Super!')
+      $input.trigger('keyup')
+
       $form = $('#comments-form')
       $form.submit()
-      waitsFor (-> $('#comment-list').first().text() is 'Comment: Super!') , 1
+      waitsFor (-> $('#comment-list').first().text() is 'Super!') , 1
+

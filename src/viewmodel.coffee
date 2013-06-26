@@ -13,9 +13,9 @@ class Wraith.ViewModel extends Wraith.BaseView
     Wraith.log '@Wraith.ViewModel', 'constructor'
     throw 'Element is required by View' unless @$el
     throw 'Template is required by View' unless template
-
     super(@$el)
     @$parent = @$el.parentNode
+    console.log @$parent, template
     @template = new Wraith.Template(template)
 
   #
@@ -122,7 +122,7 @@ class Wraith.ViewModel extends Wraith.BaseView
 
   handleInputKeypress_: (e, model) =>
     $target = e.target
-    model.set($target.name, $target.value or $target.attributes['value']?.value)
+    model.set($target.name, $target.value or ($target.attributes['value']?.value or ''))
 
   handleFormSubmit_: (e, model) =>
     return unless parent = model.parent

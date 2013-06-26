@@ -14,6 +14,10 @@ class Wraith.Bootloader
   # Constructor
   #
   constructor: ->
+    # @todo Make a method to destroy wraith, or dynamically
+    # add controllers as DOM changes
+    Wraith.controllers = []
+
     controllers = document.querySelectorAll('[data-controller]')
     @loadController $controller.attributes['data-controller'].value, $controller for $controller in controllers
 

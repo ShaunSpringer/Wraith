@@ -67,7 +67,7 @@ class Wraith.Template
       .split(c.start).join("');")
       .split(c.end).join("p.push('") +
       "'; return p.join('');"
-
+    console.log str
     @template_fn = new Function 'obj', str
     @template_fn(data)
 
