@@ -5,7 +5,7 @@
 
   describe("Two Way Binding", function() {
     beforeEach(function() {
-      if (window.App.CommentController) {
+      if (window.TwoWayBindingTest) {
         return;
       }
       return $.ajax({
@@ -15,8 +15,8 @@
         success: function(data) {
           var _ref, _ref1, _ref2;
           $('#fixture').append($(data));
-          window.App = {};
-          App.Comment = (function(_super) {
+          window.TwoWayBindingTest = {};
+          TwoWayBindingTest.Comment = (function(_super) {
             __extends(Comment, _super);
 
             function Comment() {
@@ -31,7 +31,7 @@
             return Comment;
 
           })(Wraith.Model);
-          App.CommentList = (function(_super) {
+          TwoWayBindingTest.CommentList = (function(_super) {
             __extends(CommentList, _super);
 
             function CommentList() {
@@ -39,12 +39,12 @@
               return _ref1;
             }
 
-            CommentList.hasMany(App.Comment, 'comments');
+            CommentList.hasMany(TwoWayBindingTest.Comment, 'comments');
 
             return CommentList;
 
           })(Wraith.Model);
-          App.CommentController = (function(_super) {
+          TwoWayBindingTest.CommentController = (function(_super) {
             __extends(CommentController, _super);
 
             function CommentController() {
@@ -54,7 +54,7 @@
 
             CommentController.prototype.init = function() {
               CommentController.__super__.init.call(this);
-              return this.list = this.registerModel(new App.CommentList, 'commentlist');
+              return this.list = this.registerModel(new TwoWayBindingTest.CommentList, 'commentlist');
             };
 
             return CommentController;
@@ -65,7 +65,7 @@
       });
     });
     return describe("form inputs", function() {
-      it("should update model on change", function() {
+      it("should update model and view on change", function() {
         var $input;
         $input = $('input[name=comment]');
         $input.attr('value', 'Super!');
@@ -75,11 +75,14 @@
         }), 1);
       });
       return it("should create a new model on submit", function() {
-        var $form;
+        var $form, $input;
+        $input = $('input[name=comment]');
+        $input.attr('value', 'Super!');
+        $input.trigger('keyup');
         $form = $('#comments-form');
         $form.submit();
         return waitsFor((function() {
-          return $('#comment-list').first().text() === 'Comment: Super!';
+          return $('#comment-list').first().text() === 'Super!';
         }), 1);
       });
     });
