@@ -15,7 +15,6 @@ class Wraith.ViewModel extends Wraith.BaseView
     throw 'Template is required by View' unless template
     super(@$el)
     @$parent = @$el.parentNode
-    console.log @$parent, template
     @template = new Wraith.Template(template)
 
   #
