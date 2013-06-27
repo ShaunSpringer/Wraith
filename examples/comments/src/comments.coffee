@@ -2,8 +2,8 @@ root = exports ? @
 root.App = App = {}
 
 class App.Comment extends Wraith.Model
-  @field 'author', { default: '' }
-  @field 'text', { default: '' }
+  @field 'author', { default: '', type: new Wraith.Validators.String({ min: 2, max: 30 }) }
+  @field 'text', { default: '', type: new Wraith.Validators.String({ min: 2, max: 30 }) }
 
 class App.CommentList extends Wraith.Model
   @hasMany App.Comment, 'comments'
