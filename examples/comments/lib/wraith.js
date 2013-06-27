@@ -726,7 +726,6 @@
       if (!model.attributes.hasOwnProperty($target.name)) {
         return;
       }
-      console.log($target.value);
       return model.set($target.name, $target.value);
     };
 

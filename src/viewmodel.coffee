@@ -143,7 +143,6 @@ class Wraith.ViewModel extends Wraith.BaseView
 
     # Dont update any values that dont exist on our model!
     return unless model.attributes.hasOwnProperty($target.name)
-    console.log $target.value
     model.set($target.name, $target.value)
 
   #
