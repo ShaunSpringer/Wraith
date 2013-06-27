@@ -204,6 +204,8 @@
 
     function Model(attributes) {
       this.toJSON = __bind(this.toJSON, this);
+      this.errorMessage = __bind(this.errorMessage, this);
+      this.isValid = __bind(this.isValid, this);
       this.set = __bind(this.set, this);
       this.get = __bind(this.get, this);
       var _base;
@@ -219,6 +221,7 @@
       }
       this.listeners = {};
       this.invalidated = [];
+      this.errors_ = {};
       this.reset(attributes);
       Wraith.models[this.attributes['_id']] = this;
       this;
@@ -266,15 +269,40 @@
         if (isValid !== true) {
           this.emit('validated', key, val, false);
           this.emit('validated:invalid', key, val);
-          this.invalidated.push(key);
+          this.errors_[key] = isValid;
         }
       }
-      if (isValid === true && this.invalidated.indexOf(key) >= 0) {
-        this.invalidated.splice(this.invalidated.indexOf(key), 1);
+      if (isValid === true && this.errors_[key]) {
+        this.errors_[key] = void 0;
+        delete this.errors_[key];
       }
       this.attributes[key] = val;
       this.emit('change', key, val);
       return this.emit('change:' + key, val);
+    };
+
+    Model.prototype.isValid = function() {
+      var key, msg, _ref;
+      _ref = this.errors_;
+      for (key in _ref) {
+        msg = _ref[key];
+        return false;
+      }
+      return true;
+    };
+
+    Model.prototype.errorMessage = function() {
+      var key, msg;
+      return '' + ((function() {
+        var _ref, _results;
+        _ref = this.errors_;
+        _results = [];
+        for (key in _ref) {
+          msg = _ref[key];
+          _results.push(msg + '\n');
+        }
+        return _results;
+      }).call(this));
     };
 
     Model.prototype.toJSON = function() {
@@ -438,6 +466,9 @@
 
     Template.interpolate = function(model, tokens) {
       var count, results, target, token, _i, _len;
+      if (tokens === 'errors_') {
+        debugger;
+      }
       count = 0;
       results = false;
       tokens = tokens.split('.');

@@ -81,6 +81,7 @@ class Wraith.Template
   # @returns [Object|String|Boolean] The results of the token search
   #
   @interpolate: (model, tokens) =>
+    if tokens is 'errors_' then debugger
     count = 0
     results = false
     tokens = tokens.split('.')

@@ -19,7 +19,7 @@
     Comment.field('author', {
       "default": '',
       type: new Wraith.Validators.Text({
-        min: 2,
+        min: 1,
         max: 30
       })
     });
@@ -27,7 +27,7 @@
     Comment.field('text', {
       "default": '',
       type: new Wraith.Validators.Text({
-        min: 2,
+        min: 1,
         max: 140
       })
     });

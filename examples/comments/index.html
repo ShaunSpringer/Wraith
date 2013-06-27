@@ -7,6 +7,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
     </head>
+    <style>
+        .hidden { display: none; }
+    </style>
     <body>
         <div data-controller="App.CommentController">
             <h1>Comments</h1>
@@ -27,6 +30,7 @@
                 <input type="submit" value="Add" />
                 <div>Author: {{author}}</div>
                 <div>Comment: {{text}}</div>
+                <div data-class="hidden:isValid">Errors: {{errorMessage}}</div>
             </form>
         </div>
         <script src="lib/wraith.js"></script>

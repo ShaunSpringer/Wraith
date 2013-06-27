@@ -46,6 +46,7 @@ class Wraith.Model extends Wraith.Base
 
     @listeners = {}
     @invalidated = []
+    @errors_ = {}
 
     @reset attributes
 
@@ -101,15 +102,23 @@ class Wraith.Model extends Wraith.Base
       if isValid isnt true
         @emit('validated', key, val, false)
         @emit('validated:invalid', key, val)
-        @invalidated.push key
+        @errors_[key] = isValid
 
-    if isValid is true and @invalidated.indexOf(key) >= 0
-      @invalidated.splice(@invalidated.indexOf(key), 1)
+    if isValid is true and @errors_[key]
+      @errors_[key] = undefined
+      delete @errors_[key]
 
     @attributes[key] = val
+
     # Emit change events!
     @emit('change', key, val)
     @emit('change:' + key, val)
+
+  isValid: =>
+    return false for key, msg of @errors_
+    return true
+
+  errorMessage: => '' + (msg + '\n' for key, msg of @errors_)
 
   #
   # "Serializes" the model's attributes as JSON.
