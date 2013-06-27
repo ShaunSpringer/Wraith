@@ -68,7 +68,7 @@
       it("should update model and view on change", function() {
         var $input;
         $input = $('input[name=comment]');
-        $input.attr('value', 'Super!');
+        $input[0].value = 'Super!';
         $input.trigger('keyup');
         return waitsFor((function() {
           return $('#comment').text() === 'Comment: Super!';
@@ -77,7 +77,7 @@
       return it("should create a new model on submit", function() {
         var $form, $input;
         $input = $('input[name=comment]');
-        $input.attr('value', 'Super!');
+        $input[0].value = 'Super!';
         $input.trigger('keyup');
         $form = $('#comments-form');
         $form.submit();

@@ -45,6 +45,7 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
     @listeners = {}
+    @invalidated = []
 
     @reset attributes
 
@@ -65,7 +66,7 @@ class Wraith.Model extends Wraith.Base
       if attributes?[name]?
         d = attributes[name]
       else
-        d = if (Wraith.isFunction(options.default)) then options.default() else options.default
+        d = if (Wraith.isFunction(options['default'])) then options['default']() else options['default']
       @set name, d
 
     for name, options of @constructor.collections
@@ -92,6 +93,19 @@ class Wraith.Model extends Wraith.Base
     throw 'Trying to set an non-existent property!' unless field = @constructor.fields[key]
     # Ignore a re-setting of the same value
     return if val == @get(key)
+
+    isValid = false
+    validator = @constructor.fields[key]['type']
+    if validator and validator instanceof Wraith.Validator
+      isValid = validator.isValid(val)
+      if isValid isnt true
+        @emit('validated', key, val, false)
+        @emit('validated:invalid', key, val)
+        @invalidated.push key
+
+    if isValid is true and @invalidated.indexOf(key) >= 0
+      @invalidated.splice(@invalidated.indexOf(key), 1)
+
     @attributes[key] = val
     # Emit change events!
     @emit('change', key, val)

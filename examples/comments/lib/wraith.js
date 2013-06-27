@@ -27,7 +27,7 @@
 
 
 (function() {
-  var Wraith, root,
+  var Wraith, root, _ref,
     __slice = [].slice,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
@@ -44,6 +44,8 @@
     Wraith.models = {};
 
     Wraith.UIEvents = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit'];
+
+    Wraith.Validators = {};
 
     Wraith.log = function() {
       var args;
@@ -216,6 +218,7 @@
         };
       }
       this.listeners = {};
+      this.invalidated = [];
       this.reset(attributes);
       Wraith.models[this.attributes['_id']] = this;
       this;
@@ -230,7 +233,7 @@
         if ((attributes != null ? attributes[name] : void 0) != null) {
           d = attributes[name];
         } else {
-          d = Wraith.isFunction(options["default"]) ? options["default"]() : options["default"];
+          d = Wraith.isFunction(options['default']) ? options['default']() : options['default'];
         }
         this.set(name, d);
       }
@@ -249,12 +252,25 @@
     };
 
     Model.prototype.set = function(key, val) {
-      var field;
+      var field, isValid, validator;
       if (!(field = this.constructor.fields[key])) {
         throw 'Trying to set an non-existent property!';
       }
       if (val === this.get(key)) {
         return;
+      }
+      isValid = false;
+      validator = this.constructor.fields[key]['type'];
+      if (validator && validator instanceof Wraith.Validator) {
+        isValid = validator.isValid(val);
+        if (isValid !== true) {
+          this.emit('validated', key, val, false);
+          this.emit('validated:invalid', key, val);
+          this.invalidated.push(key);
+        }
+      }
+      if (isValid === true && this.invalidated.indexOf(key) >= 0) {
+        this.invalidated.splice(this.invalidated.indexOf(key), 1);
       }
       this.attributes[key] = val;
       this.emit('change', key, val);
@@ -349,6 +365,44 @@
 
   })(Wraith.Model);
 
+  Wraith.Validator = (function(_super) {
+    __extends(Validator, _super);
+
+    function Validator() {
+      _ref = Validator.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Validator.prototype.validate = function(str) {
+      throw 'Override the validate function!';
+    };
+
+    return Validator;
+
+  })(Wraith.Base);
+
+  Wraith.Validators.Text = (function(_super) {
+    __extends(Text, _super);
+
+    function Text(_arg) {
+      this.min = _arg.min, this.max = _arg.max;
+      this.isValid = __bind(this.isValid, this);
+      this;
+    }
+
+    Text.prototype.isValid = function(str) {
+      var isValid;
+      isValid = str.match('^.{' + (this.min || 0) + ',' + (this.max || '') + '}$') !== null;
+      if (isValid) {
+        return true;
+      }
+      return 'String must be a minimum of ' + this.min + ' characters and a maximum of ' + this.max + ' characters long.';
+    };
+
+    return Text;
+
+  })(Wraith.Validator);
+
   Wraith.Template = (function() {
     Template.escapeRegExp = function(string) {
       return string.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
@@ -378,7 +432,6 @@
       template = this.template;
       endMatch = new RegExp("'(?=[^" + c.end.substr(0, 1) + "]*" + Wraith.Template.escapeRegExp(c.end) + ")", "g");
       str = 'var p=[],print=function(){p.push.apply(p,arguments);};' + 'p[p.length] = \'' + template.replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(endMatch, "✄").split("'").join("\\'").split("✄").join("'").replace(c.interpolate, "' + Wraith.Template.interpolate(obj, \'$1\') + '").replace(c.checked, "' + ((Wraith.Template.interpolate(obj, \'$1\') === true) ? 'checked=\"checked\"' : \'\') + '").replace(c.classes, "class=\"' + Wraith.Template.interpolateClass(obj, \'$1\') + '\"").replace(c.classesMerge, "class=\"$1 $3\"' + ((\'$2\').length > 0 ? \'$2\' : '') + '").split(c.start).join("');").split(c.end).join("p.push('") + "'; return p.join('');";
-      console.log(str);
       this.template_fn = new Function('obj', str);
       return this.template_fn(data);
     };
@@ -405,11 +458,11 @@
     };
 
     Template.interpolateClass = function(model, tokens) {
-      var binding, invert, klass, klassMap, klasses, results, _i, _len, _ref;
+      var binding, invert, klass, klassMap, klasses, results, _i, _len, _ref1;
       klasses = [];
-      _ref = tokens.split(' ');
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        klassMap = _ref[_i];
+      _ref1 = tokens.split(' ');
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        klassMap = _ref1[_i];
         binding = klassMap.split(':');
         if (binding.length !== 2) {
           continue;
@@ -467,7 +520,7 @@
     };
 
     BaseView.prototype.bindUIEvent = function($view, event) {
-      var cb, eventArr, events, name, _i, _len, _ref;
+      var cb, eventArr, events, name, _i, _len, _ref1;
       events = event.split(/[,?\s?]/);
       for (_i = 0, _len = events.length; _i < _len; _i++) {
         event = events[_i];
@@ -477,7 +530,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref = !name, __indexOf.call(Wraith.UIEvents, _ref) >= 0) {
+        if (_ref1 = !name, __indexOf.call(Wraith.UIEvents, _ref1) >= 0) {
           continue;
         }
         $view.addEventListener(name, this.wrapUIEvent(cb));
@@ -511,7 +564,7 @@
     };
 
     BaseView.prototype.unbindUIEvent = function($view, event) {
-      var cb, eventArr, events, name, _i, _len, _ref,
+      var cb, eventArr, events, name, _i, _len, _ref1,
         _this = this;
       events = event.split(/[,?\s?]/);
       for (_i = 0, _len = events.length; _i < _len; _i++) {
@@ -522,7 +575,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref = !name, __indexOf.call(Wraith.UIEvents, _ref) >= 0) {
+        if (_ref1 = !name, __indexOf.call(Wraith.UIEvents, _ref1) >= 0) {
           continue;
         }
         $view.removeEventListener(name, function(e) {
@@ -542,7 +595,7 @@
     function ViewModel($el, template) {
       this.$el = $el;
       this.handleFormSubmit_ = __bind(this.handleFormSubmit_, this);
-      this.handleInputKeypress_ = __bind(this.handleInputKeypress_, this);
+      this.handleInputChange_ = __bind(this.handleInputChange_, this);
       this.unbindModel = __bind(this.unbindModel, this);
       this.bindModel = __bind(this.bindModel, this);
       this.applyViewUpdate = __bind(this.applyViewUpdate, this);
@@ -555,7 +608,6 @@
       }
       ViewModel.__super__.constructor.call(this, this.$el);
       this.$parent = this.$el.parentNode;
-      console.log(this.$parent, template);
       this.template = new Wraith.Template(template);
     }
 
@@ -577,24 +629,24 @@
     };
 
     ViewModel.prototype.applyViewUpdate = function($old, $new) {
-      var $child, attr, attrs, i, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
+      var $child, attr, attrs, i, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2;
       attrs = [];
       if ($old.attributes) {
         attrs = (function() {
-          var _i, _len, _ref, _results;
-          _ref = $old.attributes;
+          var _i, _len, _ref1, _results;
+          _ref1 = $old.attributes;
           _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            attr = _ref[_i];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            attr = _ref1[_i];
             _results.push(attr.name);
           }
           return _results;
         })();
       }
       if ($new.attributes) {
-        _ref = $new.attributes;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          attr = _ref[_i];
+        _ref1 = $new.attributes;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          attr = _ref1[_i];
           if (attrs.indexOf(attr.name) === -1) {
             attrs.push(attr.name);
           }
@@ -609,18 +661,18 @@
       if ($old.nodeValue !== $new.nodeValue) {
         $old.nodeValue = $new.nodeValue;
       }
-      _ref1 = $old.childNodes;
-      for (i = _k = 0, _len2 = _ref1.length; _k < _len2; i = ++_k) {
-        $child = _ref1[i];
+      _ref2 = $old.childNodes;
+      for (i = _k = 0, _len2 = _ref2.length; _k < _len2; i = ++_k) {
+        $child = _ref2[i];
         this.applyViewUpdate($child, $new.childNodes[i]);
       }
       return this;
     };
 
     ViewModel.prototype.updateAttribute = function(name, $old, $new) {
-      var newval, oldval, _ref, _ref1;
-      oldval = (_ref = $old.attributes[name]) != null ? _ref.value : void 0;
-      newval = (_ref1 = $new.attributes[name]) != null ? _ref1.value : void 0;
+      var newval, oldval, _ref1, _ref2;
+      oldval = (_ref1 = $old.attributes[name]) != null ? _ref1.value : void 0;
+      newval = (_ref2 = $new.attributes[name]) != null ? _ref2.value : void 0;
       if (name === 'checked') {
         $old.checked = newval != null;
       }
@@ -640,7 +692,10 @@
     ViewModel.prototype.bindModel = function(model) {
       var _this = this;
       this.$el.addEventListener('keyup', function(e) {
-        return _this.handleInputKeypress_(e, model);
+        return _this.handleInputChange_(e, model);
+      });
+      this.$el.addEventListener('blur', function(e) {
+        return _this.handleInputChange_(e, model);
       });
       if (this.$el.nodeName === 'FORM') {
         this.$el.addEventListener('submit', function(e) {
@@ -653,7 +708,10 @@
     ViewModel.prototype.unbindModel = function(model) {
       var _this = this;
       this.$el.removeEventListener('keyup', function(e) {
-        return _this.handleInputKeypress_(e, model);
+        return _this.handleInputChange_(e, model);
+      });
+      this.$el.removeEventListener('blur', function(e) {
+        return _this.handleInputChange_(e, model);
       });
       if (this.$el.nodeName === 'FORM') {
         return this.$el.removeEventListener('submit', function(e) {
@@ -662,10 +720,14 @@
       }
     };
 
-    ViewModel.prototype.handleInputKeypress_ = function(e, model) {
-      var $target, _ref;
+    ViewModel.prototype.handleInputChange_ = function(e, model) {
+      var $target;
       $target = e.target;
-      return model.set($target.name, $target.value || (((_ref = $target.attributes['value']) != null ? _ref.value : void 0) || ''));
+      if (!model.attributes.hasOwnProperty($target.name)) {
+        return;
+      }
+      console.log($target.value);
+      return model.set($target.name, $target.value);
     };
 
     ViewModel.prototype.handleFormSubmit_ = function(e, model) {
@@ -794,8 +856,8 @@
     };
 
     Controller.prototype.registerView = function($view, twoWay) {
-      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref, _ref1, _ref2;
-      if (!(binding = (_ref = $view.attributes['data-bind']) != null ? _ref.value : void 0)) {
+      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref1, _ref2, _ref3;
+      if (!(binding = (_ref1 = $view.attributes['data-bind']) != null ? _ref1.value : void 0)) {
         return;
       }
       maps = binding.split('.');
@@ -803,9 +865,9 @@
         return;
       }
       repeating = $view.attributes['data-repeat'] !== void 0;
-      templateId = (_ref1 = $view.attributes['data-template']) != null ? _ref1.value : void 0;
+      templateId = (_ref2 = $view.attributes['data-template']) != null ? _ref2.value : void 0;
       if (templateId !== void 0) {
-        if (!(template = (_ref2 = document.getElementById(templateId)) != null ? _ref2.innerHTML : void 0)) {
+        if (!(template = (_ref3 = document.getElementById(templateId)) != null ? _ref3.innerHTML : void 0)) {
           return;
         }
       } else {
@@ -929,12 +991,12 @@
     };
 
     Controller.prototype.getModelFromEl = function($el) {
-      var modelId, _ref;
+      var modelId, _ref1;
       while ($el) {
         if (!$el.attributes) {
           break;
         }
-        if (modelId = (_ref = $el.attributes['data-model-id']) != null ? _ref.value : void 0) {
+        if (modelId = (_ref1 = $el.attributes['data-model-id']) != null ? _ref1.value : void 0) {
           break;
         }
         $el = $el.parentNode;

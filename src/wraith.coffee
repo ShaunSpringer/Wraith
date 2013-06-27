@@ -42,6 +42,8 @@ class Wraith
   @models: {}
   # List of acceptable UIEvents
   @UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit']
+  # The global validators object
+  @Validators: {}
 
   #
   # Logs to the console if DEBUG is set to true

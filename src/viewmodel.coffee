@@ -113,7 +113,8 @@ class Wraith.ViewModel extends Wraith.BaseView
   # @param [Wraith.Model] model The model to bind
   #
   bindModel: (model) =>
-    @$el.addEventListener 'keyup', (e) => @handleInputKeypress_ e, model
+    @$el.addEventListener 'keyup', (e) => @handleInputChange_ e, model
+    @$el.addEventListener 'blur', (e) => @handleInputChange_ e, model
     if @$el.nodeName is 'FORM'
       @$el.addEventListener 'submit', (e) => @handleFormSubmit_ e, model
 
@@ -125,7 +126,8 @@ class Wraith.ViewModel extends Wraith.BaseView
   # @param [Wraith.Model] model The model to unbind from
   #
   unbindModel: (model) =>
-    @$el.removeEventListener 'keyup', (e) => @handleInputKeypress_ e, model
+    @$el.removeEventListener 'keyup', (e) => @handleInputChange_ e, model
+    @$el.removeEventListener 'blur', (e) => @handleInputChange_ e, model
     if @$el.nodeName is 'FORM'
       @$el.removeEventListener 'submit', (e) => @handleFormSubmit_ e, model
 
@@ -136,9 +138,13 @@ class Wraith.ViewModel extends Wraith.BaseView
   # @param [Event] e The keypress event
   # @param [Wraith.Model] model The model associated with this event
   #
-  handleInputKeypress_: (e, model) =>
+  handleInputChange_: (e, model) =>
     $target = e.target
-    model.set($target.name, $target.value or ($target.attributes['value']?.value or ''))
+
+    # Dont update any values that dont exist on our model!
+    return unless model.attributes.hasOwnProperty($target.name)
+    console.log $target.value
+    model.set($target.name, $target.value)
 
   #
   # Handle the form submit by creating a new

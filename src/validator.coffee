@@ -6,9 +6,13 @@
 #     @field 'text', { default: '', type: Wraith.Validators.String,  max: 30, min: 2 }
 #
 class Wraith.Validator extends Wraith.Base
-  @validate: (contents) -> throw 'Override the validate function!'
+  validate: (str) -> throw 'Override the validate function!'
 
-Wraith.Validators = {}
-class Wraith.Validators.String extends Wraith.Validator
-  @validate: (contents, { min, max }) -> return contents.match('(.*){' + min + ',' + max + '}') isnt null
+class Wraith.Validators.Text extends Wraith.Validator
+  constructor: ({ @min, @max }) -> @
+  isValid: (str) =>
+    isValid = str.match('^.{' + (@min || 0) + ',' + (@max || '') + '}$') isnt null
+    return true if isValid
+    return 'String must be a minimum of ' + @min + ' characters and a maximum of ' + @max + ' characters long.'
+
 

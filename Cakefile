@@ -8,6 +8,7 @@ sourceFiles = [
   'src/base.coffee'
   'src/model.coffee'
   'src/collection.coffee'
+  'src/validator.coffee'
   'src/template.coffee'
   'src/baseview.coffee'
   'src/viewmodel.coffee'
@@ -24,8 +25,8 @@ copyLocations = [
 
 examples = [
   { base: 'examples/todo/', dest: 'lib', source: 'src' }
-  { base:'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
-  { base:'examples/comments/', dest: 'lib', source: 'src' }
+  { base: 'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
+  { base: 'examples/comments/', dest: 'lib', source: 'src' }
 ]
 
 tests = [
