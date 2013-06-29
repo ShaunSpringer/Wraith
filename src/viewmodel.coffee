@@ -154,10 +154,15 @@ class Wraith.ViewModel extends Wraith.BaseView
   # @param [Wraith.Model] model The model associated with this event
   #
   handleFormSubmit_: (e, model) =>
+    # For now we are requiring a parent model to
+    # be bound to this model (e.g. a collection)
     return unless parent = model.parent
 
     # Never submit.
     e.preventDefault()
+
+    # Only proceed if its a valid model
+    return unless model.isValid()
 
     # Shallow copy of data to new model
     # @todo replace with a clone method

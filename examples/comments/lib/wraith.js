@@ -523,7 +523,6 @@
           tokens = tokens.slice(1);
         }
         results = Wraith.Template.interpolate(model, tokens);
-        console.log(results, tokens);
         if (invert) {
           results = !results;
         }
@@ -785,6 +784,9 @@
         return;
       }
       e.preventDefault();
+      if (!model.isValid()) {
+        return;
+      }
       data = model.toJSON();
       id = data['_id'];
       data['_id'] = null;

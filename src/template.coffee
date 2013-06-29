@@ -120,7 +120,6 @@ class Wraith.Template
 
       # @TODO: Refactor this and ViewModel.render
       results = Wraith.Template.interpolate(model, tokens)
-      console.log results, tokens
 
       results = !results if invert
       continue if not results
