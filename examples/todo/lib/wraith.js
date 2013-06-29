@@ -39,11 +39,13 @@
 
     Wraith.DEBUG = false;
 
+    Wraith.UIEVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit'];
+
     Wraith.controllers = {};
 
     Wraith.models = {};
 
-    Wraith.UIEvents = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit'];
+    Wraith.Validators = {};
 
     Wraith.log = function() {
       var args;
@@ -87,6 +89,7 @@
     function Bootloader() {
       var $controller, controller, controllers, id, _i, _len, _ref;
 
+      Wraith.controllers = [];
       controllers = document.querySelectorAll('[data-controller]');
       for (_i = 0, _len = controllers.length; _i < _len; _i++) {
         $controller = controllers[_i];
@@ -212,9 +215,11 @@
 
     function Model(attributes) {
       this.toJSON = __bind(this.toJSON, this);
+      this.errors = __bind(this.errors, this);
+      this.isValid = __bind(this.isValid, this);
       this.set = __bind(this.set, this);
       this.get = __bind(this.get, this);
-      var d, name, options, _base, _ref, _ref1, _ref2;
+      var _base, _ref;
 
       Wraith.log('@Wraith.Model', 'constructor');
       Model.__super__.constructor.call(this);
@@ -227,25 +232,34 @@
         };
       }
       this.listeners = {};
-      this.attributes = {};
-      _ref1 = this.constructor.fields;
-      for (name in _ref1) {
-        options = _ref1[name];
-        if ((attributes != null ? attributes[name] : void 0) != null) {
-          d = attributes[name];
-        } else {
-          d = Wraith.isFunction(options["default"]) ? options["default"]() : options["default"];
-        }
-        this.set(name, d);
-      }
-      _ref2 = this.constructor.collections;
-      for (name in _ref2) {
-        options = _ref2[name];
-        this.attributes[name] = new Wraith.Collection(this, options.as, options.klass);
-      }
+      this.errorCache = {};
+      this.reset(attributes);
       Wraith.models[this.attributes['_id']] = this;
       this;
     }
+
+    Model.prototype.reset = function(attributes) {
+      var d, name, options, _ref, _ref1, _results;
+
+      this.attributes = {};
+      _ref = this.constructor.fields;
+      for (name in _ref) {
+        options = _ref[name];
+        if ((attributes != null ? attributes[name] : void 0) != null) {
+          d = attributes[name];
+        } else {
+          d = Wraith.isFunction(options['default']) ? options['default']() : options['default'];
+        }
+        this.set(name, d);
+      }
+      _ref1 = this.constructor.collections;
+      _results = [];
+      for (name in _ref1) {
+        options = _ref1[name];
+        _results.push(this.attributes[name] = new Wraith.Collection(this, options.as, options.klass));
+      }
+      return _results;
+    };
 
     Model.prototype.get = function(key) {
       var _ref;
@@ -254,7 +268,7 @@
     };
 
     Model.prototype.set = function(key, val) {
-      var field;
+      var cached, field, isValid, validator;
 
       if (!(field = this.constructor.fields[key])) {
         throw 'Trying to set an non-existent property!';
@@ -262,9 +276,38 @@
       if (val === this.get(key)) {
         return;
       }
+      isValid = false;
+      validator = this.constructor.fields[key]['type'];
+      if (validator && validator instanceof Wraith.Validator) {
+        isValid = validator.isValid(val);
+        if (isValid !== true) {
+          this.errorCache[key] = isValid;
+          this.emit('change', 'errors', isValid);
+          this.emit('change:' + 'errors', isValid);
+        }
+      }
+      if (isValid === true && (cached = this.errorCache[key])) {
+        delete this.errorCache[key];
+      }
       this.attributes[key] = val;
       this.emit('change', key, val);
       return this.emit('change:' + key, val);
+    };
+
+    Model.prototype.isValid = function() {
+      var key, msg, _ref;
+
+      _ref = this.errorCache;
+      for (key in _ref) {
+        msg = _ref[key];
+        return false;
+      }
+      return true;
+    };
+
+    Model.prototype.errors = function() {
+      this.errorCache.length = Object.keys(this.errorCache).length - 1;
+      return this.errorCache;
     };
 
     Model.prototype.toJSON = function() {
@@ -357,6 +400,79 @@
 
   })(Wraith.Model);
 
+  Wraith.Validator = (function() {
+    function Validator() {}
+
+    Validator.prototype.validate = function(str) {
+      throw 'Override the validate function!';
+    };
+
+    return Validator;
+
+  })();
+
+  Wraith.Validators.Text = (function(_super) {
+    __extends(Text, _super);
+
+    function Text(_arg) {
+      var _ref, _ref1;
+
+      this.min = _arg.min, this.max = _arg.max;
+      this.isValid = __bind(this.isValid, this);
+      if ((_ref = this.min) == null) {
+        this.min = 0;
+      }
+      if ((_ref1 = this.max) == null) {
+        this.max = Number.MAX_VALUE;
+      }
+      this;
+    }
+
+    Text.prototype.isValid = function(content) {
+      var isValid;
+
+      isValid = content.match('^.{' + (this.min || 0) + ',' + (this.max || '') + '}$') !== null;
+      if (isValid) {
+        return true;
+      }
+      return 'String must be between ' + this.min + ' and ' + this.max + ' characters long.';
+    };
+
+    return Text;
+
+  })(Wraith.Validator);
+
+  Wraith.Validators.Num = (function(_super) {
+    __extends(Num, _super);
+
+    function Num(_arg) {
+      var _ref, _ref1;
+
+      this.min = _arg.min, this.max = _arg.max;
+      this.isValid = __bind(this.isValid, this);
+      if ((_ref = this.min) == null) {
+        this.min = Number.MIN_VALUE;
+      }
+      if ((_ref1 = this.max) == null) {
+        this.max = Number.MAX_VALUE;
+      }
+      this;
+    }
+
+    Num.prototype.isValid = function(content) {
+      var num;
+
+      num = Number(content);
+      if (content !== '' && !isNaN(num) && (this.min <= num && num <= this.max)) {
+        return true;
+      }
+      return 'Number must be between ' + this.min + ' and ' + this.max + '.';
+    };
+
+    return Num;
+
+  })(Wraith.Validator);
+
   Wraith.Template = (function() {
     Template.escapeRegExp = function(string) {
       return string.replace(/([.*+?^${}()|[\]\/\\])/g, '\\$1');
@@ -402,7 +518,7 @@
         target = count === 0 ? model : results;
         if (target.hasOwnProperty(token)) {
           results = target[token];
-        } else {
+        } else if (target.hasOwnProperty('get')) {
           results = target.get(token);
         }
         if (Wraith.isFunction(results)) {
@@ -431,6 +547,9 @@
           tokens = tokens.slice(1);
         }
         results = Wraith.Template.interpolate(model, tokens);
+        if (typeof results === 'string') {
+          results = results.length > 0;
+        }
         if (invert) {
           results = !results;
         }
@@ -489,7 +608,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref = !name, __indexOf.call(Wraith.UIEvents, _ref) >= 0) {
+        if (_ref = !name, __indexOf.call(Wraith.UIEVENTS, _ref) >= 0) {
           continue;
         }
         $view.addEventListener(name, this.wrapUIEvent(cb));
@@ -537,7 +656,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref = !name, __indexOf.call(Wraith.UIEvents, _ref) >= 0) {
+        if (_ref = !name, __indexOf.call(Wraith.UIEVENTS, _ref) >= 0) {
           continue;
         }
         $view.removeEventListener(name, function(e) {
@@ -556,6 +675,10 @@
 
     function ViewModel($el, template) {
       this.$el = $el;
+      this.handleFormSubmit_ = __bind(this.handleFormSubmit_, this);
+      this.handleInputChange_ = __bind(this.handleInputChange_, this);
+      this.unbindModel = __bind(this.unbindModel, this);
+      this.bindModel = __bind(this.bindModel, this);
       this.applyViewUpdate = __bind(this.applyViewUpdate, this);
       Wraith.log('@Wraith.ViewModel', 'constructor');
       if (!this.$el) {
@@ -639,6 +762,9 @@
       if (name === 'checked') {
         $old.checked = newval != null;
       }
+      if (name === 'value') {
+        $old.value = newval;
+      }
       if (oldval === newval) {
         return;
       }
@@ -647,6 +773,66 @@
       } else {
         return $old.removeAttribute(name);
       }
+    };
+
+    ViewModel.prototype.bindModel = function(model) {
+      var _this = this;
+
+      this.$el.addEventListener('keyup', function(e) {
+        return _this.handleInputChange_(e, model);
+      });
+      this.$el.addEventListener('blur', function(e) {
+        return _this.handleInputChange_(e, model);
+      });
+      if (this.$el.nodeName === 'FORM') {
+        this.$el.addEventListener('submit', function(e) {
+          return _this.handleFormSubmit_(e, model);
+        });
+      }
+      return this.updateView(model);
+    };
+
+    ViewModel.prototype.unbindModel = function(model) {
+      var _this = this;
+
+      this.$el.removeEventListener('keyup', function(e) {
+        return _this.handleInputChange_(e, model);
+      });
+      this.$el.removeEventListener('blur', function(e) {
+        return _this.handleInputChange_(e, model);
+      });
+      if (this.$el.nodeName === 'FORM') {
+        return this.$el.removeEventListener('submit', function(e) {
+          return _this.handleFormSubmit_(e, model);
+        });
+      }
+    };
+
+    ViewModel.prototype.handleInputChange_ = function(e, model) {
+      var $target;
+
+      $target = e.target;
+      if (!model.attributes.hasOwnProperty($target.name)) {
+        return;
+      }
+      return model.set($target.name, $target.value);
+    };
+
+    ViewModel.prototype.handleFormSubmit_ = function(e, model) {
+      var data, id, parent;
+
+      if (!(parent = model.parent)) {
+        return;
+      }
+      e.preventDefault();
+      data = model.toJSON();
+      id = data['_id'];
+      data['_id'] = null;
+      delete data['_id'];
+      parent.create(data);
+      return model.reset({
+        '_id': id
+      });
     };
 
     return ViewModel;
@@ -671,7 +857,7 @@
         return;
       }
       $view = this.render(model);
-      $view.setAttribute('data-model', model.get('_id'));
+      $view.setAttribute('data-model-id', model.get('_id'));
       this.bindUIEvents($view);
       return this.$parent.appendChild($view);
     };
@@ -682,7 +868,7 @@
       if (!(model instanceof Wraith.Model)) {
         return;
       }
-      $view = this.$parent.querySelector('[data-model=' + model.get('_id') + ']');
+      $view = this.$parent.querySelector('[data-model-id=' + model.get('_id') + ']');
       this.unbindUIEvents($view);
       return this.$parent.removeChild($view);
     };
@@ -690,11 +876,11 @@
     CollectionView.prototype.updateView = function(model) {
       var $el, $view;
 
-      if (!($el = this.$parent.querySelector('[data-model=' + model.get('_id') + ']'))) {
+      if (!($el = this.$parent.querySelector('[data-model-id=' + model.get('_id') + ']'))) {
         return;
       }
       $view = this.render(model);
-      $view.setAttribute('data-model', model.get('_id'));
+      $view.setAttribute('data-model-id', model.get('_id'));
       this.unbindUIEvents($el);
       this.bindUIEvents($view);
       return this.applyViewUpdate($el, $view);
@@ -723,7 +909,7 @@
 
     Controller.prototype.init = function() {
       Wraith.log('@Wraith.Controller', 'init');
-      this.findViews();
+      this.loadViews();
       this.bindUIEvents(this.$el);
       return this.loadElements();
     };
@@ -739,18 +925,20 @@
       return this;
     };
 
-    Controller.prototype.findViews = function() {
+    Controller.prototype.loadViews = function() {
       var $view, views, _i, _len;
 
       views = document.querySelectorAll('[data-bind]');
       for (_i = 0, _len = views.length; _i < _len; _i++) {
         $view = views[_i];
-        this.registerView($view);
+        if (!$view.attributes['data-bound']) {
+          this.registerView($view, $view.nodeName === 'FORM');
+        }
       }
       return this;
     };
 
-    Controller.prototype.registerView = function($view) {
+    Controller.prototype.registerView = function($view, twoWay) {
       var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref, _ref1, _ref2, _ref3;
 
       if (!(binding = (_ref = $view.attributes['data-bind']) != null ? _ref.value : void 0)) {
@@ -778,13 +966,15 @@
         view = new Wraith.ViewModel($view, template);
       }
       view.bind('uievent', this.handleViewUIEvent);
+      $view.setAttribute('data-bound', 'true');
       this.views.push(view);
       if ((_ref3 = (_base = this.bindings)[targetModel]) == null) {
         _base[targetModel] = [];
       }
       this.bindings[targetModel].push({
         binding: binding,
-        view: view
+        view: view,
+        twoWay: twoWay
       });
       return this;
     };
@@ -809,43 +999,74 @@
       }
       for (_i = 0, _len = bindings.length; _i < _len; _i++) {
         map = bindings[_i];
-        this.bindView(model, map.binding, map.view);
+        this.bindView(model, map.binding, map.view, map.twoWay);
       }
       return this;
     };
 
-    Controller.prototype.bindView = function(model, binding, view) {
-      var map, mapping;
+    Controller.prototype.bindView = function(model, binding, view, twoWay) {
+      var map, mapping, model_;
 
       mapping = binding.split('.');
       map = mapping[1];
-      if (map && view instanceof Wraith.CollectionView) {
-        model.bind('add:' + map, function(model_) {
-          view.createView(model_);
-          return model_.bind('change', function() {
+      if (!twoWay) {
+        if (map && view instanceof Wraith.CollectionView) {
+          model.bind('add:' + map, function(model_) {
+            view.createView(model_);
+            return model_.bind('change', function() {
+              return view.updateView(model_);
+            });
+          });
+          return model.bind('remove:' + map, function(model_) {
+            return view.removeView(model_);
+          });
+        } else if (map) {
+          return model.bind('change:' + map, function(model_) {
             return view.updateView(model_);
           });
-        });
-        return model.bind('remove:' + map, function(model_) {
-          return view.removeView(model_);
-        });
-      } else if (map) {
-        return model.bind('change:' + map, function(model_) {
-          return view.updateView(model_);
-        });
+        } else {
+          return model.bind('change', function() {
+            return view.updateView(model);
+          });
+        }
       } else {
-        return model.bind('change', function() {
-          return view.updateView(model);
-        });
+        if (map) {
+          model_ = model.get(map);
+        }
+        if (model_ instanceof Wraith.Collection) {
+          model = model_;
+        }
+        return this.bindModelView(model, view);
       }
+    };
+
+    Controller.prototype.bindModelView = function(model, view) {
+      var klass, model_;
+
+      if (model instanceof Wraith.Collection) {
+        klass = model.klass;
+        model_ = new klass({});
+        model_.parent = model;
+        model = model_;
+      }
+      model.bind('change', function() {
+        return view.updateView(model);
+      });
+      return view.bindModel(model);
+    };
+
+    Controller.prototype.unbindModelView = function(model, view) {
+      model.unbind('change', function() {
+        return view.updateView(model);
+      });
+      return view.unbindModel(model);
     };
 
     Controller.prototype.handleUIEvent = function(e, cb) {
       if (!this[cb]) {
         throw "Callback " + cb + " not found on controller";
       }
-      e.data = this.getInputDataFromEl(e.target);
-      debugger;
+      e.data = this.getInputDataFromEl(e.currentTarget);
       return this[cb](e);
     };
 
@@ -854,7 +1075,6 @@
         throw "Callback " + cb + " not found on controller";
       }
       e.model = this.getModelFromEl(e.target);
-      e.data = this.getInputDataFromEl(e.target);
       return this[cb](e);
     };
 
@@ -865,7 +1085,7 @@
         if (!$el.attributes) {
           break;
         }
-        if (modelId = (_ref = $el.attributes['data-model']) != null ? _ref.value : void 0) {
+        if (modelId = (_ref = $el.attributes['data-model-id']) != null ? _ref.value : void 0) {
           break;
         }
         $el = $el.parentNode;

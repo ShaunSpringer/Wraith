@@ -1,16 +1,23 @@
 #
-# The core validator used to validated Models.
+# The core validator used to validated Models. Really just supplies an
+# interface, for now.
+#
 # Defined on the model through the @field method like so:
 # @example
 #   class App.Model extends Wraith.Model
-#     @field 'text', { default: '', type: Wraith.Validators.String,  max: 30, min: 2 }
+#     @field 'text', { default: '', type: new Wraith.Validators.String{ min: 2, max: 30 } }
 #
 class Wraith.Validator
   validate: (str) -> throw 'Override the validate function!'
 
+#
+# Validates Text. Will accept any string with a length
+# greater than or equal min and less than or equal to max.
+#
 class Wraith.Validators.Text extends Wraith.Validator
+
   constructor: ({ @min, @max }) ->
-    @min ?=  Number.MIN_VALUE
+    @min ?=  0
     @max ?=  Number.MAX_VALUE
     @
 
@@ -26,8 +33,8 @@ class Wraith.Validators.Num extends Wraith.Validator
     @
 
   isValid: (content) =>
-    isValid = Number(content)
-    return true if not isNaN(isValid) and @min <= content <= @max
+    num = Number(content)
+    return true if content isnt '' and not isNaN(num) and @min <= num <= @max
     return 'Number must be between ' + @min + ' and ' + @max + '.'
 
 

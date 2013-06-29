@@ -88,13 +88,11 @@ class Wraith.Template
       target = if count is 0 then model else results
       if target.hasOwnProperty(token)
         results = target[token]
-      else
+      else if target.hasOwnProperty('get')
         results = target.get(token)
+
       results = results() if Wraith.isFunction(results)
       count++
-
-    if typeof results is 'object'
-      results = results.toString()
 
     results
 
@@ -121,6 +119,7 @@ class Wraith.Template
 
       # @TODO: Refactor this and ViewModel.render
       results = Wraith.Template.interpolate(model, tokens)
+      results = results.length > 0 if typeof results is 'string'
 
       results = !results if invert
       continue if not results

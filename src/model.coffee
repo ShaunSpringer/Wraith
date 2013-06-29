@@ -116,7 +116,9 @@ class Wraith.Model extends Wraith.Base
     return false for key, msg of @errorCache
     return true
 
-  errors: => { text: msg } for key, msg of @errorCache
+  errors: =>
+    @errorCache.length = Object.keys(@errorCache).length - 1
+    @errorCache
 
   #
   # "Serializes" the model's attributes as JSON.

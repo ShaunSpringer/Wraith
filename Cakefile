@@ -95,6 +95,8 @@ task 'docs', 'Generate annotated source code with Codo', ->
 
 task 'createlinks', 'Create symlinks for all the places wraith.js needs to live', ->
   for loc in copyLocations
+    rmv = exec 'rm -rf ' + loc + 'wraith.js'
+    rmv = exec 'rm -rf ' + loc + 'wraith.min.js'
     link = exec 'ln -n lib/wraith.js ' + loc + 'wraith.js'
     link = exec 'ln -n lib/wraith.min.js ' + loc + 'wraith.min.js'
 

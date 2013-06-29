@@ -24,15 +24,15 @@
             </div>
             <br />
             <form name="commentForm" data-bind="commentlist.comments">
-                <input type="text" name="author" placeholder="Your name" value="{{author}}" required />
+                <input type="text" name="author" placeholder="Your name" value="{{author}}" required data-class="error:errors.author" />
                 <input type="text" name="text" placeholder="Say something..." value="{{text}}" required />
                 <input type="text" name="rating" placeholder="Rating (0-5)" value="{{rating}}" required />
                 <input type="submit" value="Add" />
                 <div>Author: {{author}}</div>
                 <div>Comment: {{text}}</div>
                 <div>Rating: {{rating}}</div>
-                <div id="errors" data-class="hidden:isValid">
-                    {{errors}}
+                <div id="errors">
+                    Errors: {{errors.length}}
                 </div>
             </form>
         </div>
