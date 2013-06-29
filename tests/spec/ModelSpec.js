@@ -22,6 +22,22 @@
         "default": true
       });
 
+      TestModel.field("t", {
+        "default": '',
+        type: new Wraith.Validators.Text({
+          min: 0,
+          max: 5
+        })
+      });
+
+      TestModel.field("n", {
+        "default": 0,
+        type: new Wraith.Validators.Num({
+          min: 0,
+          max: 5
+        })
+      });
+
       return TestModel;
 
     })(Wraith.Model);
@@ -68,7 +84,7 @@
           return val === true;
         }), 1);
       });
-      return it("should emit an explicit event", function() {
+      it("should emit an explicit change event", function() {
         var val;
         val = false;
         model.bind('change:a', function() {
@@ -79,12 +95,38 @@
           return val === true;
         }), 1);
       });
+      it("should validate Wraith.Validators.Num typed fields and enforce min, max, and numbers", function() {
+        model.reset();
+        model.set('n', -1);
+        expect(model.isValid()).toBe(false);
+        model.set('n', 0);
+        expect(model.isValid()).toBe(true);
+        model.set('n', 5);
+        expect(model.isValid()).toBe(true);
+        model.set('n', 6);
+        expect(model.isValid()).toBe(false);
+        model.set('n', 'gooby');
+        expect(model.isValid()).toBe(false);
+        model.set('n', 3);
+        return expect(model.isValid()).toBe(true);
+      });
+      return it("should validate Wraith.Validators.Text typed fields and enforce min, and max character lengths", function() {
+        model.reset();
+        model.set('t', 'go');
+        expect(model.isValid()).toEqual(true);
+        model.set('t', 'gooby!');
+        expect(model.isValid()).toEqual(false);
+        model.set('t', 'gooby');
+        return expect(model.isValid()).toEqual(true);
+      });
     });
     return describe("on reset", function() {
       return it("should reset all properties", function() {
         model.reset();
         expect(model.get('a')).toBe(false);
-        return expect(model.get('b')).toBe(true);
+        expect(model.get('b')).toBe(true);
+        expect(model.get('n')).toBe(0);
+        return expect(model.get('t')).toBe('');
       });
     });
   });

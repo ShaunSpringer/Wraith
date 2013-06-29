@@ -27,7 +27,7 @@
 
 
 (function() {
-  var Wraith, root, _ref,
+  var Wraith, root,
     __slice = [].slice,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
@@ -390,13 +390,8 @@
 
   })(Wraith.Model);
 
-  Wraith.Validator = (function(_super) {
-    __extends(Validator, _super);
-
-    function Validator() {
-      _ref = Validator.__super__.constructor.apply(this, arguments);
-      return _ref;
-    }
+  Wraith.Validator = (function() {
+    function Validator() {}
 
     Validator.prototype.validate = function(str) {
       throw 'Override the validate function!';
@@ -404,7 +399,7 @@
 
     return Validator;
 
-  })(Wraith.Base);
+  })();
 
   Wraith.Validators.Text = (function(_super) {
     __extends(Text, _super);
@@ -412,6 +407,12 @@
     function Text(_arg) {
       this.min = _arg.min, this.max = _arg.max;
       this.isValid = __bind(this.isValid, this);
+      if (this.min == null) {
+        this.min = Number.MIN_VALUE;
+      }
+      if (this.max == null) {
+        this.max = Number.MAX_VALUE;
+      }
       this;
     }
 
@@ -446,7 +447,7 @@
     Num.prototype.isValid = function(content) {
       var isValid;
       isValid = Number(content);
-      if (isValid && (this.min <= content && content <= this.max)) {
+      if (!isNaN(isValid) && (this.min <= content && content <= this.max)) {
         return true;
       }
       return 'Number must be between ' + this.min + ' and ' + this.max + '.';
@@ -514,11 +515,11 @@
     };
 
     Template.interpolateClass = function(model, tokens) {
-      var binding, invert, klass, klassMap, klasses, results, _i, _len, _ref1;
+      var binding, invert, klass, klassMap, klasses, results, _i, _len, _ref;
       klasses = [];
-      _ref1 = tokens.split(' ');
-      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-        klassMap = _ref1[_i];
+      _ref = tokens.split(' ');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        klassMap = _ref[_i];
         binding = klassMap.split(':');
         if (binding.length !== 2) {
           continue;
@@ -576,7 +577,7 @@
     };
 
     BaseView.prototype.bindUIEvent = function($view, event) {
-      var cb, eventArr, events, name, _i, _len, _ref1;
+      var cb, eventArr, events, name, _i, _len, _ref;
       events = event.split(/[,?\s?]/);
       for (_i = 0, _len = events.length; _i < _len; _i++) {
         event = events[_i];
@@ -586,7 +587,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref1 = !name, __indexOf.call(Wraith.UIEVENTS, _ref1) >= 0) {
+        if (_ref = !name, __indexOf.call(Wraith.UIEVENTS, _ref) >= 0) {
           continue;
         }
         $view.addEventListener(name, this.wrapUIEvent(cb));
@@ -620,7 +621,7 @@
     };
 
     BaseView.prototype.unbindUIEvent = function($view, event) {
-      var cb, eventArr, events, name, _i, _len, _ref1,
+      var cb, eventArr, events, name, _i, _len, _ref,
         _this = this;
       events = event.split(/[,?\s?]/);
       for (_i = 0, _len = events.length; _i < _len; _i++) {
@@ -631,7 +632,7 @@
         }
         name = eventArr[0];
         cb = eventArr[1];
-        if (_ref1 = !name, __indexOf.call(Wraith.UIEVENTS, _ref1) >= 0) {
+        if (_ref = !name, __indexOf.call(Wraith.UIEVENTS, _ref) >= 0) {
           continue;
         }
         $view.removeEventListener(name, function(e) {
@@ -685,24 +686,24 @@
     };
 
     ViewModel.prototype.applyViewUpdate = function($old, $new) {
-      var $child, attr, attrs, i, _i, _j, _k, _len, _len1, _len2, _ref1, _ref2;
+      var $child, attr, attrs, i, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       attrs = [];
       if ($old.attributes) {
         attrs = (function() {
-          var _i, _len, _ref1, _results;
-          _ref1 = $old.attributes;
+          var _i, _len, _ref, _results;
+          _ref = $old.attributes;
           _results = [];
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            attr = _ref1[_i];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            attr = _ref[_i];
             _results.push(attr.name);
           }
           return _results;
         })();
       }
       if ($new.attributes) {
-        _ref1 = $new.attributes;
-        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-          attr = _ref1[_i];
+        _ref = $new.attributes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          attr = _ref[_i];
           if (attrs.indexOf(attr.name) === -1) {
             attrs.push(attr.name);
           }
@@ -717,18 +718,18 @@
       if ($old.nodeValue !== $new.nodeValue) {
         $old.nodeValue = $new.nodeValue;
       }
-      _ref2 = $old.childNodes;
-      for (i = _k = 0, _len2 = _ref2.length; _k < _len2; i = ++_k) {
-        $child = _ref2[i];
+      _ref1 = $old.childNodes;
+      for (i = _k = 0, _len2 = _ref1.length; _k < _len2; i = ++_k) {
+        $child = _ref1[i];
         this.applyViewUpdate($child, $new.childNodes[i]);
       }
       return this;
     };
 
     ViewModel.prototype.updateAttribute = function(name, $old, $new) {
-      var newval, oldval, _ref1, _ref2;
-      oldval = (_ref1 = $old.attributes[name]) != null ? _ref1.value : void 0;
-      newval = (_ref2 = $new.attributes[name]) != null ? _ref2.value : void 0;
+      var newval, oldval, _ref, _ref1;
+      oldval = (_ref = $old.attributes[name]) != null ? _ref.value : void 0;
+      newval = (_ref1 = $new.attributes[name]) != null ? _ref1.value : void 0;
       if (name === 'checked') {
         $old.checked = newval != null;
       }
@@ -900,8 +901,8 @@
     };
 
     Controller.prototype.registerView = function($view, twoWay) {
-      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref1, _ref2, _ref3;
-      if (!(binding = (_ref1 = $view.attributes['data-bind']) != null ? _ref1.value : void 0)) {
+      var binding, maps, repeating, targetModel, template, templateId, textbox, view, _base, _ref, _ref1, _ref2;
+      if (!(binding = (_ref = $view.attributes['data-bind']) != null ? _ref.value : void 0)) {
         return;
       }
       maps = binding.split('.');
@@ -909,9 +910,9 @@
         return;
       }
       repeating = $view.attributes['data-repeat'] !== void 0;
-      templateId = (_ref2 = $view.attributes['data-template']) != null ? _ref2.value : void 0;
+      templateId = (_ref1 = $view.attributes['data-template']) != null ? _ref1.value : void 0;
       if (templateId !== void 0) {
-        if (!(template = (_ref3 = document.getElementById(templateId)) != null ? _ref3.innerHTML : void 0)) {
+        if (!(template = (_ref2 = document.getElementById(templateId)) != null ? _ref2.innerHTML : void 0)) {
           return;
         }
       } else {
@@ -1036,12 +1037,12 @@
     };
 
     Controller.prototype.getModelFromEl = function($el) {
-      var modelId, _ref1;
+      var modelId, _ref;
       while ($el) {
         if (!$el.attributes) {
           break;
         }
-        if (modelId = (_ref1 = $el.attributes['data-model-id']) != null ? _ref1.value : void 0) {
+        if (modelId = (_ref = $el.attributes['data-model-id']) != null ? _ref.value : void 0) {
           break;
         }
         $el = $el.parentNode;

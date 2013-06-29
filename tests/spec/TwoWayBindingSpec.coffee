@@ -25,6 +25,7 @@ describe "Two Way Binding", ->
 
         new Wraith.Bootloader()
 
+
   describe "form inputs", ->
 
     it "should update model and view on change", ->
