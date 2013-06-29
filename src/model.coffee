@@ -104,6 +104,8 @@ class Wraith.Model extends Wraith.Base
         @emit('change:' + 'errors', isValid)
 
     if isValid is true and cached = @errorCache[key]
+      @emit('change', 'errors', isValid)
+      @emit('change:' + 'errors', isValid)
       delete @errorCache[key]
 
     @attributes[key] = val
@@ -116,9 +118,7 @@ class Wraith.Model extends Wraith.Base
     return false for key, msg of @errorCache
     return true
 
-  errors: =>
-    @errorCache.length = Object.keys(@errorCache).length - 1
-    @errorCache
+  errors: => @errorCache
 
   #
   # "Serializes" the model's attributes as JSON.

@@ -84,12 +84,13 @@ class Wraith.Template
     results = false
     tokens = tokens.split('.')
     for token in tokens
-      # @TODO This depends on a get function.. is this necessary?
       target = if count is 0 then model else results
       if target.hasOwnProperty(token)
         results = target[token]
       else if target.hasOwnProperty('get')
         results = target.get(token)
+      else
+        results = false
 
       results = results() if Wraith.isFunction(results)
       count++
@@ -119,7 +120,7 @@ class Wraith.Template
 
       # @TODO: Refactor this and ViewModel.render
       results = Wraith.Template.interpolate(model, tokens)
-      results = results.length > 0 if typeof results is 'string'
+      console.log results, tokens
 
       results = !results if invert
       continue if not results
