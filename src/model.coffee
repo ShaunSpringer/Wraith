@@ -45,8 +45,7 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
     @listeners = {}
-    @invalidated = []
-    @errors_ = {}
+    @errorCache = {}
 
     @reset attributes
 
@@ -100,13 +99,12 @@ class Wraith.Model extends Wraith.Base
     if validator and validator instanceof Wraith.Validator
       isValid = validator.isValid(val)
       if isValid isnt true
-        @emit('validated', key, val, false)
-        @emit('validated:invalid', key, val)
-        @errors_[key] = isValid
+        @errorCache[key] = isValid
+        @emit('change', 'errors', isValid)
+        @emit('change:' + 'errors', isValid)
 
-    if isValid is true and @errors_[key]
-      @errors_[key] = undefined
-      delete @errors_[key]
+    if isValid is true and cached = @errorCache[key]
+      delete @errorCache[key]
 
     @attributes[key] = val
 
@@ -115,10 +113,10 @@ class Wraith.Model extends Wraith.Base
     @emit('change:' + key, val)
 
   isValid: =>
-    return false for key, msg of @errors_
+    return false for key, msg of @errorCache
     return true
 
-  errorMessage: => '' + (msg + '\n' for key, msg of @errors_)
+  errors: => { text: msg } for key, msg of @errorCache
 
   #
   # "Serializes" the model's attributes as JSON.

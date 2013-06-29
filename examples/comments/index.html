@@ -15,22 +15,25 @@
             <h1>Comments</h1>
             <div>
                 <div data-bind="commentlist.comments" data-repeat>
-                    <h2>
-                        @{{author}}
-                    </h2>
-                    <span>
-                        {{text}}
-                    </span>
+                    <h2>@{{author}}</h2>
+                    <div>
+                        <span>({{rating}})</span>
+                        <span>{{text}}</span>
+                    </div>
                 </div>
             </div>
             <br />
             <form name="commentForm" data-bind="commentlist.comments">
                 <input type="text" name="author" placeholder="Your name" value="{{author}}" required />
                 <input type="text" name="text" placeholder="Say something..." value="{{text}}" required />
+                <input type="text" name="rating" placeholder="Rating (0-5)" value="{{rating}}" required />
                 <input type="submit" value="Add" />
                 <div>Author: {{author}}</div>
                 <div>Comment: {{text}}</div>
-                <div data-class="hidden:isValid">Errors: {{errorMessage}}</div>
+                <div>Rating: {{rating}}</div>
+                <div id="errors" data-class="hidden:isValid">
+                    {{errors}}
+                </div>
             </form>
         </div>
         <script src="lib/wraith.js"></script>

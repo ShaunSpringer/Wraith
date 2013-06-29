@@ -10,9 +10,19 @@ class Wraith.Validator extends Wraith.Base
 
 class Wraith.Validators.Text extends Wraith.Validator
   constructor: ({ @min, @max }) -> @
-  isValid: (str) =>
-    isValid = str.match('^.{' + (@min || 0) + ',' + (@max || '') + '}$') isnt null
+  isValid: (content) =>
+    isValid = content.match('^.{' + (@min || 0) + ',' + (@max || '') + '}$') isnt null
     return true if isValid
-    return 'String must be a minimum of ' + @min + ' characters and a maximum of ' + @max + ' characters long.'
+    return 'String must be between ' + @min + ' and ' + @max + ' characters long.'
+
+class Wraith.Validators.Num extends Wraith.Validator
+  constructor: ({ @min, @max }) ->
+    @min ?=  Number.MIN_VALUE
+    @max ?=  Number.MAX_VALUE
+    @
+  isValid: (content) =>
+    isValid = Number(content)
+    return true if isValid and @min <= content <= @max
+    return 'Number must be between ' + @min + ' and ' + @max + '.'
 
 

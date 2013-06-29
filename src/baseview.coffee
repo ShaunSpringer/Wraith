@@ -33,7 +33,7 @@ class Wraith.BaseView extends Wraith.Base
   # Binds to a UI event on a given view. Relies on the data-events
   # attribute to be a space or comma delimited list of events.
   # A valid event is given in the schema event:callback
-  # The event must be part of Wraith.UIEvents
+  # The event must be part of Wraith.UIEVENTS
   #
   # @param [HTMLElement] $view The view element to bind to
   # @param [HTMLElement] event The event as defined in the description above
@@ -45,7 +45,7 @@ class Wraith.BaseView extends Wraith.Base
       continue if eventArr.length isnt 2
       name = eventArr[0]
       cb = eventArr[1]
-      continue if not name in Wraith.UIEvents
+      continue if not name in Wraith.UIEVENTS
       $view.addEventListener name, @wrapUIEvent(cb)
     @
 
@@ -96,6 +96,6 @@ class Wraith.BaseView extends Wraith.Base
       continue if eventArr.length isnt 2
       name = eventArr[0]
       cb = eventArr[1]
-      continue if not name in Wraith.UIEvents
+      continue if not name in Wraith.UIEVENTS
       $view.removeEventListener name, (e) => @handleUIEvent e, cb
     @

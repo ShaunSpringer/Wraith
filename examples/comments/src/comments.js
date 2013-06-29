@@ -32,6 +32,14 @@
       })
     });
 
+    Comment.field('rating', {
+      "default": '',
+      type: new Wraith.Validators.Num({
+        min: 0,
+        max: 5
+      })
+    });
+
     return Comment;
 
   })(Wraith.Model);

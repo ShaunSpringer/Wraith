@@ -70,7 +70,6 @@ class Wraith.Template
     @template_fn = new Function 'obj', str
     @template_fn(data)
 
-
   #
   # Takes a given token array
   # and seeks out its value in the given model. It currently
@@ -81,7 +80,6 @@ class Wraith.Template
   # @returns [Object|String|Boolean] The results of the token search
   #
   @interpolate: (model, tokens) =>
-    if tokens is 'errors_' then debugger
     count = 0
     results = false
     tokens = tokens.split('.')
@@ -94,6 +92,9 @@ class Wraith.Template
         results = target.get(token)
       results = results() if Wraith.isFunction(results)
       count++
+
+    if typeof results is 'object'
+      results = results.toString()
 
     results
 
