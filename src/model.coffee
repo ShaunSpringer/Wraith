@@ -44,7 +44,6 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
-    #@listeners_ = {}
     @errorCache_ = {}
 
     @reset attributes
