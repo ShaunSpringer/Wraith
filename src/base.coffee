@@ -8,7 +8,7 @@ class Wraith.Base
   #
   constructor: ->
     @id = Wraith.uniqueId()
-    @listeners = {}
+    @listeners_ = {}
 
   #
   # Binds the given function (cb) to the given
@@ -19,7 +19,7 @@ class Wraith.Base
   #
   bind: (ev, cb) =>
     throw 'Callback is not a function' unless Wraith.isFunction(cb)
-    list = @listeners[ev] ?= []
+    list = @listeners_[ev] ?= []
     list.push(cb)
     @
 
@@ -31,11 +31,11 @@ class Wraith.Base
   # @param [Function] cb Callback to unbind.
   #
   unbind: (ev, cb) =>
-    list = @listeners?[ev]
+    list = @listeners_?[ev]
     for callback, i in list when callback is cb
       list.slice()
       list.splice(i, 1)
-      @listeners[ev] = list
+      @listeners_[ev] = list
       break
     @
 
@@ -46,8 +46,8 @@ class Wraith.Base
   # @param [Object] args The data object to emit
   #
   emit: (event, args ...) =>
-    if @listeners[event]?
-      listener(args ...) for listener in @listeners[event]
+    if @listeners_[event]?
+      listener(args ...) for listener in @listeners_[event]
     @
 
   #

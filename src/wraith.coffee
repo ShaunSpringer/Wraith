@@ -36,11 +36,13 @@
 class Wraith
   # Essentially allow logging or not
   @DEBUG: false
+
   # List of acceptable UIEVENTS
   @UIEVENTS: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit']
 
   # List of controllers keyed by id
   @controllers: {}
+
   # List of models keyed by id
   @models: {}
 

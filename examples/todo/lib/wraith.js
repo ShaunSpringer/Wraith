@@ -123,7 +123,7 @@
       this.unbind = __bind(this.unbind, this);
       this.bind = __bind(this.bind, this);
       this.id = Wraith.uniqueId();
-      this.listeners = {};
+      this.listeners_ = {};
     }
 
     Base.prototype.bind = function(ev, cb) {
@@ -131,14 +131,14 @@
       if (!Wraith.isFunction(cb)) {
         throw 'Callback is not a function';
       }
-      list = (_base = this.listeners)[ev] != null ? (_base = this.listeners)[ev] : _base[ev] = [];
+      list = (_base = this.listeners_)[ev] != null ? (_base = this.listeners_)[ev] : _base[ev] = [];
       list.push(cb);
       return this;
     };
 
     Base.prototype.unbind = function(ev, cb) {
       var callback, i, list, _i, _len, _ref;
-      list = (_ref = this.listeners) != null ? _ref[ev] : void 0;
+      list = (_ref = this.listeners_) != null ? _ref[ev] : void 0;
       for (i = _i = 0, _len = list.length; _i < _len; i = ++_i) {
         callback = list[i];
         if (!(callback === cb)) {
@@ -146,7 +146,7 @@
         }
         list.slice();
         list.splice(i, 1);
-        this.listeners[ev] = list;
+        this.listeners_[ev] = list;
         break;
       }
       return this;
@@ -155,8 +155,8 @@
     Base.prototype.emit = function() {
       var args, event, listener, _i, _len, _ref;
       event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      if (this.listeners[event] != null) {
-        _ref = this.listeners[event];
+      if (this.listeners_[event] != null) {
+        _ref = this.listeners_[event];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           listener = _ref[_i];
           listener.apply(null, args);
@@ -219,8 +219,7 @@
           "default": Wraith.uniqueId
         };
       }
-      this.listeners = {};
-      this.errorCache = {};
+      this.errorCache_ = {};
       this.reset(attributes);
       Wraith.models[this.attributes['_id']] = this;
       this;
@@ -266,15 +265,15 @@
       if (validator && validator instanceof Wraith.Validator) {
         isValid = validator.isValid(val);
         if (isValid !== true) {
-          this.errorCache[key] = isValid;
+          this.errorCache_[key] = isValid;
           this.emit('change', 'errors', isValid);
           this.emit('change:' + 'errors', isValid);
         }
       }
-      if (isValid === true && (cached = this.errorCache[key])) {
+      if (isValid === true && (cached = this.errorCache_[key])) {
         this.emit('change', 'errors', isValid);
         this.emit('change:' + 'errors', isValid);
-        delete this.errorCache[key];
+        delete this.errorCache_[key];
       }
       this.attributes[key] = val;
       this.emit('change', key, val);
@@ -283,7 +282,7 @@
 
     Model.prototype.isValid = function() {
       var key, msg, _ref;
-      _ref = this.errorCache;
+      _ref = this.errorCache_;
       for (key in _ref) {
         msg = _ref[key];
         return false;
@@ -292,7 +291,7 @@
     };
 
     Model.prototype.errors = function() {
-      return this.errorCache;
+      return this.errorCache_;
     };
 
     Model.prototype.toJSON = function() {
@@ -386,7 +385,7 @@
   Wraith.Validator = (function() {
     function Validator() {}
 
-    Validator.prototype.validate = function(str) {
+    Validator.prototype.isValid = function(content) {
       throw 'Override the validate function!';
     };
 

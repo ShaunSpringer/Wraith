@@ -44,8 +44,8 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
-    @listeners = {}
-    @errorCache = {}
+    #@listeners_ = {}
+    @errorCache_ = {}
 
     @reset attributes
 
@@ -99,14 +99,14 @@ class Wraith.Model extends Wraith.Base
     if validator and validator instanceof Wraith.Validator
       isValid = validator.isValid(val)
       if isValid isnt true
-        @errorCache[key] = isValid
+        @errorCache_[key] = isValid
         @emit('change', 'errors', isValid)
         @emit('change:' + 'errors', isValid)
 
-    if isValid is true and cached = @errorCache[key]
+    if isValid is true and cached = @errorCache_[key]
       @emit('change', 'errors', isValid)
       @emit('change:' + 'errors', isValid)
-      delete @errorCache[key]
+      delete @errorCache_[key]
 
     @attributes[key] = val
 
@@ -114,11 +114,25 @@ class Wraith.Model extends Wraith.Base
     @emit('change', key, val)
     @emit('change:' + key, val)
 
+  #
+  # Checks to see if there are any errors on the models.
+  # An error cache is stored privately so its as easy as checking
+  # if there is anything in that object.
+  #
+  # @return [Boolean] If the model is valid or not
+  #
   isValid: =>
-    return false for key, msg of @errorCache
+    return false for key, msg of @errorCache_
     return true
 
-  errors: => @errorCache
+  #
+  # Returns an object with errors stored on it.
+  # Errors are stored with key as the attribute name
+  # and the value as the error.
+  #
+  # @return [Object] The associative array of errors
+  #
+  errors: => @errorCache_
 
   #
   # "Serializes" the model's attributes as JSON.

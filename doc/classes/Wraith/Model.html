@@ -205,6 +205,28 @@ obvious inspiration.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#isValid-instance'>
+        - (Boolean) <strong>isValid</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Checks to see if there are any errors on the models.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#errors-instance'>
+        - (Object) <strong>errors</strong>()
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Returns an object with errors stored on it.
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#toJSON-instance'>
         - (Object) <strong>toJSON</strong>()
       </a>
@@ -393,6 +415,50 @@ on attributes, it will throw an error.</p><p>@params [String] key The key of the
 </div>
   </div>
   <div class='method_details'>
+    <p class='signature' id='isValid-instance'>
+      - (Boolean) <strong>isValid</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Checks to see if there are any errors on the models.
+An error cache is stored privately so its as easy as checking
+if there is anything in that object.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Boolean</tt>)
+      &mdash;
+      <span class='desc'>If the model is valid or not</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='errors-instance'>
+      - (Object) <strong>errors</strong>()
+      (bound)
+    </p>
+    <div class='docstring'>
+  <p>Returns an object with errors stored on it.
+Errors are stored with key as the attribute name
+and the value as the error.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (<tt>Object</tt>)
+      &mdash;
+      <span class='desc'>The associative array of errors</span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
     <p class='signature' id='toJSON-instance'>
       - (Object) <strong>toJSON</strong>()
       (bound)
@@ -417,7 +483,7 @@ on attributes, it will throw an error.</p><p>@params [String] key The key of the
     </div>
     <div id='footer'>
   Generated on
-  Tue Jun 25 2013 22:59:41 GMT-0400 (EDT)
+  Sun Jun 30 2013 17:34:52 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0
