@@ -9,7 +9,7 @@ root.App = App = {}
 # @extend Wraith.Model
 #
 class App.ListItem extends Wraith.Model
-  @field 'text', { default: 'New Item' }
+  @field 'text', { default: '' }
   @field 'selected', { default: false }
 
 #
@@ -39,11 +39,6 @@ class App.TodoManager extends Wraith.Controller
     @items.create { text: 'Task 1', selected: true }
     @items.create { text: 'Task 2' }
     @items.create { text: 'Task 3' }
-
-  inputKeypress: (e) =>
-    return unless e.keyCode is 13 and (val = e.currentTarget.value) isnt ''
-    @items.create { text: val, selected: false }
-    e.currentTarget.value = ''
 
   itemDelete: (e) => @items.remove e.model.get('_id')
   itemToggle: (e) => e.model.set('selected', !e.model.get('selected'))
