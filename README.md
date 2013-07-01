@@ -141,8 +141,8 @@ One of the most important things I tried to accomplish with Wraith was easy data
 
 This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).
 
-#### Two-Way Data Binding
-As of v0.1.1, forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated. On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.
+#### Two-Way Data Binding (as of v0.1.1)
+Forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated. On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.
 
 ```html
 <div data-controller="App.CommentController">
@@ -174,7 +174,7 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 
 When each items selected attribute is true, the class 'highlight' will be applied to the span surrounding our text.
 
-#### Validation
+#### Validation (as of v0.1.2)
 Model validation can be done by passing a 'type' attribute into the model's field method. There are a couple of included validators.. Text and Num (String and Number respectively). You can use them in your models like so:
 
 
