@@ -169,27 +169,6 @@ and re-render each time it changes</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#applyViewUpdate-instance'>
-        - (void) <strong>applyViewUpdate</strong>($old, $new)
-      </a>
-    </span>
-    <span class='bound note title'>Bound</span>
-    <span class='desc'>
-      Crawls the old nodes and new nodes, compares their contents and attributes, and updates the old node accordingly.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#updateAttribute-instance'>
-        - (void) <strong>updateAttribute</strong>(name, $old, $new)
-      </a>
-    </span>
-    <span class='desc'>
-      Updates a given attribute on $old to the current value on $new.
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#bindModel-instance'>
         - (void) <strong>bindModel</strong>(model)
       </a>
@@ -212,8 +191,8 @@ and re-render each time it changes</p>
   </li>
   <li>
     <span class='signature'>
-      <a href='#handleInputKeypress_-instance'>
-        - (void) <strong>handleInputKeypress_</strong>(e, model)
+      <a href='#handleInputChange_-instance'>
+        - (void) <strong>handleInputChange_</strong>(e, model)
       </a>
     </span>
     <span class='bound note title'>Bound</span>
@@ -247,7 +226,9 @@ and re-render each time it changes</p>
                 <a href='../../classes/Wraith/BaseView.html#wrapUIEvent-instance'>#wrapUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#handleUIEvent-instance'>#handleUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#unbindUIEvents-instance'>#unbindUIEvents</a>,
-        <a href='../../classes/Wraith/BaseView.html#unbindUIEvent-instance'>#unbindUIEvent</a>
+                <a href='../../classes/Wraith/BaseView.html#unbindUIEvent-instance'>#unbindUIEvent</a>,
+                <a href='../../classes/Wraith/BaseView.html#applyViewUpdate-instance'>#applyViewUpdate</a>,
+        <a href='../../classes/Wraith/BaseView.html#updateAttribute-instance'>#updateAttribute</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -353,82 +334,6 @@ rendered and inserted into the DOM.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='applyViewUpdate-instance'>
-      - (void) <strong>applyViewUpdate</strong>($old, $new)
-      (bound)
-    </p>
-    <div class='docstring'>
-  <div class='note todo'>
-    <strong>TODO:</strong>
-    make this more efficient!
-  </div>
-  <p>Crawls the old nodes and new nodes, compares
-their contents and attributes, and updates the old
-node accordingly. This prevents the entire view from
-re-rendering each time data changes.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>$old</span>
-      <span class='type'>
-        (<tt>HTMLElement</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The old DOM element that we are updating</span>
-    </li>
-    <li>
-      <span class='name'>$new</span>
-      <span class='type'>
-        (<tt>HTMLElement</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The new DOM element we are updating based on</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='updateAttribute-instance'>
-      - (void) <strong>updateAttribute</strong>(name, $old, $new)
-    </p>
-    <div class='docstring'>
-  <p>Updates a given attribute on $old to the current value on $new.
-Used to update values on a DOM element without having to rewrite the
-entire DOM structure (children etc).</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>name</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The attribute name to update</span>
-    </li>
-    <li>
-      <span class='name'>$old</span>
-      <span class='type'>
-        (<tt>HTMLElement</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The old DOM element that we are updating</span>
-    </li>
-    <li>
-      <span class='name'>$new</span>
-      <span class='type'>
-        (<tt>HTMLElement</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The new DOM element we are updating based on</span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
     <p class='signature' id='bindModel-instance'>
       - (void) <strong>bindModel</strong>(model)
       (bound)
@@ -475,8 +380,8 @@ will trigger an update.</p>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='handleInputKeypress_-instance'>
-      - (void) <strong>handleInputKeypress_</strong>(e, model)
+    <p class='signature' id='handleInputChange_-instance'>
+      - (void) <strong>handleInputChange_</strong>(e, model)
       (bound)
     </p>
     <div class='docstring'>
@@ -541,7 +446,7 @@ collection.</p>
     </div>
     <div id='footer'>
   Generated on
-  Tue Jun 25 2013 22:59:41 GMT-0400 (EDT)
+  Sun Jun 30 2013 20:29:45 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0

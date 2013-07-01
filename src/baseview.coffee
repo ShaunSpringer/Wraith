@@ -33,7 +33,7 @@ class Wraith.BaseView extends Wraith.Base
   # Binds to a UI event on a given view. Relies on the data-events
   # attribute to be a space or comma delimited list of events.
   # A valid event is given in the schema event:callback
-  # The event must be part of Wraith.UIEvents
+  # The event must be part of Wraith.UIEVENTS
   #
   # @param [HTMLElement] $view The view element to bind to
   # @param [HTMLElement] event The event as defined in the description above
@@ -45,7 +45,7 @@ class Wraith.BaseView extends Wraith.Base
       continue if eventArr.length isnt 2
       name = eventArr[0]
       cb = eventArr[1]
-      continue if not name in Wraith.UIEvents
+      continue if not name in Wraith.UIEVENTS
       $view.addEventListener name, @wrapUIEvent(cb)
     @
 
@@ -96,6 +96,63 @@ class Wraith.BaseView extends Wraith.Base
       continue if eventArr.length isnt 2
       name = eventArr[0]
       cb = eventArr[1]
-      continue if not name in Wraith.UIEvents
+      continue if not name in Wraith.UIEVENTS
       $view.removeEventListener name, (e) => @handleUIEvent e, cb
     @
+
+  #
+  # Crawls the old nodes and new nodes, compares
+  # their contents and attributes, and updates the old
+  # node accordingly. This prevents the entire view from
+  # re-rendering each time data changes.
+  #
+  # @todo make this more efficient!
+  #
+  # @param [HTMLElement] $old The old DOM element that we are updating
+  # @param [HTMLElement] $new The new DOM element we are updating based on
+  #
+  applyViewUpdate: ($old, $new) =>
+    attrs = []
+
+    if $old.attributes
+      attrs = (attr.name for attr in $old.attributes)
+
+    if $new.attributes
+      for attr in $new.attributes
+        if attrs.indexOf(attr.name) is -1
+          attrs.push attr.name
+
+    if attrs.length > 0
+      @updateAttribute(attr, $old, $new) for attr in attrs
+
+    if $old.nodeValue isnt $new.nodeValue
+      $old.nodeValue = $new.nodeValue
+
+    for $child, i in $old.childNodes
+      @applyViewUpdate $child, $new.childNodes[i]
+
+    @
+
+  #
+  # Updates a given attribute on $old to the current value on $new.
+  # Used to update values on a DOM element without having to rewrite the
+  # entire DOM structure (children etc).
+  #
+  # @param [String] name The attribute name to update
+  # @param [HTMLElement] $old The old DOM element that we are updating
+  # @param [HTMLElement] $new The new DOM element we are updating based on
+  #
+  updateAttribute: (name, $old, $new) ->
+    oldval = $old.attributes[name]?.value
+    newval = $new.attributes[name]?.value
+
+    # Handle checked attribute as properties
+    $old.checked = newval? if name is 'checked'
+    $old.value = newval if name is 'value'
+
+    return if oldval is newval
+
+    if newval
+      $old.setAttribute(name, newval)
+    else
+      $old.removeAttribute(name)

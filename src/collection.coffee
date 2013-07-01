@@ -60,6 +60,7 @@ class Wraith.Collection extends Wraith.Model
       item.unbind('change', item.proxy(@handleChange))
       return item
     return false
+
   #
   # Returns all members of the collection as an array.
   #

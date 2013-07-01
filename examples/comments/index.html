@@ -7,26 +7,31 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
     </head>
+    <style>
+        .hidden { display: none; }
+        .error { outline: 1px solid red; }
+    </style>
     <body>
         <div data-controller="App.CommentController">
             <h1>Comments</h1>
             <div>
                 <div data-bind="commentlist.comments" data-repeat>
-                    <h2>
-                        @{{author}}
-                    </h2>
-                    <span>
-                        {{text}}
-                    </span>
+                    <h2>@{{author}}</h2>
+                    <div>
+                        <span>({{rating}})</span>
+                        <span>{{text}}</span>
+                    </div>
                 </div>
             </div>
             <br />
             <form name="commentForm" data-bind="commentlist.comments">
-                <input type="text" name="author" placeholder="Your name" value="{{author}}" required />
-                <input type="text" name="text" placeholder="Say something..." value="{{text}}" required />
+                <input type="text" name="author" placeholder="Your name" value="{{author}}" data-class="error:errors.author" required />
+                <input type="text" name="text" placeholder="Say something..." value="{{text}}" data-class="error:errors.text" required />
+                <input type="text" name="rating" placeholder="Rating (0-5)" value="{{rating}}" data-class="error:errors.rating" required />
                 <input type="submit" value="Add" />
-                <div>Author: {{author}}</div>
-                <div>Comment: {{text}}</div>
+                <div>Author: {{author}} <span data-class="hidden:!errors.author">Error: {{errors.author}}</span></div>
+                <div>Comment: {{text}} <span data-class="hidden:!errors.text">Error: {{errors.text}}</span></div>
+                <div>Rating: {{rating}} <span data-class="hidden:!errors.rating">Error: {{errors.rating}}</span></div>
             </form>
         </div>
         <script src="lib/wraith.js"></script>

@@ -13,7 +13,7 @@ describe "Base", ->
 
     it "should store callback to the listeners array", ->
       base.bind 'testevent', -> undefined
-      expect(base.listeners['testevent'].length).toBe(1)
+      expect(base.listeners_['testevent'].length).toBe(1)
 
 
   describe "on emit", ->
@@ -45,4 +45,4 @@ describe "Base", ->
       cb = -> undefined
       base.bind 'testevent', cb
       base.unbind 'testevent', cb
-      expect(base.listeners['testevent'].length).toBe(0)
+      expect(base.listeners_['testevent'].length).toBe(0)

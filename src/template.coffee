@@ -70,7 +70,6 @@ class Wraith.Template
     @template_fn = new Function 'obj', str
     @template_fn(data)
 
-
   #
   # Takes a given token array
   # and seeks out its value in the given model. It currently
@@ -85,12 +84,15 @@ class Wraith.Template
     results = false
     tokens = tokens.split('.')
     for token in tokens
-      # @TODO This depends on a get function.. is this necessary?
       target = if count is 0 then model else results
       if target.hasOwnProperty(token)
         results = target[token]
-      else
+      else if target.hasOwnProperty('get')
         results = target.get(token)
+      else
+        results = false
+        break
+
       results = results() if Wraith.isFunction(results)
       count++
 
@@ -120,10 +122,15 @@ class Wraith.Template
       # @TODO: Refactor this and ViewModel.render
       results = Wraith.Template.interpolate(model, tokens)
 
-      results = !results if invert
-      continue if not results
+      # If we get a string back, we should check for length
+      results = results.length > 0 if typeof results is 'string'
 
-      klasses.push klass
+      # Invert the results if necessary
+      results = !results if invert
+
+      # If results is true then we want to
+      # render this class
+      klasses.push klass if results is true
 
     return klasses.join(' ')
 

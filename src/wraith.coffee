@@ -36,12 +36,18 @@
 class Wraith
   # Essentially allow logging or not
   @DEBUG: false
+
+  # List of acceptable UIEVENTS
+  @UIEVENTS: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit']
+
   # List of controllers keyed by id
   @controllers: {}
+
   # List of models keyed by id
   @models: {}
-  # List of acceptable UIEvents
-  @UIEvents: ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit']
+
+  # The global validators object
+  @Validators: {}
 
   #
   # Logs to the console if DEBUG is set to true

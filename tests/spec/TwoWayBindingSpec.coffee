@@ -25,17 +25,19 @@ describe "Two Way Binding", ->
 
         new Wraith.Bootloader()
 
+
   describe "form inputs", ->
 
     it "should update model and view on change", ->
       $input = $('input[name=comment]')
-      $input.attr('value', 'Super!')
+      $input[0].value = 'Super!'
       $input.trigger('keyup')
+
       waitsFor (-> $('#comment').text() is 'Comment: Super!') , 1
 
     it "should create a new model on submit", ->
       $input = $('input[name=comment]')
-      $input.attr('value', 'Super!')
+      $input[0].value = 'Super!'
       $input.trigger('keyup')
 
       $form = $('#comments-form')

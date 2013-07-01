@@ -8,6 +8,7 @@ sourceFiles = [
   'src/base.coffee'
   'src/model.coffee'
   'src/collection.coffee'
+  'src/validator.coffee'
   'src/template.coffee'
   'src/baseview.coffee'
   'src/viewmodel.coffee'
@@ -24,8 +25,8 @@ copyLocations = [
 
 examples = [
   { base: 'examples/todo/', dest: 'lib', source: 'src' }
-  { base:'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
-  { base:'examples/comments/', dest: 'lib', source: 'src' }
+  { base: 'examples/todomvc/architecture-examples/wraith/', dest: 'js', source: 'src' }
+  { base: 'examples/comments/', dest: 'lib', source: 'src' }
 ]
 
 tests = [
@@ -94,6 +95,8 @@ task 'docs', 'Generate annotated source code with Codo', ->
 
 task 'createlinks', 'Create symlinks for all the places wraith.js needs to live', ->
   for loc in copyLocations
+    rmv = exec 'rm -rf ' + loc + 'wraith.js'
+    rmv = exec 'rm -rf ' + loc + 'wraith.min.js'
     link = exec 'ln -n lib/wraith.js ' + loc + 'wraith.js'
     link = exec 'ln -n lib/wraith.min.js ' + loc + 'wraith.min.js'
 
