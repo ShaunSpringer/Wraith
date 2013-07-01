@@ -29,9 +29,9 @@
                 <input type="text" name="text" placeholder="Say something..." value="{{text}}" data-class="error:errors.text" required />
                 <input type="text" name="rating" placeholder="Rating (0-5)" value="{{rating}}" data-class="error:errors.rating" required />
                 <input type="submit" value="Add" />
-                <div>Author: {{author}}</div>
-                <div>Comment: {{text}}</div>
-                <div>Rating: {{rating}}</div>
+                <div>Author: {{author}} <span data-class="hidden:!errors.author">Error: {{errors.author}}</span></div>
+                <div>Comment: {{text}} <span data-class="hidden:!errors.text">Error: {{errors.text}}</span></div>
+                <div>Rating: {{rating}} <span data-class="hidden:!errors.rating">Error: {{errors.rating}}</span></div>
             </form>
         </div>
         <script src="lib/wraith.js"></script>

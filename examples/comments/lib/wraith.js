@@ -496,6 +496,7 @@
           results = target.get(token);
         } else {
           results = false;
+          break;
         }
         if (Wraith.isFunction(results)) {
           results = results();
@@ -522,13 +523,15 @@
           tokens = tokens.slice(1);
         }
         results = Wraith.Template.interpolate(model, tokens);
+        if (typeof results === 'string') {
+          results = results.length > 0;
+        }
         if (invert) {
           results = !results;
         }
-        if (!results) {
-          continue;
+        if (results === true) {
+          klasses.push(klass);
         }
-        klasses.push(klass);
       }
       return klasses.join(' ');
     };
@@ -542,6 +545,7 @@
 
     function BaseView($el) {
       this.$el = $el;
+      this.applyViewUpdate = __bind(this.applyViewUpdate, this);
       this.unbindUIEvent = __bind(this.unbindUIEvent, this);
       this.unbindUIEvents = __bind(this.unbindUIEvents, this);
       this.handleUIEvent = __bind(this.handleUIEvent, this);
@@ -633,50 +637,7 @@
       return this;
     };
 
-    return BaseView;
-
-  })(Wraith.Base);
-
-  Wraith.ViewModel = (function(_super) {
-    __extends(ViewModel, _super);
-
-    function ViewModel($el, template) {
-      this.$el = $el;
-      this.handleFormSubmit_ = __bind(this.handleFormSubmit_, this);
-      this.handleInputChange_ = __bind(this.handleInputChange_, this);
-      this.unbindModel = __bind(this.unbindModel, this);
-      this.bindModel = __bind(this.bindModel, this);
-      this.applyViewUpdate = __bind(this.applyViewUpdate, this);
-      Wraith.log('@Wraith.ViewModel', 'constructor');
-      if (!this.$el) {
-        throw 'Element is required by View';
-      }
-      if (!template) {
-        throw 'Template is required by View';
-      }
-      ViewModel.__super__.constructor.call(this, this.$el);
-      this.$parent = this.$el.parentNode;
-      this.template = new Wraith.Template(template);
-    }
-
-    ViewModel.prototype.render = function(model) {
-      var $el;
-      $el = document.createElement('div');
-      $el.innerHTML = this.template.compile(model);
-      $el = $el.firstChild;
-      return $el;
-    };
-
-    ViewModel.prototype.updateView = function(model) {
-      var $view;
-      this.unbindUIEvents(this.$el);
-      $view = this.render(model);
-      this.bindUIEvents($view);
-      this.applyViewUpdate(this.$el, $view);
-      return this;
-    };
-
-    ViewModel.prototype.applyViewUpdate = function($old, $new) {
+    BaseView.prototype.applyViewUpdate = function($old, $new) {
       var $child, attr, attrs, i, _i, _j, _k, _len, _len1, _len2, _ref, _ref1;
       attrs = [];
       if ($old.attributes) {
@@ -717,7 +678,7 @@
       return this;
     };
 
-    ViewModel.prototype.updateAttribute = function(name, $old, $new) {
+    BaseView.prototype.updateAttribute = function(name, $old, $new) {
       var newval, oldval, _ref, _ref1;
       oldval = (_ref = $old.attributes[name]) != null ? _ref.value : void 0;
       newval = (_ref1 = $new.attributes[name]) != null ? _ref1.value : void 0;
@@ -735,6 +696,48 @@
       } else {
         return $old.removeAttribute(name);
       }
+    };
+
+    return BaseView;
+
+  })(Wraith.Base);
+
+  Wraith.ViewModel = (function(_super) {
+    __extends(ViewModel, _super);
+
+    function ViewModel($el, template) {
+      this.$el = $el;
+      this.handleFormSubmit_ = __bind(this.handleFormSubmit_, this);
+      this.handleInputChange_ = __bind(this.handleInputChange_, this);
+      this.unbindModel = __bind(this.unbindModel, this);
+      this.bindModel = __bind(this.bindModel, this);
+      Wraith.log('@Wraith.ViewModel', 'constructor');
+      if (!this.$el) {
+        throw 'Element is required by View';
+      }
+      if (!template) {
+        throw 'Template is required by View';
+      }
+      ViewModel.__super__.constructor.call(this, this.$el);
+      this.$parent = this.$el.parentNode;
+      this.template = new Wraith.Template(template);
+    }
+
+    ViewModel.prototype.render = function(model) {
+      var $el;
+      $el = document.createElement('div');
+      $el.innerHTML = this.template.compile(model);
+      $el = $el.firstChild;
+      return $el;
+    };
+
+    ViewModel.prototype.updateView = function(model) {
+      var $view;
+      this.unbindUIEvents(this.$el);
+      $view = this.render(model);
+      this.bindUIEvents($view);
+      this.applyViewUpdate(this.$el, $view);
+      return this;
     };
 
     ViewModel.prototype.bindModel = function(model) {

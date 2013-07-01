@@ -115,7 +115,7 @@
         </p>
       </nav>
       <div id='filecontents'>
-        <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.1" title="Wraith v0.1.1"></p><h2>v0.1.1 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a></h2>
+        <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.2" title="Wraith v0.1.2"></p><h2>v0.1.2 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a></h2>
 <h4>Created by Shaun Springer</h4>
 <h4>Meet Wraith</h4><p>Wraith was a project I thought up several months ago out of my frustrations with the current MV* frameworks available on the internet. I was working on a few small, single page applications and was testing different frameworks to see which suit my needs. I used Backbone, Spine, Angular, and a few others that didn’t quite fit the bill. What I wanted was a framework that bound the data to the view, something I call implicit model-view binding, but required no logic to be present inside the views.</p><p>For all intents and purposes, Angular does provide this level of functionality, and so does Backbone, with the help from a variety of different plugins. But Angular is rather big, has a pretty steep learning curve, and doesn’t enforce logicless views (something I feel is extremely important in such a framework), and Backbone takes a bit of finagling to get anything to work quite right. Additionally all of these frameworks work best when used with a library like jQuery, or Zepto to handle event delegation and DOM manipulation.</p><h4>Why make another MV* Framework?</h4><p>I wrote Wraith because I wanted a MV* framework that didn’t depend on any external libraries, had Angular-like Model-View binding, and was super lightweight and easy to understand. Additionally I wanted to write this framework in CoffeeScript since it is easy to read, has powerful array comprehension, and is just a ton of fun to write in.</p><p>Along the way I sought inspiration from Spine, Backbone and Angular, mixing Spine-style Models and Collections, Angular style directives, with Backbone style templating (a la Handlebars). All of these inspirations make Wraith a unique experience, but still feeling incredibly familiar to most frontend developers.</p><h4>What makes Wraith different?</h4><p>Wraith is completely self contained. You need nothing else to get started creating a basic single page application. I say basic because the framework is very much in its infancy. It does not have support for URL routing, AJAX requests, animations, or persistent storage.  All things I hope to accomplish in the near future.</p><p>Now that I have identified what Wraith doesn’t have, lets talk about what it does well.</p><ul>
 <li>Implicit Model-View binding</li>
@@ -174,7 +174,7 @@ App.MainController = (function(_super) {
   &lt;div data-bind=&quot;list.items&quot; data-repeat&gt;
     {{text}}
   &lt;/div&gt;
-&lt;/section&gt;</code></pre><p>This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).</p><h4>Two-Way Data Binding</h4><p>As of v0.1.1. forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated (and in the future, validated). On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.</p><pre><code class="lang-html">&lt;div data-controller=&quot;App.CommentController&quot;&gt;
+&lt;/section&gt;</code></pre><p>This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).</p><h4>Two-Way Data Binding</h4><p>As of v0.1.1, forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated. On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.</p><pre><code class="lang-html">&lt;div data-controller=&quot;App.CommentController&quot;&gt;
   &lt;form id=&quot;comments-form&quot; data-bind=&quot;commentlist.comments&quot;&gt;
     &lt;input type=&quot;text&quot; name=&quot;comment&quot; value=&quot;{{comment}}&quot; required /&gt;
     &lt;div id=&quot;comment&quot;&gt;Comment: {{comment}}&lt;/div&gt;
@@ -189,7 +189,14 @@ App.MainController = (function(_super) {
       {{text}}
     &lt;/span&gt;
   &lt;/div&gt;
-&lt;/section&gt;</code></pre><p>When selected is true, the class highlight will be applied to the span surrounding our text.</p><h2>Building and Testing</h2><p>In order to build Wraith you will have to install several dependencies, do this with node (npm).</p><p>To install all the dependencies to build and run wraith, clone or fork this repository, and then run</p><pre><code>npm install</code></pre><p>This will run the installation file for the node dependencies. Next run</p><pre><code>cake build</code></pre><p>Which will build the source files, tests, and examples</p><p>To run the tests in browser or view the examples, use</p><pre><code>cake server</code></pre><p>This will start a server on port 8000, making tests and examples available for browsing.
+&lt;/section&gt;</code></pre><p>When each items selected attribute is true, the class &#39;highlight&#39; will be applied to the span surrounding our text.</p><h4>Validation</h4><p>Model validation can be done by passing a &#39;type&#39; attribute into the model&#39;s field method. There are a couple of included validators.. Text and Num (String and Number respectively). You can use them in your models like so:</p><pre><code class="lang-coffee">class App.Comment extends Wraith.Model
+  @field &#39;text&#39;, { default: &#39;&#39;, type: new Wraith.Validators.Text({ min: 1, max: 140 }) }</code></pre><p>Errors can be handled by listening for &#39;change:errors&#39; on a given model (from your controller), or to display the results in the view.</p><pre><code class="lang-html">&lt;form name=&quot;commentForm&quot; data-bind=&quot;commentlist.comments&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;author&quot; placeholder=&quot;Your name&quot; value=&quot;{{author}}&quot; data-class=&quot;error:errors.author&quot; required /&gt;
+    &lt;div class=&quot;errors&quot; data-class=&quot;hidden:!errors.length&quot;&gt;
+      Error: &lt;span&gt;{{error.text}}&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+<h2>Building and Testing</h2><p>In order to build Wraith you will have to install several dependencies, do this with node (npm).</p><p>To install all the dependencies to build and run wraith, clone or fork this repository, and then run</p><pre><code>npm install</code></pre><p>This will run the installation file for the node dependencies. Next run</p><pre><code>cake build</code></pre><p>Which will build the source files, tests, and examples</p><p>To run the tests in browser or view the examples, use</p><pre><code>cake server</code></pre><p>This will start a server on port 8000, making tests and examples available for browsing.
 <em> Tests are located at <a href="http://localhost:8000/tests/SpecRunner.html"><a href="http://localhost:8000/tests/SpecRunner.html">http://localhost:8000/tests/SpecRunner.html</a></a>
    </em> Note: Tests can be run as headless with the command <code>npm test</code>
 * Examples are located at <a href="http://localhost:8000/examples/"><a href="http://localhost:8000/examples/">http://localhost:8000/examples/</a></a></p><p>To run the tests in a headless browser (using phantomjs) run</p><pre><code>cake test</code></pre>
@@ -210,7 +217,7 @@ THE SOFTWARE.</p>
     </div>
     <div id='footer'>
   Generated on
-  Sun Jun 30 2013 17:34:52 GMT-0400 (EDT)
+  Sun Jun 30 2013 20:29:45 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0

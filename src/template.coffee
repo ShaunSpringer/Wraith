@@ -91,6 +91,7 @@ class Wraith.Template
         results = target.get(token)
       else
         results = false
+        break
 
       results = results() if Wraith.isFunction(results)
       count++
@@ -121,10 +122,15 @@ class Wraith.Template
       # @TODO: Refactor this and ViewModel.render
       results = Wraith.Template.interpolate(model, tokens)
 
-      results = !results if invert
-      continue if not results
+      # If we get a string back, we should check for length
+      results = results.length > 0 if typeof results is 'string'
 
-      klasses.push klass
+      # Invert the results if necessary
+      results = !results if invert
+
+      # If results is true then we want to
+      # render this class
+      klasses.push klass if results is true
 
     return klasses.join(' ')
 

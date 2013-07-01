@@ -1,7 +1,7 @@
-![Wraith v0.1.1](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1.1")
+![Wraith v0.1.2](http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif "Wraith v0.1.2")
 
 
-## v0.1.1 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
+## v0.1.2 [![Build Status](https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master)](https://travis-ci.org/ShaunSpringer/Wraith)
 #### Created by Shaun Springer
 
 #### Meet Wraith
@@ -142,7 +142,7 @@ One of the most important things I tried to accomplish with Wraith was easy data
 This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).
 
 #### Two-Way Data Binding
-As of v0.1.1. forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated (and in the future, validated). On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.
+As of v0.1.1, forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated. On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.
 
 ```html
 <div data-controller="App.CommentController">
@@ -172,7 +172,27 @@ Want to hide or show something? Instead of writing logic in javascript to hide a
 </section>
 ```
 
-When selected is true, the class highlight will be applied to the span surrounding our text.
+When each items selected attribute is true, the class 'highlight' will be applied to the span surrounding our text.
+
+#### Validation
+Model validation can be done by passing a 'type' attribute into the model's field method. There are a couple of included validators.. Text and Num (String and Number respectively). You can use them in your models like so:
+
+
+```coffee
+class App.Comment extends Wraith.Model
+  @field 'text', { default: '', type: new Wraith.Validators.Text({ min: 1, max: 140 }) }
+```
+
+Errors can be handled by listening for 'change:errors' on a given model (from your controller), or to display the results in the view.
+
+```html
+<form name="commentForm" data-bind="commentlist.comments">
+    <input type="text" name="author" placeholder="Your name" value="{{author}}" data-class="error:errors.author" required />
+    <div class="errors" data-class="hidden:!errors.length">
+      Error: <span>{{error.text}}</span>
+    </div>
+</form>
+```
 
 ## Building and Testing
 In order to build Wraith you will have to install several dependencies, do this with node (npm).
