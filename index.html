@@ -1,37 +1,40 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Wraith by ShaunSpringer</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Wraith : An MVC framework based off a few different pieces of frameworks that I really liked.  Credit to AngularJS, Backbone, Spine for inspiration." />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Wraith</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Wraith</h1>
-        <p>An MVC framework based off a few different pieces of frameworks that I really liked.  Credit to AngularJS, Backbone, Spine for inspiration.</p>
 
-        <p class="view"><a href="https://github.com/ShaunSpringer/Wraith">View the Project on GitHub <small>ShaunSpringer/Wraith</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ShaunSpringer/Wraith">View on GitHub</a>
 
+          <h1 id="project_title">Wraith</h1>
+          <h2 id="project_tagline">An MVC framework based off a few different pieces of frameworks that I really liked.  Credit to AngularJS, Backbone, Spine for inspiration.</h2>
 
-        <ul>
-          <li><a href="https://github.com/ShaunSpringer/Wraith/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ShaunSpringer/Wraith/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ShaunSpringer/Wraith">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.1" title="Wraith v0.1.1"></p>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ShaunSpringer/Wraith/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ShaunSpringer/Wraith/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><img src="http://github.com/shaunspringer/wraith/raw/master/assets/wraith.gif" alt="Wraith v0.1.2" title="Wraith v0.1.2"></p>
 
 <h2>
-<a name="v011-" class="anchor" href="#v011-"><span class="octicon octicon-link"></span></a>v0.1.1 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a>
+<a name="v012-" class="anchor" href="#v012-"><span class="octicon octicon-link"></span></a>v0.1.2 <a href="https://travis-ci.org/ShaunSpringer/Wraith"><img src="https://travis-ci.org/ShaunSpringer/Wraith.png?branch=master" alt="Build Status"></a>
 </h2>
 
 <h4>
@@ -185,9 +188,9 @@
 <p>This will bind the input to the list property on your controller (App.MainController). Every time the list.items property changes, the view will automatically be updated (and in this case, repeated as a list).</p>
 
 <h4>
-<a name="two-way-data-binding" class="anchor" href="#two-way-data-binding"><span class="octicon octicon-link"></span></a>Two-Way Data Binding</h4>
+<a name="two-way-data-binding-as-of-v011" class="anchor" href="#two-way-data-binding-as-of-v011"><span class="octicon octicon-link"></span></a>Two-Way Data Binding (as of v0.1.1)</h4>
 
-<p>As of v0.1.1. forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated (and in the future, validated). On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.</p>
+<p>Forms can be bound two-ways. This means that you can create a series of inputs, and on change the model will be updated. On submit, if the model that the form is bound to is part of a collection, it will automatically create a new instance of that model.</p>
 
 <div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">data-controller=</span><span class="s">"App.CommentController"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"comments-form"</span> <span class="na">data-bind=</span><span class="s">"commentlist.comments"</span><span class="nt">&gt;</span>
@@ -217,7 +220,26 @@
 <span class="nt">&lt;/section&gt;</span>
 </pre></div>
 
-<p>When selected is true, the class highlight will be applied to the span surrounding our text.</p>
+<p>When each items selected attribute is true, the class 'highlight' will be applied to the span surrounding our text.</p>
+
+<h4>
+<a name="validation-as-of-v012" class="anchor" href="#validation-as-of-v012"><span class="octicon octicon-link"></span></a>Validation (as of v0.1.2)</h4>
+
+<p>Model validation can be done by passing a 'type' attribute into the model's field method. There are a couple of included validators.. Text and Num (String and Number respectively). You can use them in your models like so:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nx">App</span><span class="p">.</span><span class="nx">Comment</span> <span class="k">extends</span> <span class="nx">Wraith</span><span class="p">.</span><span class="nx">Model</span>
+  <span class="nx">@field</span> <span class="s">'text'</span><span class="p">,</span> <span class="p">{</span> <span class="nv">default: </span><span class="s">''</span><span class="p">,</span> <span class="nv">type: </span><span class="k">new</span> <span class="nx">Wraith</span><span class="p">.</span><span class="nx">Validators</span><span class="p">.</span><span class="nx">Text</span><span class="p">({</span> <span class="nv">min: </span><span class="mi">1</span><span class="p">,</span> <span class="nv">max: </span><span class="mi">140</span> <span class="p">})</span> <span class="p">}</span>
+</pre></div>
+
+<p>Errors can be handled by listening for 'change:errors' on a given model (from your controller), or to display the results in the view.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;form</span> <span class="na">name=</span><span class="s">"commentForm"</span> <span class="na">data-bind=</span><span class="s">"commentlist.comments"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"author"</span> <span class="na">placeholder=</span><span class="s">"Your name"</span> <span class="na">value=</span><span class="s">"{{author}}"</span> <span class="na">data-class=</span><span class="s">"error:errors.author"</span> <span class="na">required</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"errors"</span> <span class="na">data-class=</span><span class="s">"hidden:!errors.length"</span><span class="nt">&gt;</span>
+      Error: <span class="nt">&lt;span&gt;</span>{{error.text}}<span class="nt">&lt;/span&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+</pre></div>
 
 <h2>
 <a name="building-and-testing" class="anchor" href="#building-and-testing"><span class="octicon octicon-link"></span></a>Building and Testing</h2>
@@ -257,13 +279,43 @@
 
 <pre><code>cake test
 </code></pre>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>The MIT License (MIT)</p>
+
+<p>Copyright (c) 2013 Shaun Springer</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/ShaunSpringer">ShaunSpringer</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Wraith maintained by <a href="https://github.com/ShaunSpringer">ShaunSpringer</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
