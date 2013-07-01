@@ -11,7 +11,9 @@
     </head>
     <body>
         <div data-controller="App.TodoManager">
-            <input type="text" width="100" placeholder="Type a task here" data-events="keypress:inputKeypress" />
+            <form data-bind="list.items">
+                <input type="text" name="text" width="100" placeholder="Type a task here" value="{{text}}" />
+            </form>
             <ul>
                 <li data-bind="list.items" data-repeat>
                     <fieldset>

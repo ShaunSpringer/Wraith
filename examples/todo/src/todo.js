@@ -18,7 +18,7 @@
     }
 
     ListItem.field('text', {
-      "default": 'New Item'
+      "default": ''
     });
 
     ListItem.field('selected', {
@@ -59,7 +59,6 @@
     function TodoManager() {
       this.itemToggle = __bind(this.itemToggle, this);
       this.itemDelete = __bind(this.itemDelete, this);
-      this.inputKeypress = __bind(this.inputKeypress, this);
       _ref2 = TodoManager.__super__.constructor.apply(this, arguments);
       return _ref2;
     }
@@ -78,18 +77,6 @@
       return this.items.create({
         text: 'Task 3'
       });
-    };
-
-    TodoManager.prototype.inputKeypress = function(e) {
-      var val;
-      if (!(e.keyCode === 13 && (val = e.currentTarget.value) !== '')) {
-        return;
-      }
-      this.items.create({
-        text: val,
-        selected: false
-      });
-      return e.currentTarget.value = '';
     };
 
     TodoManager.prototype.itemDelete = function(e) {

@@ -16,7 +16,7 @@
         base.bind('testevent', function() {
           return void 0;
         });
-        return expect(base.listeners['testevent'].length).toBe(1);
+        return expect(base.listeners_['testevent'].length).toBe(1);
       });
     });
     describe("on emit", function() {
@@ -51,7 +51,7 @@
         };
         base.bind('testevent', cb);
         base.unbind('testevent', cb);
-        return expect(base.listeners['testevent'].length).toBe(0);
+        return expect(base.listeners_['testevent'].length).toBe(0);
       });
     });
   });

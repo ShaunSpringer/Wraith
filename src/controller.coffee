@@ -42,7 +42,6 @@ class Wraith.Controller extends Wraith.BaseView
   init: ->
     Wraith.log '@Wraith.Controller', 'init'
     @loadViews()
-    @loadForms()
     @bindUIEvents(@$el)
     @loadElements()
 
@@ -66,18 +65,10 @@ class Wraith.Controller extends Wraith.BaseView
     # so we seek out elements with data-bind and register the
     # view
     views = document.querySelectorAll('[data-bind]')
-    @registerView($view, false) for $view in views when $view.nodeName isnt 'FORM'
+    for $view in views when not $view.attributes['data-bound']
+      @registerView($view,  $view.nodeName is 'FORM')
     @
 
-  #
-  # Find all the form embedded inside the controller and
-  # registers them with the controller
-  #
-  loadForms: ->
-    # Any form with a data-model attribute is loaded
-    forms = document.querySelectorAll('form[data-bind]')
-    @registerView($forms, true) for $forms in forms
-    @
 
   #
   # Register the view to this controller
@@ -114,8 +105,11 @@ class Wraith.Controller extends Wraith.BaseView
     else
       view = new Wraith.ViewModel($view, template)
 
-    # Listen for uievents from the view
+    # Listen for UIEVENTS from the view
     view.bind 'uievent', @handleViewUIEvent
+
+    # Indicate we are bound to this element
+    $view.setAttribute('data-bound', 'true')
 
     # Push our view onto the stack
     @views.push view

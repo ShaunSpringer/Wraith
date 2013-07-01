@@ -189,16 +189,6 @@ mapping to the model list.items (belonging to SelectList)
   </li>
   <li>
     <span class='signature'>
-      <a href='#loadForms-instance'>
-        - (void) <strong>loadForms</strong>()
-      </a>
-    </span>
-    <span class='desc'>
-      Find all the form embedded inside the controller and registers them with the controller
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
       <a href='#registerView-instance'>
         - (void) <strong>registerView</strong>($view, twoWay)
       </a>
@@ -315,7 +305,9 @@ mapping to the model list.items (belonging to SelectList)
                 <a href='../../classes/Wraith/BaseView.html#wrapUIEvent-instance'>#wrapUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#handleUIEvent-instance'>#handleUIEvent</a>,
                 <a href='../../classes/Wraith/BaseView.html#unbindUIEvents-instance'>#unbindUIEvents</a>,
-        <a href='../../classes/Wraith/BaseView.html#unbindUIEvent-instance'>#unbindUIEvent</a>
+                <a href='../../classes/Wraith/BaseView.html#unbindUIEvent-instance'>#unbindUIEvent</a>,
+                <a href='../../classes/Wraith/BaseView.html#applyViewUpdate-instance'>#applyViewUpdate</a>,
+        <a href='../../classes/Wraith/BaseView.html#updateAttribute-instance'>#updateAttribute</a>
       </p>
       <h3 class='inherited'>
         Methods inherited from
@@ -388,17 +380,6 @@ within the controller via @els[&#39;el-id&#39;]</p>
     <div class='docstring'>
   <p>Find all the views embedded inside the controller and
 register them with the controller</p>
-</div>
-<div class='tags'>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='loadForms-instance'>
-      - (void) <strong>loadForms</strong>()
-    </p>
-    <div class='docstring'>
-  <p>Find all the form embedded inside the controller and
-registers them with the controller</p>
 </div>
 <div class='tags'>
 </div>
@@ -716,7 +697,7 @@ If no model is found, it will return null</p>
     </div>
     <div id='footer'>
   Generated on
-  Tue Jun 25 2013 22:59:41 GMT-0400 (EDT)
+  Sun Jun 30 2013 20:29:45 GMT-0400 (EDT)
   by
   <a href='https://github.com/netzpirat/codo' title='CoffeeScript API documentation generator'>Codo</a>
   v1.7.0

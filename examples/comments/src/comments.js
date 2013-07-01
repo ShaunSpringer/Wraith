@@ -17,11 +17,27 @@
     }
 
     Comment.field('author', {
-      "default": ''
+      "default": '',
+      type: new Wraith.Validators.Text({
+        min: 1,
+        max: 30
+      })
     });
 
     Comment.field('text', {
-      "default": ''
+      "default": '',
+      type: new Wraith.Validators.Text({
+        min: 1,
+        max: 140
+      })
+    });
+
+    Comment.field('rating', {
+      "default": '',
+      type: new Wraith.Validators.Num({
+        min: 0,
+        max: 5
+      })
     });
 
     return Comment;

@@ -44,7 +44,7 @@ class Wraith.Model extends Wraith.Base
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
 
-    @listeners = {}
+    @errorCache_ = {}
 
     @reset attributes
 
@@ -65,7 +65,7 @@ class Wraith.Model extends Wraith.Base
       if attributes?[name]?
         d = attributes[name]
       else
-        d = if (Wraith.isFunction(options.default)) then options.default() else options.default
+        d = if (Wraith.isFunction(options['default'])) then options['default']() else options['default']
       @set name, d
 
     for name, options of @constructor.collections
@@ -92,10 +92,46 @@ class Wraith.Model extends Wraith.Base
     throw 'Trying to set an non-existent property!' unless field = @constructor.fields[key]
     # Ignore a re-setting of the same value
     return if val == @get(key)
+
+    isValid = false
+    validator = @constructor.fields[key]['type']
+    if validator and validator instanceof Wraith.Validator
+      isValid = validator.isValid(val)
+      if isValid isnt true
+        @errorCache_[key] = isValid
+        @emit('change', 'errors', isValid)
+        @emit('change:' + 'errors', isValid)
+
+    if isValid is true and cached = @errorCache_[key]
+      @emit('change', 'errors', isValid)
+      @emit('change:' + 'errors', isValid)
+      delete @errorCache_[key]
+
     @attributes[key] = val
+
     # Emit change events!
     @emit('change', key, val)
     @emit('change:' + key, val)
+
+  #
+  # Checks to see if there are any errors on the models.
+  # An error cache is stored privately so its as easy as checking
+  # if there is anything in that object.
+  #
+  # @return [Boolean] If the model is valid or not
+  #
+  isValid: =>
+    return false for key, msg of @errorCache_
+    return true
+
+  #
+  # Returns an object with errors stored on it.
+  # Errors are stored with key as the attribute name
+  # and the value as the error.
+  #
+  # @return [Object] The associative array of errors
+  #
+  errors: => @errorCache_
 
   #
   # "Serializes" the model's attributes as JSON.

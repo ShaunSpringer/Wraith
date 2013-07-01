@@ -3,21 +3,23 @@
   <head>
   <meta charset='UTF-8'>
   <title>CoffeeScript API Documentation</title>
-  <link rel='stylesheet' href='../../assets/codo.css' type='text/css'>
-  <script src='../../assets/codo.js'></script>
-  <script src='../../assets/search_data.js'></script>
+  <link rel='stylesheet' href='../../../assets/codo.css' type='text/css'>
+  <script src='../../../assets/codo.js'></script>
+  <script src='../../../assets/search_data.js'></script>
 </head>
   <body>
-    <div id='base' data-path='../../'></div>
+    <div id='base' data-path='../../../'></div>
 <div id='header'>
   <div id='menu'>
-    <a href='../../README.md.html' title='Wraith'>Wraith</a>
+    <a href='../../../README.md.html' title='Wraith'>Wraith</a>
     &raquo;
-    <a href='../../class_index.html' title='Index'>Index</a>
+    <a href='../../../class_index.html' title='Index'>Index</a>
     &raquo;
-    <a href='../../classes/Wraith.html' title='Wraith'>Wraith</a>
+    <a href='../../../classes/Wraith.html' title='Wraith'>Wraith</a>
     &raquo;
-    <span class='title'>Bootloader</span>
+    <span class='title'>Validators</span>
+    &raquo;
+    <span class='title'>Text</span>
     <nav>
       <ul>
         <li class='noframes'>
@@ -26,10 +28,10 @@
       </ul>
     </nav>
     <div id='search'>
-      <a id='class_list_link' href='../../class_list.html'>Classes</a>
-      <a id='file_list_link' href='../../file_list.html'>Files</a>
-      <a id='method_list_link' href='../../method_list.html'>Methods</a>
-      <a id='extra_list_link' href='../../extra_list.html'>Extras</a>
+      <a id='class_list_link' href='../../../class_list.html'>Classes</a>
+      <a id='file_list_link' href='../../../file_list.html'>Files</a>
+      <a id='method_list_link' href='../../../method_list.html'>Methods</a>
+      <a id='extra_list_link' href='../../../extra_list.html'>Extras</a>
     </div>
   </div>
   <iframe id='search_frame'></iframe>
@@ -108,29 +110,24 @@
     <div id='content'>
       <h1>
         Class:
-        Wraith.Bootloader
+        Wraith.Validators.Text
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>src&#47;bootloader.coffee</td>
+          <td>src&#47;validator.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../../classes/Wraith/Validator.html'>Wraith.Validator</a>
+          </td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>The bootloader object. This should be
-instantiated after all JS is loaded on the page.
-It will search the DOM for elements with the
-data-controller attribute and try to load their respective
-controller from the global namespace. It is acceptable
-to use dot notation to do so, e.g. App.Controller</p>
-  <div class='examples'>
-    <h3>Examples:</h3>
-    <h4>
-      
-    </h4>
-    <pre><code class='coffee'>bootloader = new Wraith.Bootloader</code></pre>
-  </div>
+  <p>Validates Text. Will accept any string with a length
+greater than or equal min and less than or equal to max.</p>
 </div>
 <div class='tags'>
 </div>
@@ -144,20 +141,31 @@ to use dot notation to do so, e.g. App.Controller</p>
     </span>
     <span class='constructor note title'>Constructor</span>
     <span class='desc'>
-      Constructor
+      Creates an instance of the validator.
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#loadController-instance'>
-        - (void) <strong>loadController</strong>(id, $item)
+      <a href='#isValid-instance'>
+        - (void) <strong>isValid</strong>(content)
       </a>
     </span>
+    <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Loads a given controller by id and HTML element
+      @inheritDoc
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+      </h2>
+      <h3 class='inherited'>
+        Methods inherited from
+        <a href='../../../classes/Wraith/Validator.html'>Wraith.Validator</a>
+      </h3>
+      <p class='inherited'>
+        <a href='../../../classes/Wraith/Validator.html#isValid-instance'>#isValid</a>
+      </p>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -165,7 +173,7 @@ to use dot notation to do so, e.g. App.Controller</p>
       - (void) <strong>constructor</strong>()
     </p>
     <div class='docstring'>
-  <p>Constructor</p>
+  <p>Creates an instance of the validator.</p>
 </div>
 <div class='tags'>
 </div>
@@ -174,32 +182,14 @@ to use dot notation to do so, e.g. App.Controller</p>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='loadController-instance'>
-      - (void) <strong>loadController</strong>(id, $item)
+    <p class='signature' id='isValid-instance'>
+      - (void) <strong>isValid</strong>(content)
+      (bound)
     </p>
     <div class='docstring'>
-  <p>Loads a given controller by id and HTML element</p>
+  <p>@inheritDoc</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>id</span>
-      <span class='type'>
-        (<tt>String</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The controllers id</span>
-    </li>
-    <li>
-      <span class='name'>$item</span>
-      <span class='type'>
-        (<tt>Object</tt>)
-      </span>
-      &mdash;
-      <span class='desc'>The HTML element to bind to</span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>
