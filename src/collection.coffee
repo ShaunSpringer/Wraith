@@ -1,7 +1,7 @@
 #
 # The Collection object is a collection of {Wraith.Model}'s that are
 # accessed through
-# Credit goes out to Paul Miller and his Spine framework for very
+# Credit goes out to Alex MacCaw and his Spine framework for very
 # obvious inspiration.
 #
 class Wraith.Collection extends Wraith.Model

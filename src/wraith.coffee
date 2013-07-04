@@ -30,10 +30,13 @@
 #
 # @author Shaun Springer
 # @copyright Shaun Springer
-# @version 0.1.0
+# @version 0.1.2
 #
 #
 class Wraith
+  # Version number
+  @version: '0.1.2'
+
   # Essentially allow logging or not
   @DEBUG: false
 
@@ -66,7 +69,7 @@ class Wraith
   # @param [Number] length Desired length of the UID
   # @param [String] prefix A prefix to append to the UID
   #
-  @uniqueId: (length = 16, prefix = "wraith-") ->
+  @uniqueId: (length = 16, prefix = "") ->
     id = ""
     id += Math.random().toString(36).substr(2) while id.length < length
     id.substr 0, length

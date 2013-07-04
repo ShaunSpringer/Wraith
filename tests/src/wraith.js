@@ -37,6 +37,8 @@
   Wraith = (function() {
     function Wraith() {}
 
+    Wraith.version = '0.1.2';
+
     Wraith.DEBUG = false;
 
     Wraith.UIEVENTS = ['click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'scroll', 'keypress', 'keyup', 'keydown', 'change', 'blur', 'focus', 'submit'];
@@ -65,7 +67,7 @@
         length = 16;
       }
       if (prefix == null) {
-        prefix = "wraith-";
+        prefix = "";
       }
       id = "";
       while (id.length < length) {

@@ -1,7 +1,7 @@
 #
 # Our data model used throughout the application. Currently it is requred
 # to do any data-binding or data-mapping in the views.
-# Credit goes out to Paul Miller and his Spine framework for very
+# Credit goes out to Alex MacCaw and his Spine framework for very
 # obvious inspiration.
 #
 class Wraith.Model extends Wraith.Base
