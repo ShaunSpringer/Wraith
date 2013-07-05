@@ -4,7 +4,7 @@
 # Credit goes out to Alex MacCaw and his Spine framework for very
 # obvious inspiration.
 #
-class Wraith.Collection extends Wraith.Model
+class Wraith.Collection extends Wraith.Base
   #
   # Sets up the parent, namespace (@as) and {Wraith.Model} class.
   #

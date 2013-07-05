@@ -382,7 +382,7 @@
 
     return Collection;
 
-  })(Wraith.Model);
+  })(Wraith.Base);
 
   Wraith.Validator = (function() {
     function Validator() {}
