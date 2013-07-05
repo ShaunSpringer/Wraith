@@ -101,7 +101,11 @@ task 'createlinks', 'Create symlinks for all the places wraith.js needs to live'
     link = exec 'ln -n lib/wraith.min.js ' + loc + 'wraith.min.js'
 
 task 'test', 'Run the tests in a headless webkit browser', ->
+  phantom = exec 'phantomjs tests/SpecRunner.coffee tests/SpecRunner.html'
+
+  ###
   phantom = exec 'npm test'
+  ###
   phantom.stdout.on 'data', (data) -> print data.toString()
   phantom.stderr.on 'data', (data) -> print data.toString()
 

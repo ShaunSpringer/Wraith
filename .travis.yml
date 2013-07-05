@@ -1,5 +1,7 @@
 language: node_js
 node_js:
   - 0.10
+script:
+  - "cake test"
 before_install:
   - git submodule update --init --recursive

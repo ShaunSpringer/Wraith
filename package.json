@@ -1,10 +1,12 @@
 {
   "name": "Wraith",
   "preferGlobal": true,
-  "version": "0.1.0",
+  "version": "0.1.2",
   "author": "Shaun Springer",
   "description": "a light weight mvc framework",
-  "licenses": ["MIT"],
+  "licenses": [
+    "MIT"
+  ],
   "contributors": [
     {
       "name": "Shaun Springer"
@@ -19,8 +21,5 @@
     "codo": "~1.7.0",
     "coffee-script": "~1.6.3",
     "phantomjs": "~1.9.0"
-  },
-  "scripts": {
-    "test": "phantomjs tests/SpecRunner.coffee tests/SpecRunner.html"
   }
 }
