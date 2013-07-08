@@ -40,6 +40,8 @@
       })
     });
 
+    Comment.storage(Wraith.Storage.Local);
+
     return Comment;
 
   })(Wraith.Model);
@@ -54,6 +56,8 @@
 
     CommentList.hasMany(App.Comment, 'comments');
 
+    CommentList.storage(Wraith.Storage.Local);
+
     return CommentList;
 
   })(Wraith.Model);
@@ -67,8 +71,9 @@
     }
 
     CommentController.prototype.init = function() {
+      localStorage.clear();
       CommentController.__super__.init.call(this);
-      return this.list = this.registerModel(new App.CommentList, 'commentlist');
+      return this.list = this.registerModel(App.CommentList, 'commentlist');
     };
 
     return CommentController;

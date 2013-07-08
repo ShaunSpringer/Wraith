@@ -108,14 +108,14 @@ class Wraith.ViewModel extends Wraith.BaseView
     return unless model.isValid()
 
     # Shallow copy of data to new model
-    # @todo replace with a clone method
     data = model.toJSON()
     id = data['_id']
-    data['_id'] = null
     delete data['_id']
 
     # Create the new model via the parent object
     parent.create data
+
+    console.log id
 
     # Reset the model (but keep the same _id attribute)
     model.reset { '_id': id }

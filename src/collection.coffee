@@ -4,7 +4,7 @@
 # Credit goes out to Alex MacCaw and his Spine framework for very
 # obvious inspiration.
 #
-class Wraith.Collection extends Wraith.Base
+class Wraith.Collection extends Wraith.Model
   #
   # Sets up the parent, namespace (@as) and {Wraith.Model} class.
   #
@@ -14,8 +14,9 @@ class Wraith.Collection extends Wraith.Base
   #
   constructor: (@parent, @as, @klass) ->
     Wraith.log '@Wraith.Collection', 'constructor'
-    super()
+    super({}, @as)
     @members = []
+    @storage = undefined
 
   #
   # Creates a new instance of the {Wraith.Model} belonging to this
@@ -25,7 +26,7 @@ class Wraith.Collection extends Wraith.Base
   #
   # @return [Wraith.Model] The model object created.
   #
-  create: (attr) => @add(new @klass(attr))
+  create: (attr) => @add(new @klass(attr, @as))
 
   #
   # Adds the given instance of a {Wraith.Model} to the collection.
@@ -36,10 +37,10 @@ class Wraith.Collection extends Wraith.Base
   #
   add: (item) =>
     @members.push(item)
-    @parent.emit('ad:', item)
+    @parent.emit('add', item)
     @parent.emit('add:' + @as, item)
-    @parent.emit('change:' + @as, @)
     @parent.emit('change', @)
+    @parent.emit('change:' + @as, @)
     item.bind('change', item.proxy(@handleChange))
     item
 

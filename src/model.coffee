@@ -30,12 +30,14 @@ class Wraith.Model extends Wraith.Base
     @collections ?= {}
     @collections[as] = opt
 
+  @storage: (@StorageType) -> @
+
   #
   # Constructor
   #
   # @param [Object] attributes An attributes object to apply to the model upon intialization.
   #
-  constructor: (attributes) ->
+  constructor: (attributes, @as) ->
     Wraith.log '@Wraith.Model', 'constructor'
     super()
 
@@ -43,6 +45,10 @@ class Wraith.Model extends Wraith.Base
     # @todo Could use a refactor
     @constructor.fields ?= {}
     @constructor.fields['_id'] = { default: Wraith.uniqueId } unless attributes?['_id']
+
+    @storage_ = undefined
+    if Wraith.isFunction(@constructor.StorageType)
+      @storage_ = new @constructor.StorageType @
 
     @errorCache_ = {}
 
@@ -61,6 +67,10 @@ class Wraith.Model extends Wraith.Base
   #
   reset: (attributes) ->
     @attributes = {}
+
+    if options = @constructor.fields['_id']
+      @attributes['_id'] = if (Wraith.isFunction(options['default'])) then options['default']() else options['default']
+
     for name, options of @constructor.fields
       if attributes?[name]?
         d = attributes[name]
@@ -71,6 +81,7 @@ class Wraith.Model extends Wraith.Base
     for name, options of @constructor.collections
       @attributes[name] = new Wraith.Collection(@, options.as, options.klass)
 
+    @
   #
   # Returns the value for the given key. Will return undefined if
   # not found on the attributes list.
@@ -139,4 +150,5 @@ class Wraith.Model extends Wraith.Base
   #
   # @return [Object] The attributes object belonging to this {Wraith.Model} instance.
   #
-  toJSON: => @attributes
+  toJSON: => Wraith.clone(@attributes)
+

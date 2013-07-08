@@ -9,6 +9,7 @@ sourceFiles = [
   'src/model.coffee'
   'src/collection.coffee'
   'src/validator.coffee'
+  'src/storage.coffee'
   'src/template.coffee'
   'src/baseview.coffee'
   'src/viewmodel.coffee'

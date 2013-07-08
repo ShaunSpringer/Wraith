@@ -52,6 +52,9 @@ class Wraith
   # The global validators object
   @Validators: {}
 
+  # List of storage types
+  @Storage: {}
+
   #
   # Logs to the console if DEBUG is set to true
   #
@@ -69,11 +72,38 @@ class Wraith
   # @param [Number] length Desired length of the UID
   # @param [String] prefix A prefix to append to the UID
   #
-  @uniqueId: (length = 16, prefix = "") ->
-    id = ""
-    id += Math.random().toString(36).substr(2) while id.length < length
-    id.substr 0, length
-    id = prefix + id
+  @uniqueId: ->
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) ->
+      r = Math.random() * 16 | 0
+      v = if c is 'x' then r else (r & 0x3|0x8)
+      v.toString(16)
+    )
+
+  # From: http://coffeescriptcookbook.com/chapters/classes_and_objects/cloning
+  @clone: (obj, deep = false) ->
+    if not obj? or typeof obj isnt 'object'
+      return obj
+
+    if obj instanceof Date
+      return new Date(obj.getTime())
+
+    if obj instanceof RegExp
+      flags = ''
+      flags += 'g' if obj.global?
+      flags += 'i' if obj.ignoreCase?
+      flags += 'm' if obj.multiline?
+      flags += 'y' if obj.sticky?
+      return new RegExp(obj.source, flags)
+
+    if not deep
+      return obj
+
+    newInstance = new obj.constructor()
+
+    for key of obj
+      newInstance[key] = Wraith.clone obj[key]
+
+    return newInstance
 
 # Export Wraith
 root = exports ? @

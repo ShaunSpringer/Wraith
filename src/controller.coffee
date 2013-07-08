@@ -122,14 +122,18 @@ class Wraith.Controller extends Wraith.BaseView
   #
   # Register the model to this controller
   #
-  # @param [Wraith.Model] model The model to register to this controller
+  # @param [Wraith.Model] Model The model to register to this controller
   # @param [String] as The name of the model to register
   #
   # @return [Wraith.Model] The model that was registered
   #
-  registerModel: (model, as) ->
+  registerModel: (Model, as) ->
     throw 'Model name already registered' if @models[as]
+    throw 'Model must be a function' unless Wraith.isFunction(Model)
+
+    model = new Model({}, as)
     throw 'Model is not valid' if not model instanceof Wraith.Model
+
     @models[as] = model
     @bindViews(as, model)
     model
@@ -190,7 +194,7 @@ class Wraith.Controller extends Wraith.BaseView
   bindModelView: (model, view) ->
     if model instanceof Wraith.Collection
       klass = model.klass
-      model_ = new klass({})
+      model_ = new klass({}, model.as)
       model_.parent = model
       model = model_
 
